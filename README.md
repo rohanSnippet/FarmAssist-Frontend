@@ -1,6 +1,6 @@
 # 🌾 FarmAssist — Frontend Repository
 
-![FarmAssist UI](image)
+![home page](image.png)
 
 ---
 
