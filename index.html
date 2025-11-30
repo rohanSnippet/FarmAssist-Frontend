@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
+    <link id="favicon" rel="icon" type="image/png" href="/seedingL.png" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FarmAssist</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <script>
+      (function () {
+        const theme = localStorage.getItem("app-theme");
+        if (theme) document.documentElement.setAttribute("data-theme", theme);
+      })();
+      /*    (function () {
+        const favicon = document.getElementById("favicon");
+        const getSystemTheme = () => {
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        };
+
+        if (getSystemTheme == "dark") {
+          favicon.href = "/seeding.png";
+        } else {
+          favicon.href = "/seedingL.png";
+        }
+      })(); */
+    </script>
+  </body>
+</html>
