@@ -7,6 +7,11 @@ import Contact from "./pages/Contact.jsx";
 import RootLayout from "./layout/RootLayout.jsx";
 import Home from "./pages/Home.jsx";
 import { ThemeProvider } from "./context/ThemeContext";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoutes from "./components/ProtectedRoutes";
+import Login from "./components/Login";
+import { ModalProvider } from "./context/ModalContext";
+import GlobalModal from "./components/GlobalModal";
 
 const router = createBrowserRouter([
   {
@@ -19,7 +24,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/about-us",
-        element: <About />,
+        element: (
+          <ProtectedRoutes>
+            <About />
+          </ProtectedRoutes>
+        ),
       },
       {
         path: "/contact",
@@ -27,11 +36,18 @@ const router = createBrowserRouter([
       },
     ],
   },
+  { path: "/login", element: <Login /> },
 ]);
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ThemeProvider>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        {" "}
+        <ModalProvider>
+          <GlobalModal />
+          <RouterProvider router={router} />
+        </ModalProvider>
+      </AuthProvider>
     </ThemeProvider>
   </StrictMode>
 );

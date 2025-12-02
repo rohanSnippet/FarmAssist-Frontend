@@ -1,14 +1,25 @@
 // Assume you are using a React component that imports 'isUser' and 'NavLink'
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import Logo from "/seeding.png";
 import LogoLight from "/seedingL.png";
 import ThemeSwitcher from "../ui/ThemeSwitcher.jsx";
 import { useTheme } from "../context/ThemeContext";
 import { BsTranslate } from "react-icons/bs";
+import { useAuth } from "../context/AuthContext.jsx";
+import Login from "./Login.jsx";
+import { useModal } from "../context/ModalContext.jsx";
 
-const Navbar = ({ isUser = false }) => {
+const Navbar = () => {
+  const location = useLocation();
   const { isDark } = useTheme();
+  const { openModal, closeModal } = useModal();
+  const { logout, user } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    closeModal();
+  };
 
   return (
     <div
@@ -66,7 +77,9 @@ const Navbar = ({ isUser = false }) => {
             <NavLink to={`/`}>Home</NavLink>
           </li>
           <li>
-            <NavLink to={`/about-us`}>About Us</NavLink>
+            <NavLink to={`/about-us`} state={{ path: location.pathname }}>
+              About Us
+            </NavLink>
           </li>
           <li>
             <NavLink to={`/contact`}>Contact Us</NavLink>
@@ -81,7 +94,15 @@ const Navbar = ({ isUser = false }) => {
           {" "}
           <ThemeSwitcher />
         </span>
-        {!isUser && <a className="btn">Login</a>}
+        {user ? (
+          <a className="btn" onClick={handleLogout}>
+            Logout
+          </a>
+        ) : (
+          <a className="btn" onClick={() => openModal(<Login />)}>
+            Login
+          </a>
+        )}
       </div>
     </div>
   );
