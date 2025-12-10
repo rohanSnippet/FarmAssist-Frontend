@@ -10,8 +10,8 @@ const GlobalModal = () => {
           <button
             className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
             onClick={() => {
+              e.preventDefault();
               closeModal();
-              window.history.back();
             }}
           >
             ✕

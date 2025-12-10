@@ -16,20 +16,6 @@
         const theme = localStorage.getItem("app-theme");
         if (theme) document.documentElement.setAttribute("data-theme", theme);
       })();
-      /*    (function () {
-        const favicon = document.getElementById("favicon");
-        const getSystemTheme = () => {
-          window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light";
-        };
-
-        if (getSystemTheme == "dark") {
-          favicon.href = "/seeding.png";
-        } else {
-          favicon.href = "/seedingL.png";
-        }
-      })(); */
     </script>
   </body>
 </html>

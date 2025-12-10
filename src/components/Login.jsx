@@ -1,42 +1,41 @@
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
-import { useModal } from "../context/ModalContext";
+import { useLocation, useNavigate } from "react-router-dom";
+// import { useModal } from "../context/ModalContext"; // No longer used for main login
+import { useState } from "react";
+import Signup from "./Signup";
 
-const Login = () => {
+const LoginForm = ({ switchToSignup }) => {
   const { login } = useAuth();
-  const { closeModal } = useModal();
+  // const { closeModal } = useModal(); // No longer used for main login
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Get the path the user was trying to access, default to home
+  const from = location.state?.from?.pathname || "/";
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    // simulate backend login
-    login({ email: data.email });
-    closeModal();
+  const onSubmit = async (data) => {
+    const success = await login(data.email, data.password);
+
+    if (success) {
+      // closeModal(); // Close modal if used, but for redirection, navigate is key
+      navigate(from, { replace: true }); // Redirect back to the requested page
+    } else {
+      // Handle login error (e.g., show toast/message)
+    }
   };
 
   return (
-    <div className="w-full max-w-sm mx-auto text-base-content">
+    <div className="w-full max-w-sm mx-auto text-base-content p-6">
       <h2 className="text-2xl font-bold text-center mb-6">Welcome Back 👋</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Name */}
-        {/*   <div>
-          <label className="label">
-            <span className="label-text">Name</span>
-          </label>
-          <input
-            {...register("name", { required: "Name is required" })}
-            className="input input-bordered w-full"
-            placeholder="Enter your name"
-          />
-          {errors.name && (
-            <p className="text-error text-sm mt-1">{errors.name.message}</p>
-          )}
-        </div> */}
-
         {/* Email */}
         <div>
           <input
@@ -55,34 +54,9 @@ const Login = () => {
             <p className="text-error text-sm mt-1">{errors.email.message}</p>
           )}
         </div>
-        <div>
-          <label className="input validator">
-            <svg
-              className="h-[1em] opacity-50"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-            >
-              <g
-                strokeLinejoin="round"
-                strokeLinecap="round"
-                strokeWidth="2.5"
-                fill="none"
-                stroke="currentColor"
-              >
-                <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-              </g>
-            </svg>
-            <input type="email" placeholder="mail@site.com" required />
-          </label>
-          <div className="validator-hint hidden">Enter valid email address</div>
-        </div>
 
         {/* Password */}
         <div>
-          <label className="label">
-            <span className="label-text">Password</span>
-          </label>
           <input
             {...register("password", {
               required: "Password required",
@@ -102,6 +76,17 @@ const Login = () => {
           Sign In
         </button>
 
+        {/* Switch to Signup */}
+        <p className="text-center mt-4 text-sm">
+          Don't have an account?{" "}
+          <span
+            className="link link-hover text-primary"
+            onClick={switchToSignup}
+          >
+            Create Account
+          </span>
+        </p>
+
         {/* Divider */}
         <div className="divider text-sm">OR</div>
 
@@ -114,4 +99,23 @@ const Login = () => {
   );
 };
 
-export default Login;
+// New wrapper component to handle the Login/Signup switch
+const LoginWrapper = () => {
+  const [isLogin, setIsLogin] = useState(true);
+
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-base-200">
+      <div className="card w-96 bg-base-100 shadow-xl">
+        <div className="card-body">
+          {isLogin ? (
+            <LoginForm switchToSignup={() => setIsLogin(false)} />
+          ) : (
+            <Signup switchToLogin={() => setIsLogin(true)} />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LoginWrapper;

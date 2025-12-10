@@ -12,6 +12,7 @@ import ProtectedRoutes from "./components/ProtectedRoutes";
 import Login from "./components/Login";
 import { ModalProvider } from "./context/ModalContext";
 import GlobalModal from "./components/GlobalModal";
+import LoginWrapper from "./components/Login";
 
 const router = createBrowserRouter([
   {
@@ -36,7 +37,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-  { path: "/login", element: <Login /> },
+  { path: "/login", element: <LoginWrapper /> },
 ]);
 createRoot(document.getElementById("root")).render(
   <StrictMode>

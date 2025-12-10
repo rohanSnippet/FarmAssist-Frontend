@@ -1,24 +1,31 @@
-// Assume you are using a React component that imports 'isUser' and 'NavLink'
-import React, { useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
-import Logo from "/seeding.png";
-import LogoLight from "/seedingL.png";
-import ThemeSwitcher from "../ui/ThemeSwitcher.jsx";
+// ... existing imports
+
+import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import { useLocation, useNavigate } from "react-router-dom";
+import Logo from "../assets/seeding.png";
+import LogoLight from "../assets/seedingL.png";
+import { NavLink } from "react-router-dom";
 import { BsTranslate } from "react-icons/bs";
-import { useAuth } from "../context/AuthContext.jsx";
-import Login from "./Login.jsx";
-import { useModal } from "../context/ModalContext.jsx";
+import ThemeSwitcher from "../ui/ThemeSwitcher";
 
 const Navbar = () => {
   const location = useLocation();
   const { isDark } = useTheme();
-  const { openModal, closeModal } = useModal();
+  // const { openModal, closeModal } = useModal(); // Removed unused Modal imports
   const { logout, user } = useAuth();
+
+  // Use useNavigate to redirect to /login
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
-    closeModal();
+    // closeModal();
+  };
+
+  const handleLoginClick = () => {
+    // Redirect to the dedicated login page
+    navigate("/login");
   };
 
   return (
@@ -27,39 +34,7 @@ const Navbar = () => {
     >
       {/* Navbar Start (Logo and Mobile Menu) */}
       <div className="navbar-start">
-        <div className="dropdown">
-          {/* Mobile Menu Dropdown */}
-          <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h8m-8 6h16"
-              />
-            </svg>
-          </div>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 p-2 shadow"
-          >
-            <li>
-              <NavLink to={`/`}>Home</NavLink>
-            </li>
-            <li>
-              <NavLink to={`/about-us`}>About Us</NavLink>
-            </li>
-            <li>
-              <NavLink to={`/contact`}>Contact</NavLink>
-            </li>
-          </ul>
-        </div>
+        {/* ... existing dropdown menu */}
         <a className="text-xl flex items-center" href="/">
           {isDark ? (
             <img src={LogoLight} alt="" width={32} className="h-8 w-8 mr-2" />
@@ -77,9 +52,8 @@ const Navbar = () => {
             <NavLink to={`/`}>Home</NavLink>
           </li>
           <li>
-            <NavLink to={`/about-us`} state={{ path: location.pathname }}>
-              About Us
-            </NavLink>
+            {/* The state is no longer needed here as ProtectedRoutes handles the redirect */}
+            <NavLink to={`/about-us`}>About Us</NavLink>
           </li>
           <li>
             <NavLink to={`/contact`}>Contact Us</NavLink>
@@ -99,7 +73,7 @@ const Navbar = () => {
             Logout
           </a>
         ) : (
-          <a className="btn" onClick={() => openModal(<Login />)}>
+          <a className="btn" onClick={handleLoginClick}>
             Login
           </a>
         )}
