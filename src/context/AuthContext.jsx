@@ -8,12 +8,14 @@ import React, {
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import { jwtDecode } from "jwt-decode";
 import api from "../axios";
+import { useToast } from "../ui/Toast";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const Toast = useToast();
 
   const getUserFromToken = (token) => {
     try {
@@ -106,7 +108,15 @@ export const AuthProvider = ({ children }) => {
       setUser({ ...userPayload, token: accessToken });
       return true; // Indicate success
     } catch (error) {
-      console.error("Login failed:", error);
+      if (
+        error.response.data.detail ==
+        "No active account found with the given credentials"
+      ) {
+        Toast.fire({
+          icon: "warning",
+          title: "User not found with provided email",
+        });
+      } else console.error("Login failed:", error);
       return false; // Indicate failure
     }
   };
