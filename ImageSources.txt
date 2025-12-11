@@ -1,1 +1,99 @@
 Icon scout : https://iconscout.com/lottie-animations/account-login
+
+
+//User signup success response
+{
+    "data": {
+        "id": 3,
+        "first_name": "Rohan",
+        "last_name": "More",
+        "email": "user2@gmail.com"
+    },
+    "status": 201,
+    "statusText": "Created",
+    "headers": {
+        "content-length": "74",
+        "content-type": "application/json"
+    },
+    "config": {
+        "transitional": {
+            "silentJSONParsing": true,
+            "forcedJSONParsing": true,
+            "clarifyTimeoutError": false
+        },
+        "adapter": [
+            "xhr",
+            "http",
+            "fetch"
+        ],
+        "transformRequest": [
+            null
+        ],
+        "transformResponse": [
+            null
+        ],
+        "timeout": 0,
+        "xsrfCookieName": "XSRF-TOKEN",
+        "xsrfHeaderName": "X-XSRF-TOKEN",
+        "maxContentLength": -1,
+        "maxBodyLength": -1,
+        "env": {},
+        "headers": {
+            "Accept": "application/json, text/plain, */*",
+            "Content-Type": "application/json"
+        },
+        "baseURL": "http://localhost:8000",
+        "method": "post",
+        "url": "/api/register/",
+        "data": "{\"name\":\"\",\"email\":\"user2@gmail.com\",\"password\":\"usertwo\",\"first_name\":\"Rohan\",\"last_name\":\"More\"}",
+        "allowAbsoluteUrls": true
+    },
+    "request": {}
+}
+
+{
+    "data": {
+        "recommended_crop": "coffee"
+    },
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+        "content-length": "29",
+        "content-type": "application/json"
+    },
+    "config": {
+        "transitional": {
+            "silentJSONParsing": true,
+            "forcedJSONParsing": true,
+            "clarifyTimeoutError": false
+        },
+        "adapter": [
+            "xhr",
+            "http",
+            "fetch"
+        ],
+        "transformRequest": [
+            null
+        ],
+        "transformResponse": [
+            null
+        ],
+        "timeout": 0,
+        "xsrfCookieName": "XSRF-TOKEN",
+        "xsrfHeaderName": "X-XSRF-TOKEN",
+        "maxContentLength": -1,
+        "maxBodyLength": -1,
+        "env": {},
+        "headers": {
+            "Accept": "application/json, text/plain, */*",
+            "Content-Type": "application/json",
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY1NDM5Mzk4LCJpYXQiOjE3NjU0Mzc1OTgsImp0aSI6IjA3NTNjOWU2OTczODQ3ZDFiZjM4Y2E1MDYwNTc2NDgyIiwidXNlcl9pZCI6IjUiLCJlbWFpbCI6InVzZXI0QGdtYWlsLmNvbSJ9.e_Eg9nTKtgfXvJhKusFb6A4zCARKWc9ddT1VswGQZ08"
+        },
+        "baseURL": "http://localhost:8000",
+        "method": "post",
+        "url": "/predict/",
+        "data": "{\"nitrogen\":101,\"phosphorus\":31,\"potassium\":26,\"temperature\":26.7,\"humidity\":69.7,\"ph\":6.8,\"rainfall\":158.8}",
+        "allowAbsoluteUrls": true
+    },
+    "request": {}
+}

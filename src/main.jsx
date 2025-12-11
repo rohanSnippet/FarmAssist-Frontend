@@ -13,6 +13,7 @@ import Login from "./components/Login";
 import { ModalProvider } from "./context/ModalContext";
 import GlobalModal from "./components/GlobalModal";
 import LoginWrapper from "./components/Login";
+import CropRecommendationForm from "./pages/CropRecommendationForm";
 
 const router = createBrowserRouter([
   {
@@ -25,15 +26,19 @@ const router = createBrowserRouter([
       },
       {
         path: "/about-us",
-        element: (
-          <ProtectedRoutes>
-            <About />
-          </ProtectedRoutes>
-        ),
+        element: <About />,
       },
       {
         path: "/contact",
         element: <Contact />,
+      },
+      {
+        path: "/crop-recommendations",
+        element: (
+          <ProtectedRoutes>
+            <CropRecommendationForm />
+          </ProtectedRoutes>
+        ),
       },
     ],
   },

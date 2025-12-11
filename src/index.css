@@ -152,3 +152,28 @@
   font-weight: 800;
   font-style: normal;
 }
+
+
+/* SWAL ALERT STYLES */
+.my-swal-popup {
+  font-family: "Poppins", sans-serif;
+  font-size: 18px;
+}
+
+.my-swal-title {
+  font-family: "Poppins", sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.swal-light {
+  font-family: "Poppins", sans-serif;
+  color: #555;
+  height: 300px;
+  width:2
+}
+
+.swal-dark{
+  font-family: "Poppins", sans-serif;
+  color: #f9f9f9;
+}

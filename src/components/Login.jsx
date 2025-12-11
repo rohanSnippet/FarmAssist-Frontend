@@ -4,10 +4,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 // import { useModal } from "../context/ModalContext"; // No longer used for main login
 import { useState } from "react";
 import Signup from "./Signup";
+import { useToast } from "../ui/Toast";
 
 const LoginForm = ({ switchToSignup }) => {
   const { login } = useAuth();
-  // const { closeModal } = useModal(); // No longer used for main login
+  const Toast = useToast();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -22,12 +23,13 @@ const LoginForm = ({ switchToSignup }) => {
 
   const onSubmit = async (data) => {
     const success = await login(data.email, data.password);
-
     if (success) {
-      // closeModal(); // Close modal if used, but for redirection, navigate is key
-      navigate(from, { replace: true }); // Redirect back to the requested page
+      Toast.fire({
+        icon: "success",
+        title: "Account Created Successfully",
+      });
+      navigate(from, { replace: true });
     } else {
-      // Handle login error (e.g., show toast/message)
     }
   };
 

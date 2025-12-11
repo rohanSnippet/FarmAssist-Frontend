@@ -1,8 +1,10 @@
 import api from "./../axios";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useToast } from "../ui/Toast";
 
 const Signup = ({ switchToLogin }) => {
+  const Toast = useToast();
   const {
     register,
     handleSubmit,
@@ -11,30 +13,31 @@ const Signup = ({ switchToLogin }) => {
 
   const onSubmit = async (data) => {
     try {
-      // 1. Call the API (await the Promise)
       const res = await api.post(`/api/register/`, data);
-      console.log(res);
-      if (res.status != 201) {
-        let errorData;
-        try {
-          errorData = await res.json();
-        } catch (e) {
-          errorData = { message: `Server error with status: ${res.status}` };
-        }
-        throw new Error(
-          errorData.message || "Registration failed on the server."
-        );
+
+      console.log("Signup success:", res.data);
+
+      Toast.fire({
+        icon: "success",
+        title: "Account Created Successfully",
+      });
+      setTimeout(() => {
+        switchToLogin();
+      }, 1000);
+    } catch (err) {
+      // Axios stores backend errors here:
+      const backendError = err.response?.data;
+      if (backendError?.email) {
+        Toast.fire({
+          icon: "error",
+          title: "Account Already Exists!!",
+        });
+      } else {
+        Toast.fire({
+          icon: "error",
+          title: "Network Error!!",
+        });
       }
-
-      const resData = await res.json();
-      console.log("Signup data:", resData);
-
-      // 4. Handle successful signup
-      alert("Account created successfully! Please log in.");
-      switchToLogin();
-    } catch (error) {
-      console.error("Signup error:", error.message);
-      alert(`Error: ${error.message}`);
     }
   };
 
@@ -46,9 +49,20 @@ const Signup = ({ switchToLogin }) => {
         {/* Name */}
         <div>
           <input
-            {...register("name", { required: "Name is required" })}
+            {...register("first_name", { required: "First Name is required" })}
             className="input input-bordered w-full"
-            placeholder="Name"
+            placeholder="First Name"
+          />
+          {errors.name && (
+            <p className="text-error text-sm mt-1">{errors.name.message}</p>
+          )}
+        </div>
+        {/* Last Name */}
+        <div>
+          <input
+            {...register("last_name")}
+            className="input input-bordered w-full"
+            placeholder="Last Name"
           />
           {errors.name && (
             <p className="text-error text-sm mt-1">{errors.name.message}</p>
