@@ -58,7 +58,7 @@ const itemVariants = {
 
 const About = () => {
   return (
-    <div className="min-h-screen bg-base-200 overflow-x-hidden mt-10">
+    <div className="min-h-screen bg-base-200 overflow-x-hidden">
       {/* --- HERO SECTION --- */}
       <div className="hero min-h-[60vh] bg-base-100 relative overflow-hidden">
         {/* Abstract Background Blobs */}

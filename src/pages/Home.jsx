@@ -1,315 +1,337 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import {
-  FaSeedling,
-  FaTractor,
-  FaChartPie,
-  FaCloudSun,
-  FaArrowRight,
-  FaCheck,
-} from "react-icons/fa";
+  ArrowRight,
+  Sun,
+  Cloud,
+  CloudRain,
+  Wind,
+  TrendingUp,
+  Leaf,
+  Droplets,
+  Calendar,
+  Activity,
+} from "lucide-react";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import { useNavigate } from "react-router-dom";
 
-const Home = () => {
+// --- Mock Data ---
+const weatherData = [
+  {
+    day: "Mon",
+    temp: 24,
+    humidity: 45,
+    icon: <Sun className="w-5 h-5 text-warning" />,
+  },
+  {
+    day: "Tue",
+    temp: 22,
+    humidity: 50,
+    icon: <Cloud className="w-5 h-5 text-neutral-content" />,
+  },
+  {
+    day: "Wed",
+    temp: 19,
+    humidity: 60,
+    icon: <CloudRain className="w-5 h-5 text-info" />,
+  },
+  {
+    day: "Thu",
+    temp: 21,
+    humidity: 55,
+    icon: <Sun className="w-5 h-5 text-warning" />,
+  },
+  {
+    day: "Fri",
+    temp: 25,
+    humidity: 40,
+    icon: <Sun className="w-5 h-5 text-warning" />,
+  },
+  {
+    day: "Sat",
+    temp: 23,
+    humidity: 48,
+    icon: <Wind className="w-5 h-5 text-neutral-content" />,
+  },
+  {
+    day: "Sun",
+    temp: 26,
+    humidity: 42,
+    icon: <Sun className="w-5 h-5 text-warning" />,
+  },
+];
+
+const marketData = [
+  { name: "W1", Wheat: 2400, Rice: 3100 },
+  { name: "W2", Wheat: 2350, Rice: 3200 },
+  { name: "W3", Wheat: 2500, Rice: 3150 },
+  { name: "W4", Wheat: 2600, Rice: 3300 },
+  { name: "W5", Wheat: 2550, Rice: 3400 },
+];
+
+// --- Animation Variants ---
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+export default function Home() {
   const navigate = useNavigate();
-  const { scrollYProgress } = useScroll();
-
-  // Parallax effect for hero text
-  const yHero = useTransform(scrollYProgress, [0, 1], [0, 300]);
-  const opacityHero = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-
-  // Animation Variants
-  const containerVars = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15, delayChildren: 0.2 },
-    },
-  };
-
-  const itemVars = {
-    hidden: { y: 30, opacity: 0 },
-    show: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.8, ease: [0.25, 0.1, 0.25, 1.0] },
-    },
-  };
-
   return (
-    <div className="min-h-screen bg-base-100 text-base-content font-sans overflow-x-hidden selection:bg-primary selection:text-white">
-      {/* --- CINEMATIC HERO SECTION --- */}
-      <div className="relative w-full h-screen overflow-hidden flex items-center">
-        {/* Animated Background Layer */}
-        <motion.div
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 10, ease: "easeOut" }}
-          className="absolute inset-0 bg-cover bg-center z-0"
-          style={{
-            backgroundImage:
-              'url("https://images.unsplash.com/photo-1625246333195-58f214f76328?q=80&w=2574&auto=format&fit=crop")',
-          }}
-        />
+    <div className="min-h-screen bg-base-100 flex flex-col font-sans">
+      {/* --- HERO SECTION --- */}
+      <div
+        className="hero min-h-[85vh] relative"
+        style={{
+          backgroundImage:
+            'url("https://images.unsplash.com/photo-1625246333195-58f214f76328?q=80&w=2574&auto=format&fit=crop")',
+          backgroundAttachment: "fixed",
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+        }}
+      >
+        {/* Overlays for readability */}
+        <div className="hero-overlay bg-black/40 mix-blend-multiply"></div>
+        <div className="hero-overlay bg-gradient-to-t from-base-100 via-base-100/20 to-transparent"></div>
 
-        {/* Modern Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent z-10"></div>
-
-        {/* Content */}
-        <div className="container mx-auto px-6 relative z-20">
+        <div className="hero-content text-center text-neutral-content z-10 w-full max-w-5xl">
           <motion.div
-            style={{ y: yHero, opacity: opacityHero }}
             initial="hidden"
-            animate="show"
-            variants={containerVars}
-            className="max-w-3xl"
+            animate="visible"
+            variants={staggerContainer}
+            className="w-full"
           >
+            {/* Tagline */}
             <motion.div
-              variants={itemVars}
-              className="flex items-center gap-4 mb-6"
+              variants={fadeInUp}
+              className="flex justify-center mb-6"
             >
-              <div className="h-[2px] w-16 bg-primary"></div>
-              <span className="uppercase tracking-[0.3em] text-xs font-bold text-gray-300">
-                Precision Agriculture
-              </span>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-base-100/10 backdrop-blur-md border border-white/20 text-white text-sm font-medium">
+                <Activity size={16} className="text-primary" />
+                AI-Powered Precision Agriculture
+              </div>
             </motion.div>
 
+            {/* Main Title */}
             <motion.h1
-              variants={itemVars}
-              className="text-6xl md:text-8xl font-bold text-white leading-[1.1] mb-8"
+              variants={fadeInUp}
+              className="mb-6 text-5xl md:text-7xl font-extrabold leading-tight text-white tracking-tight"
             >
-              Cultivate <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">
-                Intelligence.
-              </span>
+              Data Driven. <br />
+              <span className="text-primary">Yield Focused.</span>
             </motion.h1>
 
+            {/* Subtitle */}
             <motion.p
-              variants={itemVars}
-              className="text-xl text-gray-300 font-light max-w-xl leading-relaxed mb-10 border-l-4 border-white/20 pl-6"
+              variants={fadeInUp}
+              className="mb-10 text-xl text-gray-200 max-w-2xl mx-auto leading-relaxed"
             >
-              Advanced analytics for the modern farmer. Optimize your soil,
-              predict your yield, and secure your harvest with data-driven
-              precision.
+              Leverage historical weather data and real-time market trends to
+              predict your next best crop.
             </motion.p>
 
-            <motion.div variants={itemVars} className="flex flex-wrap gap-5">
-              <button
+            {/* CTA Button */}
+            <motion.div variants={fadeInUp}>
+              <a
                 onClick={() => navigate("/crop-recommendations")}
-                className="btn btn-primary btn-lg rounded-none min-w-[200px] border-none text-white hover:brightness-110 shadow-2xl shadow-primary/30"
+                className="btn btn-primary btn-lg shadow-xl hover:shadow-primary/50 hover:scale-105 transition-all duration-300 border-none"
               >
-                Start Analysis
-              </button>
-              <button
-                onClick={() => navigate("/about")}
-                className="btn btn-outline btn-lg rounded-none min-w-[200px] text-white border-white/30 hover:bg-white hover:text-black hover:border-white transition-all duration-300"
-              >
-                Learn More
-              </button>
+                Start Analysis <ArrowRight className="w-5 h-5 ml-2" />
+              </a>
             </motion.div>
           </motion.div>
         </div>
-
-        {/* Scroll Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1, y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity, delay: 1 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 text-white/50 flex flex-col items-center gap-2"
-        >
-          <span className="text-[10px] uppercase tracking-widest">Scroll</span>
-          <div className="w-[1px] h-12 bg-gradient-to-b from-white to-transparent"></div>
-        </motion.div>
       </div>
 
-      {/* --- STATS STRIP (Minimal & Clean) --- */}
-      <div className="bg-base-100 border-b border-base-300">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-base-300 border-x border-base-300">
-            {[
-              { label: "Accuracy Rate", val: "99.2%" },
-              { label: "Farmers Active", val: "15k+" },
-              { label: "Data Points", val: "1M+" },
-              { label: "Market Growth", val: "24/7" },
-            ].map((stat, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                className="p-8 text-center hover:bg-base-200 transition-colors duration-300 group cursor-default"
-              >
-                <h3 className="text-3xl font-bold text-base-content group-hover:text-primary transition-colors">
-                  {stat.val}
-                </h3>
-                <p className="text-xs uppercase tracking-wider text-base-content/60 mt-1">
-                  {stat.label}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* --- SERVICES SECTION --- */}
-      <div className="py-32 bg-base-200 relative">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-20">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="text-4xl font-bold mb-4 text-base-content">
-                Essential Toolkit
-              </h2>
-              <div className="h-1 w-24 bg-primary"></div>
-            </motion.div>
-            <motion.p
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="text-base-content/60 max-w-md text-right mt-6 md:mt-0"
-            >
-              Deploying cutting-edge algorithms to solve the oldest problems in
-              agriculture.
-            </motion.p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Crop Recommendation",
-                icon: FaSeedling,
-                desc: "Input soil NPK parameters to receive scientifically backed crop suggestions optimized for your specific region.",
-                link: "/crop-recommendations",
-              },
-              {
-                title: "Yield Prediction",
-                icon: FaChartPie,
-                desc: "Forecast production volume using historical data and machine learning models to plan your logistics ahead of time.",
-                link: "/yield",
-              },
-              {
-                title: "Weather Intelligence",
-                icon: FaCloudSun,
-                desc: "Hyper-local weather alerts and humidity tracking to optimize irrigation schedules and prevent crop loss.",
-                link: "/weather",
-              },
-            ].map((item, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.2 }}
-                onClick={() => navigate(item.link)}
-                className="group bg-base-100 p-10 cursor-pointer border border-transparent hover:border-base-300 shadow-lg hover:shadow-2xl transition-all duration-500 relative overflow-hidden"
-              >
-                <div className="absolute top-0 left-0 w-1 h-0 bg-primary group-hover:h-full transition-all duration-500"></div>
-
-                <div className="w-16 h-16 bg-base-200 rounded-full flex items-center justify-center text-primary text-2xl mb-8 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-500">
-                  <item.icon />
-                </div>
-
-                <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                  {item.title}
-                  <FaArrowRight className="text-sm opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
-                </h3>
-                <p className="text-base-content/60 leading-relaxed">
-                  {item.desc}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* --- PARALLAX FEATURE SECTION --- */}
-      <div
-        className="relative py-40 bg-fixed bg-cover bg-center"
-        style={{
-          backgroundImage:
-            'url("https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=2670&auto=format&fit=crop")',
-        }}
-      >
-        <div className="absolute inset-0 bg-black/70"></div>
-        <div className="container mx-auto px-6 relative z-10 text-white">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-            >
-              <h2 className="text-5xl font-bold mb-8 leading-tight">
-                Technology that respects tradition.
-              </h2>
-              <p className="text-xl text-gray-300 font-light mb-8">
-                We don't replace the farmer's intuition. We enhance it. By
-                processing millions of data points, we provide the clarity you
-                need to make the hard decisions.
-              </p>
-              <button className="btn btn-outline border-white text-white rounded-none px-8 hover:bg-white hover:text-black">
-                Read Our Manifesto
-              </button>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="grid gap-6"
-            >
-              {[
-                "Real-time Market Analytics",
-                "Soil Health Monitoring",
-                "Pest & Disease Alerts",
-                "Government Scheme Integration",
-              ].map((feature, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-4 bg-white/10 backdrop-blur-md p-4 border-l-4 border-primary"
-                >
-                  <div className="bg-primary/20 p-2 rounded-full text-primary">
-                    <FaCheck size={14} />
-                  </div>
-                  <span className="font-medium text-lg tracking-wide">
-                    {feature}
-                  </span>
-                </div>
-              ))}
-            </motion.div>
-          </div>
-        </div>
-      </div>
-
-      {/* --- CTA FOOTER --- */}
-      <div className="py-24 bg-neutral text-neutral-content text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="container mx-auto px-6"
-        >
-          <h2 className="text-4xl font-bold mb-6">
-            Ready to scale your operations?
-          </h2>
-          <p className="text-neutral-content/60 max-w-2xl mx-auto mb-10 text-lg">
-            Join a network of progressive farmers leveraging data to build a
-            sustainable future.
-          </p>
-          <button
-            onClick={() => navigate("/signup")}
-            className="btn btn-primary btn-lg rounded-none px-12 text-lg shadow-xl hover:shadow-primary/20 hover:-translate-y-1 transition-all"
+      {/* --- DASHBOARD PREVIEW SECTION (Overlapping Hero) --- */}
+      <section className="relative z-20 px-4 pb-24">
+        <div className="container mx-auto max-w-7xl">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="grid grid-cols-1 lg:grid-cols-12 gap-6"
           >
-            Get Started Now
-          </button>
-        </motion.div>
-      </div>
+            {/* 1. WEATHER WIDGET (Left Side) */}
+            <div className="col-span-1 lg:col-span-4 flex flex-col">
+              <div className="card bg-base-100 shadow-2xl border border-base-200 h-full overflow-hidden">
+                <div className="card-body p-0">
+                  <div className="p-6 bg-base-200/50 border-b border-base-200">
+                    <h3 className="card-title text-base font-bold flex items-center gap-2">
+                      <Calendar className="w-5 h-5 text-primary" />
+                      Field History (7 Days)
+                    </h3>
+                  </div>
+                  <div className="p-4 space-y-2">
+                    {weatherData.map((d, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center justify-between text-sm p-3 rounded-lg hover:bg-base-200 transition-colors group cursor-default"
+                      >
+                        <span className="font-bold w-10 opacity-70 group-hover:opacity-100">
+                          {d.day}
+                        </span>
+                        <div className="flex items-center gap-3">
+                          {d.icon}
+                          <span className="font-medium text-lg">{d.temp}°</span>
+                        </div>
+                        <span className="text-xs opacity-50 flex items-center gap-1 group-hover:text-primary transition-colors">
+                          <Droplets size={14} /> {d.humidity}%
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 2. MARKET TRENDS CHART (Right Side) */}
+            <div className="col-span-1 lg:col-span-8 flex flex-col">
+              <div className="card bg-base-100 shadow-2xl border border-base-200 h-full">
+                <div className="card-body p-6 md:p-8">
+                  <div className="flex justify-between items-start mb-8">
+                    <div>
+                      <h3 className="card-title text-xl font-bold flex items-center gap-2">
+                        <TrendingUp className="w-6 h-6 text-secondary" /> Market
+                        Intelligence
+                      </h3>
+                      <p className="text-sm opacity-60 mt-1">
+                        Real-time price fluctuations (INR/Quintal)
+                      </p>
+                    </div>
+                    <div className="badge badge-outline p-3">Last 5 Weeks</div>
+                  </div>
+
+                  <div className="h-[350px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart
+                        data={marketData}
+                        margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                      >
+                        <defs>
+                          <linearGradient
+                            id="colorWheat"
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="1"
+                          >
+                            <stop
+                              offset="5%"
+                              stopColor="oklch(var(--p))"
+                              stopOpacity={0.2}
+                            />
+                            <stop
+                              offset="95%"
+                              stopColor="oklch(var(--p))"
+                              stopOpacity={0}
+                            />
+                          </linearGradient>
+                          <linearGradient
+                            id="colorRice"
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="1"
+                          >
+                            <stop
+                              offset="5%"
+                              stopColor="oklch(var(--s))"
+                              stopOpacity={0.2}
+                            />
+                            <stop
+                              offset="95%"
+                              stopColor="oklch(var(--s))"
+                              stopOpacity={0}
+                            />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          stroke="currentColor"
+                          className="opacity-10"
+                          vertical={false}
+                        />
+                        <XAxis
+                          dataKey="name"
+                          stroke="currentColor"
+                          className="text-xs opacity-50"
+                          tickLine={false}
+                          axisLine={false}
+                          dy={10}
+                        />
+                        <YAxis
+                          stroke="currentColor"
+                          className="text-xs opacity-50"
+                          tickLine={false}
+                          axisLine={false}
+                          tickFormatter={(value) => `₹${value}`}
+                          dx={-10}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "oklch(var(--b1))",
+                            borderColor: "oklch(var(--b3))",
+                            borderRadius: "0.5rem",
+                            boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)",
+                          }}
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="Wheat"
+                          stroke="oklch(var(--p))"
+                          strokeWidth={3}
+                          fillOpacity={1}
+                          fill="url(#colorWheat)"
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="Rice"
+                          stroke="oklch(var(--s))"
+                          strokeWidth={3}
+                          fillOpacity={1}
+                          fill="url(#colorRice)"
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* --- Footer --- */}
+      <footer className="footer footer-center p-10 bg-base-200 text-base-content mt-auto">
+        <aside>
+          <Leaf className="w-8 h-8 text-primary mb-2 opacity-80" />
+          <p className="font-bold">
+            FarmAssist AI <br />
+            Providing reliable tech since 2024
+          </p>
+          <p className="opacity-60">Copyright © 2024 - All right reserved</p>
+        </aside>
+      </footer>
     </div>
   );
-};
-
-export default Home;
+}
