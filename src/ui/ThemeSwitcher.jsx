@@ -20,9 +20,9 @@ const ThemeSwitcher = () => {
         <option value="light">Light</option>
         <option value="dark">Dark</option>
         {/* <option value="cupcake">Cupcake</option> */}
-        {/* <option value="retro">Retro</option> */}
-        <option value="coffee">Coffee</option>
-        <option value="dracula">Dracula</option>
+        <option value="retro">Retro</option>
+        <option value="forest">Forest</option>
+        {/* <option value="dracula">Dracula</option> */}
         <option value="sunset">Sunset</option>
       </select>
     </div>

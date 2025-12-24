@@ -1,25 +1,30 @@
-import { createContext, useContext, useRef, useState } from "react";
+import React, { createContext, useContext, useRef, useState } from "react";
 
 const ModalContext = createContext();
 
 export const ModalProvider = ({ children }) => {
   const modalRef = useRef(null);
   const [content, setContent] = useState(null);
-  //   const contentRef = useRef(null);
+  const [modalOptions, setModalOptions] = useState({});
 
-  const openModal = (component) => {
-    // contentRef.current = component;
+  const openModal = (component, options = {}) => {
     setContent(component);
+    setModalOptions(options);
     modalRef.current?.showModal();
   };
 
   const closeModal = () => {
     modalRef.current?.close();
-    setContent(null);
+    setTimeout(() => {
+      setContent(null);
+      setModalOptions({});
+    }, 200);
   };
 
   return (
-    <ModalContext.Provider value={{ openModal, modalRef, content, closeModal }}>
+    <ModalContext.Provider
+      value={{ openModal, modalRef, content, modalOptions, closeModal }}
+    >
       {children}
     </ModalContext.Provider>
   );

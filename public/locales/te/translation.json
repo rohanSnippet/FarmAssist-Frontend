@@ -1,0 +1,35 @@
+{
+  "lang_name": "Telugu",
+  "Common": {
+    "login": "లాగిన్",
+    "signup": "సైన్ అప్"
+  },
+  "navbar": {
+    "logo_text": "FarmAssist",
+    "home": "హోమ్",
+    "crop_recommendations": "పంట సలహాలు",
+    "about_us": "మా గురించి",
+    "contact": "సంప్రదించండి"
+  },
+  "hero": {
+    "tagline": "AI-ఆధారిత ఖచ్చితమైన వ్యవసాయం",
+    "title_part1": "డేటా ఆధారితం.",
+    "title_part2": "దిగుబడిపై దృష్టి.",
+    "subtitle": "వాతావరణ సమాచారం మరియు మార్కెట్ ట్రెండ్స్ ఆధారంగా మీ తదుపరి పంటను ఎంచుకోండి.",
+    "cta_button": "అనాలిసిస్ ప్రారంభించండి"
+  },
+  "dashboard": {
+    "weather_title": "పొలం చరిత్ర (7 రోజులు)",
+    "market_title": "మార్కెట్ సమాచారం",
+    "market_subtitle": "ధరల హెచ్చుతగ్గులు (రూ/క్వింటాల్)",
+    "market_badge": "గత 5 వారాలు",
+    "chart_legend": {
+      "wheat": "గోధుమ",
+      "rice": "వరి"
+    }
+  },
+  "footer": {
+    "slogan": "2025 నుండి నమ్మదగిన టెక్నాలజీ",
+    "copyright": "Copyright © 2025 - అన్ని హక్కులూ ప్రత్యేకించబడ్డాయి"
+  }
+}

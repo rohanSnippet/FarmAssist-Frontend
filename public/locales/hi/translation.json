@@ -1,0 +1,35 @@
+{
+  "lang_name": "Hindi",
+  "Common": {
+    "login": "लॉगिन",
+    "signup": "साइन अप"
+  },
+  "navbar": {
+    "logo_text": "FarmAssist",
+    "home": "होम",
+    "crop_recommendations": "फसल सुझाव",
+    "about_us": "हमारे बारे में",
+    "contact": "संपर्क करें"
+  },
+  "hero": {
+    "tagline": "AI-आधारित सटीक खेती",
+    "title_part1": "डेटा पर आधारित.",
+    "title_part2": "पैदावार पर केंद्रित.",
+    "subtitle": "मौसम के इतिहास और मंडी के ताज़ा भावों का उपयोग करके अपनी अगली फसल चुनें।",
+    "cta_button": "ॲनालिसिस शुरू करें"
+  },
+  "dashboard": {
+    "weather_title": "खेत का इतिहास (7 दिन)",
+    "market_title": "मंडी/बाजार की जानकारी",
+    "market_subtitle": "ताज़ा भाव में उतार-चढ़ाव (₹/क्विंटल)",
+    "market_badge": "पिछले 5 सप्ताह",
+    "chart_legend": {
+      "wheat": "गेहूं",
+      "rice": "चावल"
+    }
+  },
+  "footer": {
+    "slogan": "२०२५ से भरोसेमंद तकनीक",
+    "copyright": "Copyright © 2025 - सर्वाधिकार सुरक्षित"
+  }
+}

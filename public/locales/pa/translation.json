@@ -1,0 +1,35 @@
+{
+  "lang_name": "Punjabi",
+  "Common": {
+    "login": "ਲੌਗਇਨ",
+    "signup": "ਸਾਈਨ ਅਪ"
+  },
+  "navbar": {
+    "logo_text": "FarmAssist",
+    "home": "ਹੋਮ",
+    "crop_recommendations": "ਫਸਲ ਬਾਰੇ ਸਲਾਹ",
+    "about_us": "ਸਾਡੇ ਬਾਰੇ",
+    "contact": "ਸੰਪਰਕ"
+  },
+  "hero": {
+    "tagline": "AI-ਅਧਾਰਤ ਸਹੀ ਖੇਤੀ",
+    "title_part1": "ਡੇਟਾ 'ਤੇ ਅਧਾਰਤ.",
+    "title_part2": "ਝਾੜ 'ਤੇ ਕੇਂਦਰਿਤ.",
+    "subtitle": "ਮੌਸਮ ਅਤੇ ਮੰਡੀ ਦੇ ਰੁਝਾਨਾਂ ਦੀ ਵਰਤੋਂ ਕਰਕੇ ਆਪਣੀ ਅਗਲੀ ਫਸਲ ਦੀ ਚੋਣ ਕਰੋ.",
+    "cta_button": "ਐਨਾਲਿਸਿਸ ਸ਼ੁਰੂ ਕਰੋ"
+  },
+  "dashboard": {
+    "weather_title": "ਖੇਤ ਦਾ ਇਤਿਹਾਸ (7 ਦਿਨ)",
+    "market_title": "ਮੰਡੀ ਦੀ ਜਾਣਕਾਰੀ",
+    "market_subtitle": "ਭਾਅ ਵਿੱਚ ਉਤਰਾਅ-ਚੜ੍ਹਾਅ (ਰੁਪਏ/ਕਵਿੰਟਲ)",
+    "market_badge": "ਪਿਛਲੇ 5 ਹਫ਼ਤੇ",
+    "chart_legend": {
+      "wheat": "ਕਣਕ",
+      "rice": "ਚੌਲ"
+    }
+  },
+  "footer": {
+    "slogan": "2025 ਤੋਂ ਭਰੋਸੇਮੰਦ ਤਕਨਾਲੋਜੀ",
+    "copyright": "Copyright © 2025 - ਸਾਰੇ ਹੱਕ ਰਾਖਵੇਂ ਹਨ"
+  }
+}

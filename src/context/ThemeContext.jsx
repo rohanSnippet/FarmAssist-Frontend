@@ -26,7 +26,8 @@ export const ThemeProvider = ({ children }) => {
       theme == "dracula" ||
       theme == "coffee" ||
       theme == "dark" ||
-      theme == "sunset"
+      theme == "sunset" ||
+      theme == "forest"
     )
       setIsDark(true);
     else setIsDark(false);

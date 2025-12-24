@@ -1,0 +1,36 @@
+{
+  "lang_name": "Assamese",
+  "Common": {
+    "login": "লগইন",
+    "signup": "চাইন আপ"
+  },
+  "navbar": {
+    "logo_text": "FarmAssist",
+    "home": "হ’ম",
+    "crop_recommendations": "শস্যৰ পৰামৰ্শ",
+    "about_us": "আমাৰ বিষয়ে",
+    "contact": "যোগাযোগ",
+    "lang_menu": "ভাষা"
+  },
+  "hero": {
+    "tagline": "AI-চালিত নিখুঁত কৃষি",
+    "title_part1": "তথ্য আধাৰিত.",
+    "title_part2": "উৎপাদনমুখী.",
+    "subtitle": "বতৰৰ তথ্য আৰু বজাৰৰ দৰ ব্যৱহাৰ কৰি আপোনাৰ পৰৱৰ্তী শস্য নিৰ্বাচন কৰক।",
+    "cta_button": "এনালাইচিছ আৰম্ভ কৰক"
+  },
+  "dashboard": {
+    "weather_title": "পথাৰৰ ইতিহাস (৭ দিন)",
+    "market_title": "বজাৰৰ তথ্য",
+    "market_subtitle": "দৰৰ উঠা-নমা (টকা/কুইন্টল)",
+    "market_badge": "যোৱা ৫ সপ্তাহ",
+    "chart_legend": {
+      "wheat": "ঘেঁহু",
+      "rice": "চাউল"
+    }
+  },
+  "footer": {
+    "slogan": "২০২৫ চনৰ পৰা নিৰ্ভৰযোগ্য প্ৰযুক্তি",
+    "copyright": "Copyright © 2025 - সৰ্বস্বত্ব সংৰক্ষিত"
+  }
+}

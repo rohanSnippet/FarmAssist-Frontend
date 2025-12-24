@@ -1,0 +1,35 @@
+{
+  "lang_name": "Marathi",
+  "Common": {
+    "login": "लॉगिन",
+    "signup": "साइन अप"
+  },
+  "navbar": {
+    "logo_text": "FarmAssist",
+    "home": "होम",
+    "crop_recommendations": "पिक शिफारशी",
+    "about_us": "आमच्याबद्दल",
+    "contact": "संपर्क"
+  },
+  "hero": {
+    "tagline": "AI-आधारित अचूक शेती",
+    "title_part1": "डेटावर आधारित.",
+    "title_part2": "उत्पादनावर लक्ष.",
+    "subtitle": "हवामानाची माहिती आणि बाजारातील ट्रेंड्सचा वापर करून तुमच्या पुढील पिकाची निवड करा.",
+    "cta_button": "ॲनालिसिस सुरू करा"
+  },
+  "dashboard": {
+    "weather_title": "शेताचा इतिहास (७ दिवस)",
+    "market_title": "बाजार भाव माहिती",
+    "market_subtitle": "रिअल-टाइम भाव चढ-उतार (रुपये/क्विंटल)",
+    "market_badge": "गेले ५ आठवडे",
+    "chart_legend": {
+      "wheat": "गहू",
+      "rice": "तांदूळ"
+    }
+  },
+  "footer": {
+    "slogan": "२०२५ पासून विश्वसनीय तंत्रज्ञान",
+    "copyright": "Copyright © 2025 - सर्व हक्क राखीव"
+  }
+}

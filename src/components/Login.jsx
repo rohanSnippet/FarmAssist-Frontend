@@ -34,6 +34,7 @@ const LoginForm = ({ switchToSignup }) => {
 
         // ✅ FIX 2: Do NOT turn off loading here.
         // Let the loader stay on screen while navigating to avoid "flicker"
+        setLoading(false);
         navigate(from, { replace: true });
       } else {
         // ✅ FIX 3: Handle Failure (was empty)

@@ -1,0 +1,35 @@
+{
+  "lang_name": "Gujarati",
+  "Common": {
+    "login": "લોગિન",
+    "signup": "સાઇન અપ"
+  },
+  "navbar": {
+    "logo_text": "FarmAssist",
+    "home": "હોમ",
+    "crop_recommendations": "પાક માટે સલાહ",
+    "about_us": "અમારા વિશે",
+    "contact": "સંપર્ક"
+  },
+  "hero": {
+    "tagline": "AI-આધારિત સચોટ ખેતી",
+    "title_part1": "ડેટા આધારિત.",
+    "title_part2": "ઉત્પાદન પર ફોકસ.",
+    "subtitle": "હવામાન અને બજારના ટ્રેન્ડ્સનો ઉપયોગ કરીને તમારા આગામી પાકની પસંદગી કરો.",
+    "cta_button": "એનાલિસિસ શરૂ કરો"
+  },
+  "dashboard": {
+    "weather_title": "ખેતરનો ઇતિહાસ (7 દિવસ)",
+    "market_title": "બજાર/મંડી ભાવ",
+    "market_subtitle": "ભાવમાં વધઘટ (રૂ/ક્વિન્ટલ)",
+    "market_badge": "છેલ્લા 5 અઠવાડિયા",
+    "chart_legend": {
+      "wheat": "ઘઉં",
+      "rice": "ચોખા"
+    }
+  },
+  "footer": {
+    "slogan": "2025 થી વિશ્વસનીય ટેકનોલોજી",
+    "copyright": "Copyright © 2025 - સર્વાધિકાર સુરક્ષિત"
+  }
+}

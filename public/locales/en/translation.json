@@ -1,0 +1,35 @@
+{
+  "lang_name": "English",
+  "Common": {
+    "login": "Login",
+    "signup": "Sign Up"
+  },
+  "navbar": {
+    "logo_text": "FarmAssist",
+    "home": "Home",
+    "crop_recommendations": "Crop Recommendations",
+    "about_us": "About Us",
+    "contact": "Contact Us"
+  },
+  "hero": {
+    "tagline": "AI-Powered Precision Agriculture",
+    "title_part1": "Data Driven.",
+    "title_part2": "Yield Focused.",
+    "subtitle": "Leverage historical weather data and real-time market trends to predict your next best crop.",
+    "cta_button": "Start Analysis"
+  },
+  "dashboard": {
+    "weather_title": "Field History (7 Days)",
+    "market_title": "Market Intelligence",
+    "market_subtitle": "Real-time price fluctuations (INR/Quintal)",
+    "market_badge": "Last 5 Weeks",
+    "chart_legend": {
+      "wheat": "Wheat",
+      "rice": "Rice"
+    }
+  },
+  "footer": {
+    "slogan": "Providing reliable tech since 2025",
+    "copyright": "Copyright © 2025 - All rights reserved"
+  }
+}

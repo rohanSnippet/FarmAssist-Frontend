@@ -53,7 +53,7 @@ const Signup = ({ switchToLogin }) => {
             className="input input-bordered w-full"
             placeholder="First Name"
           />
-          {errors.name && (
+          {errors.first_name && (
             <p className="text-error text-sm mt-1">{errors.name.message}</p>
           )}
         </div>
@@ -64,7 +64,7 @@ const Signup = ({ switchToLogin }) => {
             className="input input-bordered w-full"
             placeholder="Last Name"
           />
-          {errors.name && (
+          {errors.last_name && (
             <p className="text-error text-sm mt-1">{errors.name.message}</p>
           )}
         </div>

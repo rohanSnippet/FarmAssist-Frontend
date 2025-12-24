@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -22,6 +22,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import i18n from "../i18n";
 
 // --- Mock Data ---
 const weatherData = [
@@ -95,6 +97,8 @@ const staggerContainer = {
 
 export default function Home() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  console.log(t("lang_name"));
   return (
     <div className="min-h-screen bg-base-100 flex flex-col font-sans">
       {/* --- HERO SECTION --- */}
@@ -102,7 +106,7 @@ export default function Home() {
         className="hero min-h-[85vh] relative"
         style={{
           backgroundImage:
-            'url("https://images.unsplash.com/photo-1625246333195-58f214f76328?q=80&w=2574&auto=format&fit=crop")',
+            'url("https://img.freepik.com/free-photo/beautiful-view-field-covered-green-grass-captured-canggu-bali_181624-7666.jpg?t=st=1766565466~exp=1766569066~hmac=b2192402a900bb3f053a77b0f5088763672eb075350cdbe51470e2c6a6d9e743&w=1480")',
           backgroundAttachment: "fixed",
           backgroundPosition: "center",
           backgroundSize: "cover",
@@ -126,7 +130,7 @@ export default function Home() {
             >
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-base-100/10 backdrop-blur-md border border-white/20 text-white text-sm font-medium">
                 <Activity size={16} className="text-primary" />
-                AI-Powered Precision Agriculture
+                {/* AI-Powered Precision Agriculture  */} {t("hero.tagline")}
               </div>
             </motion.div>
 
@@ -135,8 +139,8 @@ export default function Home() {
               variants={fadeInUp}
               className="mb-6 text-5xl md:text-7xl font-extrabold leading-tight text-white tracking-tight"
             >
-              Data Driven. <br />
-              <span className="text-primary">Yield Focused.</span>
+              {t("hero.title_part1")} <br />
+              <span className="text-primary">{t("hero.title_part2")}</span>
             </motion.h1>
 
             {/* Subtitle */}
@@ -144,8 +148,7 @@ export default function Home() {
               variants={fadeInUp}
               className="mb-10 text-xl text-gray-200 max-w-2xl mx-auto leading-relaxed"
             >
-              Leverage historical weather data and real-time market trends to
-              predict your next best crop.
+              {t("hero.subtitle")}
             </motion.p>
 
             {/* CTA Button */}
@@ -154,7 +157,7 @@ export default function Home() {
                 onClick={() => navigate("/crop-recommendations")}
                 className="btn btn-primary btn-lg shadow-xl hover:shadow-primary/50 hover:scale-105 transition-all duration-300 border-none"
               >
-                Start Analysis <ArrowRight className="w-5 h-5 ml-2" />
+                {t("hero.cta_button")} <ArrowRight className="w-5 h-5 ml-2" />
               </a>
             </motion.div>
           </motion.div>
@@ -178,7 +181,7 @@ export default function Home() {
                   <div className="p-6 bg-base-200/50 border-b border-base-200">
                     <h3 className="card-title text-base font-bold flex items-center gap-2">
                       <Calendar className="w-5 h-5 text-primary" />
-                      Field History (7 Days)
+                      {t("dashboard.weather_title")}
                     </h3>
                   </div>
                   <div className="p-4 space-y-2">
@@ -211,14 +214,16 @@ export default function Home() {
                   <div className="flex justify-between items-start mb-8">
                     <div>
                       <h3 className="card-title text-xl font-bold flex items-center gap-2">
-                        <TrendingUp className="w-6 h-6 text-secondary" /> Market
-                        Intelligence
+                        <TrendingUp className="w-6 h-6 text-secondary" />{" "}
+                        {t("dashboard.market_title")}
                       </h3>
                       <p className="text-sm opacity-60 mt-1">
-                        Real-time price fluctuations (INR/Quintal)
+                        {t("dashboard.market_subtitle")}
                       </p>
                     </div>
-                    <div className="badge badge-outline p-3">Last 5 Weeks</div>
+                    <div className="badge badge-outline p-3">
+                      {t("dashboard.market_badge")}
+                    </div>
                   </div>
 
                   <div className="h-[350px] w-full">
@@ -320,18 +325,6 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
-
-      {/* --- Footer --- */}
-      <footer className="footer footer-center p-10 bg-base-200 text-base-content mt-auto">
-        <aside>
-          <Leaf className="w-8 h-8 text-primary mb-2 opacity-80" />
-          <p className="font-bold">
-            FarmAssist AI <br />
-            Providing reliable tech since 2024
-          </p>
-          <p className="opacity-60">Copyright © 2024 - All right reserved</p>
-        </aside>
-      </footer>
     </div>
   );
 }

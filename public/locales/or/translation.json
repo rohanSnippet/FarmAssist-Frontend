@@ -1,0 +1,35 @@
+{
+  "lang_name": "Odia",
+  "Common": {
+    "login": "ଲଗ୍ଇନ୍",
+    "signup": "ସାଇନ୍ ଅପ୍"
+  },
+  "navbar": {
+    "logo_text": "FarmAssist",
+    "home": "ହୋମ୍",
+    "crop_recommendations": "ଫସଲ ପରାମର୍ଶ",
+    "about_us": "ଆମ ବିଷୟରେ",
+    "contact": "ଯୋଗାଯୋଗ"
+  },
+  "hero": {
+    "tagline": "AI-ଚାଳିତ ସଠିକ୍ କୃଷି",
+    "title_part1": "ତଥ୍ୟ ଆଧାରିତ.",
+    "title_part2": "ଅମଳ ଉପରେ ଧ୍ୟାନ.",
+    "subtitle": "ପାଣିପାଗ ତଥ୍ୟ ଏବଂ ବଜାର ଦର ବ୍ୟବହାର କରି ଆପଣଙ୍କ ପରବର୍ତ୍ତୀ ଫସଲ ବାଛନ୍ତୁ.",
+    "cta_button": "ଆନାଲିସିସ୍ ଆରମ୍ଭ କରନ୍ତୁ"
+  },
+  "dashboard": {
+    "weather_title": "ଜମିର ଇତିହାସ (7 ଦିନ)",
+    "market_title": "ବଜାର/ମଣ୍ଡି ସୂଚନା",
+    "market_subtitle": "ଦର ପରିବର୍ତ୍ତନ (ଟଙ୍କା/କ୍ୱିଣ୍ଟାଲ)",
+    "market_badge": "ଗତ 5 ସପ୍ତାହ",
+    "chart_legend": {
+      "wheat": "ଗହମ",
+      "rice": "ଚାଉଳ"
+    }
+  },
+  "footer": {
+    "slogan": "2025 ରୁ ବିଶ୍ୱାସଯୋଗ୍ୟ ଟେକ୍ନୋଲୋଜି",
+    "copyright": "Copyright © 2025 - ସର୍ବସ୍ୱତ୍ୱ ସଂରକ୍ଷିତ"
+  }
+}

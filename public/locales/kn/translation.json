@@ -1,0 +1,35 @@
+{
+  "lang_name": "Kannada",
+  "Common": {
+    "login": "ಲಾಗಿನ್",
+    "signup": "ಸೈನ್ ಅಪ್"
+  },
+  "navbar": {
+    "logo_text": "FarmAssist",
+    "home": "ಹೋಮ್",
+    "crop_recommendations": "ಬೆಳೆ ಸಲಹೆಗಳು",
+    "about_us": "ನಮ್ಮ ಬಗ್ಗೆ",
+    "contact": "ಸಂಪರ್ಕಿಸಿ"
+  },
+  "hero": {
+    "tagline": "AI-ಆಧಾರಿತ ನಿಖರ ಕೃಷಿ",
+    "title_part1": "ಡೇಟಾ ಆಧಾರಿತ.",
+    "title_part2": "ಇಳುವರಿ ಆಧಾರಿತ.",
+    "subtitle": "ಹವಾಮಾನ ಮಾಹಿತಿ ಮತ್ತು ಮಾರುಕಟ್ಟೆ ದರಗಳನ್ನು ಬಳಸಿ ನಿಮ್ಮ ಮುಂದಿನ ಬೆಳೆಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ.",
+    "cta_button": "ಅನಾಲಿಸಿಸ್ ಪ್ರಾರಂಭಿಸಿ"
+  },
+  "dashboard": {
+    "weather_title": "ಹೊಲದ ಇತಿಹಾಸ (7 ದಿನಗಳು)",
+    "market_title": "ಮಾರುಕಟ್ಟೆ ಮಾಹಿತಿ",
+    "market_subtitle": "ದರಗಳ ಏರಿಳಿತ (ರೂ/ಕ್ವಿಂಟಾಲ್)",
+    "market_badge": "ಕಳೆದ 5 ವಾರಗಳು",
+    "chart_legend": {
+      "wheat": "ಗೋಧಿ",
+      "rice": "ಅಕ್ಕಿ"
+    }
+  },
+  "footer": {
+    "slogan": "2025 ರಿಂದ ನಂಬಿಕಸ್ಥ ತಂತ್ರಜ್ಞಾನ",
+    "copyright": "Copyright © 2025 - ಎಲ್ಲಾ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ"
+  }
+}

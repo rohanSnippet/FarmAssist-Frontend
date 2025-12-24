@@ -1,0 +1,35 @@
+{
+  "lang_name": "Urdu",
+  "Common": {
+    "login": "لاگ ان",
+    "signup": "سائن اپ"
+  },
+  "navbar": {
+    "logo_text": "FarmAssist",
+    "home": "ہوم",
+    "crop_recommendations": "فصلوں کے مشورے",
+    "about_us": "ہمارے بارے میں",
+    "contact": "رابطہ کریں"
+  },
+  "hero": {
+    "tagline": "AI پر مبنی جدید زراعت",
+    "title_part1": "ڈیٹا پر مبنی۔",
+    "title_part2": "پیداوار پر توجہ۔",
+    "subtitle": "موسم کے ریکارڈ اور منڈی کے رجحانات کا استعمال کرتے ہوئے اپنی اگلی فصل کا انتخاب کریں۔",
+    "cta_button": "اینالیسس شروع کریں"
+  },
+  "dashboard": {
+    "weather_title": "کھیت کی ہسٹری (7 دن)",
+    "market_title": "مارکیٹ/منڈی کی معلومات",
+    "market_subtitle": "قیمتوں میں اتار چڑھاؤ (روپے/کوئنٹل)",
+    "market_badge": "گزشتہ 5 ہفتے",
+    "chart_legend": {
+      "wheat": "گندم",
+      "rice": "چاول"
+    }
+  },
+  "footer": {
+    "slogan": "2025 سے قابل اعتماد ٹیکنالوجی",
+    "copyright": "Copyright © 2025 - جملہ حقوق محفوظ ہیں"
+  }
+}
