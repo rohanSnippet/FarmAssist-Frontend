@@ -1,15 +1,37 @@
 {
-  "lang_name": "Urdu",
+  "lang_name": "ا",
   "Common": {
     "login": "لاگ ان",
-    "signup": "سائن اپ"
+    "signup": "سائن اپ",
+    "dark": "ڈارک",
+    "light": "لائٹ",
+    "forest": "فارسٹ",
+    "retro": "ریٹرو",
+    "sunset": "سن سیٹ",
+    "Dracula": "ڈریکولا",
+    "toasts": {
+      "login_success": "کامیابی سے لاگ ان ہو گئے!",
+      "login_failure": "لاگ ان ناکام۔ براہ کرم اپنی اسناد چیک کریں۔",
+      "signup_success": "اکاؤنٹ کامیابی سے بنایا گیا! براہ کرم لاگ ان کریں۔",
+      "account_exists": "اکاؤنٹ پہلے سے موجود ہے۔ براہ کرم لاگ ان کریں۔",
+      "signup_failure": "سائن اپ ناکام۔ براہ کرم دوبارہ کوشش کریں۔",
+      "logout_success": "آپ لاگ آؤٹ ہو چکے ہیں۔",
+      "location_selected": "مقام کامیابی سے منتخب کیا گیا!",
+      "error_occurred": "ایک خرابی پیش آگئی۔ براہ کرم دوبارہ کوشش کریں۔"
+    }
   },
   "navbar": {
     "logo_text": "FarmAssist",
     "home": "ہوم",
     "crop_recommendations": "فصلوں کے مشورے",
     "about_us": "ہمارے بارے میں",
-    "contact": "رابطہ کریں"
+    "contact": "رابطہ کریں",
+    "tooltips": {
+      "exit_fullscreen": "فل اسکرین سے باہر نکلیں",
+      "enter_fullscreen": "فل اسکرین میں داخل ہوں",
+      "change_language": "زبان تبدیل کریں",
+      "change_theme": "تھیم تبدیل کریں"
+    }
   },
   "hero": {
     "tagline": "AI پر مبنی جدید زراعت",

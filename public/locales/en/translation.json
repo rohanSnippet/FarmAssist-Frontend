@@ -1,15 +1,39 @@
 {
-  "lang_name": "English",
+  "lang_name": "EN",
   "Common": {
     "login": "Login",
-    "signup": "Sign Up"
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "submit": "Submit",
+    "dark": "Dark",
+    "light": "Light",
+    "forest": "Forest",
+    "retro": "Retro",
+    "sunset": "Sunset",
+    "Dracula": "Dracula",
+    "toasts": {
+      "login_success": "Successfully logged in!",
+      "login_failure": "Login failed. Please check your credentials.",
+      "signup_success": "Account created successfully! Please log in.",
+      "account_exists": "Account already exists. Please log in.",
+      "signup_failure": "Signup failed. Please try again.",
+      "logout_success": "You have been logged out.",
+      "location_selected": "Location selected successfully!",
+      "error_occurred": "An error occurred. Please try again."
+    }
   },
   "navbar": {
     "logo_text": "FarmAssist",
     "home": "Home",
     "crop_recommendations": "Crop Recommendations",
     "about_us": "About Us",
-    "contact": "Contact Us"
+    "contact": "Contact Us",
+    "tooltips": {
+      "exit_fullscreen": "Exit Fullscreen",
+      "enter_fullscreen": "Enter Fullscreen",
+      "change_language": "Change Language",
+      "change_theme": "Switch Theme"
+    }
   },
   "hero": {
     "tagline": "AI-Powered Precision Agriculture",

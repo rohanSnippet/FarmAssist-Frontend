@@ -1,15 +1,39 @@
 {
-  "lang_name": "Marathi",
+  "lang_name": "म",
   "Common": {
     "login": "लॉगिन",
-    "signup": "साइन अप"
+    "signup": "साइन अप",
+    "logout": "लॉगआउट",
+    "submit": "सबमिट करा",
+    "dark": "डार्क",
+    "light": "लाइट",
+    "forest": "फॉरेस्ट",
+    "retro": "रेट्रो",
+    "sunset": "सनसेट",
+    "Dracula": "ड्रॅक्युला",
+    "toasts": {
+      "login_success": "यशस्वीपणे लॉगिन झाले!",
+      "login_failure": "लॉगिन अयशस्वी. कृपया तुमची माहिती तपासा.",
+      "signup_success": "खाते यशस्वीपणे तयार झाले! कृपया लॉगिन करा.",
+      "account_exists": "खाते आधीच अस्तित्वात आहे. कृपया लॉगिन करा.",
+      "signup_failure": "साइनअप अयशस्वी. कृपया पुन्हा प्रयत्न करा.",
+      "logout_success": "तुम्ही लॉगआउट केले आहे.",
+      "location_selected": "स्थान यशस्वीपणे निवडले गेले!",
+      "error_occurred": "एक त्रुटी आली आहे. कृपया पुन्हा प्रयत्न करा."
+    }
   },
   "navbar": {
     "logo_text": "FarmAssist",
     "home": "होम",
     "crop_recommendations": "पिक शिफारशी",
     "about_us": "आमच्याबद्दल",
-    "contact": "संपर्क"
+    "contact": "संपर्क",
+    "tooltips": {
+      "exit_fullscreen": "फुल स्क्रीन बंद करा",
+      "enter_fullscreen": "फुल स्क्रीन सुरू करा",
+      "change_language": "भाषा बदला",
+      "change_theme": "थीम बदला"
+    }
   },
   "hero": {
     "tagline": "AI-आधारित अचूक शेती",

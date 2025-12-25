@@ -1,15 +1,37 @@
 {
-  "lang_name": "Odia",
+  "lang_name": "ଓ",
   "Common": {
     "login": "ଲଗ୍ଇନ୍",
-    "signup": "ସାଇନ୍ ଅପ୍"
+    "signup": "ସାଇନ୍ ଅପ୍",
+    "dark": "ଡାର୍କ୍",
+    "light": "ଲାଇଟ୍",
+    "forest": "ଫୋରେଷ୍ଟ୍",
+    "retro": "ରେଟ୍ରୋ",
+    "sunset": "ସନ୍ସେଟ୍",
+    "Dracula": "ଡ୍ରାକୁଲା",
+    "toasts": {
+      "login_success": "ସଫଳତାର ସହିତ ଲଗ୍ଇନ୍ ହେଲା!",
+      "login_failure": "ଲଗ୍ଇନ୍ ବିଫଳ ହେଲା। ଦୟାକରି ଆପଣଙ୍କର ପ୍ରମାଣପତ୍ର ଯାଞ୍ଚ କରନ୍ତୁ।",
+      "signup_success": "ଖାତା ସଫଳତାର ସହିତ ସୃଷ୍ଟି ହେଲା! ଦୟାକରି ଲଗ୍ଇନ୍ କରନ୍ତୁ।",
+      "account_exists": "ଖାତା ପୂର୍ବରୁ ଅଛି। ଦୟାକରି ଲଗ୍ଇନ୍ କରନ୍ତୁ।",
+      "signup_failure": "ସାଇନ୍ ଅପ୍ ବିଫଳ ହେଲା। ଦୟାକରି ପୁଣିଥରେ ପ୍ରୟାସ କରନ୍ତୁ।",
+      "logout_success": "ଆପଣ ଲଗ୍ଆଉଟ୍ ହୋଇଛନ୍ତି।",
+      "location_selected": "ସ୍ଥାନ ସଫଳତାର ସହିତ ବଛାଯାଇଛି!",
+      "error_occurred": "କିଛି ତ୍ରୁଟି ଘଟିଛି। ଦୟାକରି ପୁଣିଥରେ ପ୍ରୟାସ କରନ୍ତୁ।"
+    }
   },
   "navbar": {
     "logo_text": "FarmAssist",
     "home": "ହୋମ୍",
     "crop_recommendations": "ଫସଲ ପରାମର୍ଶ",
     "about_us": "ଆମ ବିଷୟରେ",
-    "contact": "ଯୋଗାଯୋଗ"
+    "contact": "ଯୋଗାଯୋଗ",
+    "tooltips": {
+      "exit_fullscreen": "ଫୁଲ୍ସ୍କ୍ରିନ୍ ବାହାରିବେ",
+      "enter_fullscreen": "ଫୁଲ୍ସ୍କ୍ରିନ୍ ଭିତରେ ପ୍ରବେଶ କରନ୍ତୁ",
+      "change_language": "ଭାଷା ପରିବର୍ତ୍ତନ କରନ୍ତୁ",
+      "change_theme": "ଥିମ୍ ବଦଳାନ୍ତୁ"
+    }
   },
   "hero": {
     "tagline": "AI-ଚାଳିତ ସଠିକ୍ କୃଷି",

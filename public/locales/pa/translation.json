@@ -1,15 +1,33 @@
 {
-  "lang_name": "Punjabi",
+  "lang_name": "ਪੰ",
   "Common": {
     "login": "ਲੌਗਇਨ",
-    "signup": "ਸਾਈਨ ਅਪ"
+    "signup": "ਸਾਈਨ ਅਪ",
+    "dark": "ਡਾਰਕ",
+    "light": "ਲਾਈਟ",
+    "forest": "ਫੋਰੇਸਟ",
+    "retro": "ਰੇਟ੍ਰੋ",
+    "sunset": "ਸਨਸੈੱਟ",
+    "Dracula": "ਡਰੈਕੂਲਾ",
+    "toasts": {
+      "login_success": "ਸਫਲਤਾਪੂਰਵਕ ਲੌਗਇਨ ਹੋ ਗਿਆ!",
+      "login_failure": "ਲੌਗਇਨ ਅਸਫਲ. ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੀਆਂ ਜਾਣਕਾਰੀਆਂ ਦੀ ਜਾਂਚ ਕਰੋ.",
+      "signup_success": "ਖਾਤਾ ਸਫਲਤਾਪੂਰਵਕ ਬਣਾਇਆ ਗਿਆ! ਕਿਰਪਾ ਕਰਕੇ ਲੌਗਇਨ ਕਰੋ.",
+      "account_exists": "ਖਾਤਾ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ. ਕਿਰਪਾ ਕਰਕੇ ਲੌਗਇਨ ਕਰੋ.",
+      "signup_failure": "ਸਾਈਨਅਪ ਅਸਫਲ. ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ.",
+      "logout_success": "ਤੁਸੀਂ ਲੌਗਆਊਟ ਹੋ ਚੁੱਕੇ ਹੋ.",
+      "location_selected": "ਸਥਾਨ ਸਫਲਤਾਪੂਰਵਕ ਚੁਣਿਆ ਗਿਆ!",
+      "error_occurred": "ਕੋਈ ਗਲਤੀ ਹੋਈ ਹੈ. ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ."
+    }
   },
   "navbar": {
     "logo_text": "FarmAssist",
     "home": "ਹੋਮ",
     "crop_recommendations": "ਫਸਲ ਬਾਰੇ ਸਲਾਹ",
     "about_us": "ਸਾਡੇ ਬਾਰੇ",
-    "contact": "ਸੰਪਰਕ"
+    "contact": "ਸੰਪਰਕ",
+    "exit_fullscreen": "ਫੁੱਲ ਸਕ੍ਰੀਨ ਤੋਂ ਬਾਹਰ ਆਓ",
+    "enter_fullscreen": "ਫੁੱਲ ਸਕ੍ਰੀਨ ਵਿੱਚ ਜਾਓ"
   },
   "hero": {
     "tagline": "AI-ਅਧਾਰਤ ਸਹੀ ਖੇਤੀ",

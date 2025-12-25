@@ -1,15 +1,39 @@
 {
-  "lang_name": "Hindi",
+  "lang_name": "हिं",
   "Common": {
     "login": "लॉगिन",
-    "signup": "साइन अप"
+    "signup": "साइन अप",
+    "logout": "लॉगआउट",
+    "submit": "सबमिट करें",
+    "dark": "डार्क",
+    "light": "लाइट",
+    "forest": "फॉरेस्ट",
+    "retro": "रेट्रो",
+    "sunset": "सनसेट",
+    "Dracula": "ड्रैकुला",
+    "toasts": {
+      "login_success": "सफलतापूर्वक लॉगिन हो गया!",
+      "login_failure": "लॉगिन विफल। कृपया अपनी जानकारी जांचें।",
+      "signup_success": "खाता सफलतापूर्वक बनाया गया! कृपया लॉगिन करें।",
+      "account_exists": "खाता पहले से मौजूद है। कृपया लॉगिन करें।",
+      "signup_failure": "साइनअप विफल। कृपया पुनः प्रयास करें।",
+      "logout_success": "आप लॉगआउट हो गए हैं।",
+      "location_selected": "स्थान सफलतापूर्वक चुना गया!",
+      "error_occurred": "एक त्रुटि हुई। कृपया पुनः प्रयास करें।"
+    }
   },
   "navbar": {
     "logo_text": "FarmAssist",
     "home": "होम",
     "crop_recommendations": "फसल सुझाव",
     "about_us": "हमारे बारे में",
-    "contact": "संपर्क करें"
+    "contact": "संपर्क करें",
+    "tooltips": {
+      "exit_fullscreen": "फुल स्क्रीन से बाहर निकलें",
+      "enter_fullscreen": "फुल स्क्रीन में प्रवेश करें",
+      "change_language": "भाषा बदलें",
+      "change_theme": "थीम बदलें"
+    }
   },
   "hero": {
     "tagline": "AI-आधारित सटीक खेती",
