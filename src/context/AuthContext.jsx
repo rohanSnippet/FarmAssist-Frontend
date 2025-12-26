@@ -7,8 +7,14 @@ import React, {
 } from "react";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import { jwtDecode } from "jwt-decode";
-import api from "../axios";
+import api from "../axios"; // Your axios instance
 import { useToast } from "../ui/Toast";
+import { auth, googleProvider } from "../firebase"; // Import from your firebase config
+import {
+  signInWithPopup,
+  signInWithPhoneNumber,
+  RecaptchaVerifier,
+} from "firebase/auth";
 
 const AuthContext = createContext();
 
@@ -17,12 +23,15 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const Toast = useToast();
 
+  // --- EXISTING HELPERS ---
+
   const getUserFromToken = (token) => {
     try {
       const decoded = jwtDecode(token);
       return {
-        userId: decoded.user_id, // Maps to "5"
-        email: decoded.email, // Maps to "user4@gmail.com"
+        userId: decoded.user_id,
+        email: decoded.email,
+        // You can add phone or providers here if your JWT has them
       };
     } catch (error) {
       return null;
@@ -34,7 +43,6 @@ export const AuthProvider = ({ children }) => {
     if (!refreshToken) return null;
 
     try {
-      // Call backend to get a new access token
       const res = await api.post("/api/token/refresh/", {
         refresh: refreshToken,
       });
@@ -42,7 +50,6 @@ export const AuthProvider = ({ children }) => {
       const newAccessToken = res.data.access;
       localStorage.setItem(ACCESS_TOKEN, newAccessToken);
 
-      // Optional: Update refresh token if your backend rotates them
       if (res.data.refresh) {
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
       }
@@ -66,9 +73,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const decoded = jwtDecode(accessToken);
       const tokenExpiration = decoded.exp;
-      const now = Date.now() / 1000; // Current time in seconds
+      const now = Date.now() / 1000;
 
-      // Case A: Token is Expired -> Try to Refresh
       if (tokenExpiration < now) {
         console.log("Access token expired. Refreshing...");
         const newAccessToken = await refreshUserToken();
@@ -77,9 +83,7 @@ export const AuthProvider = ({ children }) => {
           const userPayload = getUserFromToken(newAccessToken);
           setUser({ ...userPayload, token: newAccessToken });
         }
-      }
-      // Case B: Token is Valid -> Set User
-      else {
+      } else {
         const userPayload = getUserFromToken(accessToken);
         setUser({ ...userPayload, token: accessToken });
       }
@@ -95,10 +99,48 @@ export const AuthProvider = ({ children }) => {
     loadUser();
   }, [loadUser]);
 
+  // --- NEW: FIREBASE BACKEND EXCHANGE HELPER ---
+  // This sends the Firebase Token to Django to get the JWT
+  const handleBackendFirebase = async (firebaseToken, mode) => {
+    try {
+      const res = await api.post("/api/auth/firebase/", {
+        token: firebaseToken,
+        mode: mode, // 'login' or 'signup'
+      });
+
+      const accessToken = res.data.access;
+      const refreshToken = res.data.refresh;
+
+      // Store Tokens
+      localStorage.setItem(ACCESS_TOKEN, accessToken);
+      localStorage.setItem(REFRESH_TOKEN, refreshToken);
+
+      // Set User State
+      const userPayload = getUserFromToken(accessToken);
+      setUser({ ...userPayload, token: accessToken });
+
+      Toast.fire({
+        icon: "success",
+        title: `Successfully ${mode === "login" ? "Logged In" : "Signed Up"}!`,
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Firebase Backend Error:", error);
+      const errorMsg =
+        error.response?.data?.error || "Authentication failed on server.";
+      Toast.fire({
+        icon: "error",
+        title: errorMsg,
+      });
+      return false;
+    }
+  };
+
+  // --- 1. EXISTING EMAIL/PASSWORD LOGIN ---
   const login = async (email, password) => {
     try {
       const res = await api.post("/api/token/", { email, password });
-      console.log(res);
       const accessToken = res.data.access;
       const refreshToken = res.data.refresh;
 
@@ -106,18 +148,99 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem(REFRESH_TOKEN, refreshToken);
       const userPayload = getUserFromToken(accessToken);
       setUser({ ...userPayload, token: accessToken });
-      return true; // Indicate success
+      return true;
     } catch (error) {
       if (
-        error.response.data.detail ==
+        error.response?.data?.detail ===
         "No active account found with the given credentials"
       ) {
         Toast.fire({
           icon: "warning",
           title: "User not found with provided email",
         });
-      } else console.error("Login failed:", error);
-      return false; // Indicate failure
+      } else {
+        console.error("Login failed:", error);
+        Toast.fire({ icon: "error", title: "Login failed" });
+      }
+      return false;
+    }
+  };
+
+  // --- 2. GOOGLE LOGIN ---
+  // mode defaults to 'signup' but you can pass 'login' to enforce strict checks if needed
+  const googleLogin = async (mode = "signup") => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const token = await result.user.getIdToken();
+      console.log(token);
+      // Send to Django
+      return await handleBackendFirebase(token, mode);
+    } catch (error) {
+      console.error("Google Auth Error:", error);
+      Toast.fire({
+        icon: "error",
+        title: error.message || "Google Authentication failed",
+      });
+      return false;
+    }
+  };
+
+  // --- 3. PHONE AUTH FUNCTIONS ---
+
+  // A. Setup Recaptcha (Call this once in useEffect or before sending OTP)
+  // elementId is the ID of the div in your component: <div id="recaptcha-container"></div>
+  const setupRecaptcha = (elementId = "recaptcha-container") => {
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, elementId, {
+        size: "invisible",
+      });
+    }
+    return window.recaptchaVerifier;
+  };
+
+  // B. Send OTP
+  const sendPhoneOtp = async (phoneNumber) => {
+    try {
+      // Ensure recaptcha is ready. You might need to pass the ID if it varies.
+      const appVerifier = window.recaptchaVerifier || setupRecaptcha();
+
+      const confirmationResult = await signInWithPhoneNumber(
+        auth,
+        phoneNumber,
+        appVerifier
+      );
+
+      Toast.fire({
+        icon: "success",
+        title: "OTP Sent successfully!",
+      });
+
+      return confirmationResult; // Return this to the component to store in state
+    } catch (error) {
+      console.error("SMS Error:", error);
+      Toast.fire({
+        icon: "error",
+        title: "Failed to send SMS. check format (+91...)",
+      });
+      return null;
+    }
+  };
+
+  // C. Verify OTP & Login
+  const verifyPhoneOtp = async (confirmationResult, otp, mode = "signup") => {
+    try {
+      const result = await confirmationResult.confirm(otp);
+      const token = await result.user.getIdToken();
+
+      // Send to Django
+      return await handleBackendFirebase(token, mode);
+    } catch (error) {
+      console.error("OTP Verify Error:", error);
+      Toast.fire({
+        icon: "error",
+        title: "Invalid OTP",
+      });
+      return false;
     }
   };
 
@@ -125,13 +248,27 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem(ACCESS_TOKEN);
     localStorage.removeItem(REFRESH_TOKEN);
     setUser(null);
+    // Optional: Sign out from Firebase too
+    auth.signOut();
+    Toast.fire({ icon: "success", title: "Logged out successfully" });
   };
 
   const isAuthenticated = !!user;
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, isAuthenticated, loading, setLoading }}
+      value={{
+        user,
+        loading,
+        setLoading,
+        isAuthenticated,
+        login, // Email/Pass
+        googleLogin, // Google
+        sendPhoneOtp, // Phone Step 1
+        verifyPhoneOtp, // Phone Step 2
+        setupRecaptcha, // Phone Helper
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>
