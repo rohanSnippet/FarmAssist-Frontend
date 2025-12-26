@@ -60,7 +60,7 @@ const About = () => {
   return (
     <div className="min-h-screen bg-base-200 overflow-x-hidden">
       {/* --- HERO SECTION --- */}
-      <div className="hero min-h-[60vh] bg-base-100 relative overflow-hidden">
+      <div className="hero min-h-[60vh] bg-base-100 relative overflow-hidden py-48">
         {/* Abstract Background Blobs */}
         <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/20 rounded-full blur-3xl opacity-50 animate-pulse"></div>
         <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-secondary/20 rounded-full blur-3xl opacity-50 animate-pulse delay-1000"></div>

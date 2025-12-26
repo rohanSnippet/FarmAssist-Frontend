@@ -24,10 +24,10 @@ export const ThemeProvider = ({ children }) => {
     localStorage.setItem(STORAGE_KEY, theme);
     if (
       theme == "dracula" ||
+      theme == "forest" ||
       theme == "coffee" ||
       theme == "dark" ||
-      theme == "sunset" ||
-      theme == "forest"
+      theme == "sunset"
     )
       setIsDark(true);
     else setIsDark(false);

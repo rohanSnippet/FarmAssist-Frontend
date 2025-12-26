@@ -1,15 +1,37 @@
 {
-  "lang_name": "Telugu",
+  "lang_name": "తె",
   "Common": {
     "login": "లాగిన్",
-    "signup": "సైన్ అప్"
+    "signup": "సైన్ అప్",
+    "dark": "డార్క్",
+    "light": "లైట్",
+    "forest": "ఫోరెస్ట్",
+    "retro": "రెట్రో",
+    "sunset": "సన్‌సెట్",
+    "Dracula": "డ్రాకులా",
+    "toasts": {
+      "login_success": "లాగిన్ విజయవంతం!",
+      "login_failure": "లాగిన్ విఫలమైంది. దయచేసి మీ వివరాలను తనిఖీ చేయండి.",
+      "signup_success": "ఖాతా విజయవంతంగా సృష్టించబడింది! దయచేసి లాగిన్ చేయండి.",
+      "account_exists": "ఖాతా ఇప్పటికే ఉంది. దయచేసి లాగిన్ చేయండి.",
+      "signup_failure": "సైన్ అప్ విఫలమైంది. దయచేసి మళ్లీ ప్రయత్నించండి.",
+      "logout_success": "మీరు లాగ్ అవుట్ అయ్యారు.",
+      "location_selected": "స్థానం విజయవంతంగా ఎంపిక చేయబడింది!",
+      "error_occurred": "ఒక లోపం సంభవించింది. దయచేసి మళ్లీ ప్రయత్నించండి."
+    }
   },
   "navbar": {
     "logo_text": "FarmAssist",
     "home": "హోమ్",
     "crop_recommendations": "పంట సలహాలు",
     "about_us": "మా గురించి",
-    "contact": "సంప్రదించండి"
+    "contact": "సంప్రదించండి",
+    "tooltips": {
+      "exit_fullscreen": "ఫుల్ స్క్రీన్ నుండి బయటకు రావడం",
+      "enter_fullscreen": "ఫుల్ స్క్రీన్ లోకి వెళ్లడం",
+      "change_language": "భాషను మార్చడం",
+      "change_theme": "తీమను మార్చడం"
+    }
   },
   "hero": {
     "tagline": "AI-ఆధారిత ఖచ్చితమైన వ్యవసాయం",

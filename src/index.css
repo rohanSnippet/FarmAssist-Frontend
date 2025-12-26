@@ -178,3 +178,7 @@
   font-family: "Poppins", sans-serif;
   color: #f9f9f9;
 }
+
+text-glow {
+  text-shadow: 0 0 10px currentColor;
+}

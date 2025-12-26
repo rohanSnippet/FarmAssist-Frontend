@@ -1,15 +1,37 @@
 {
-  "lang_name": "Kannada",
+  "lang_name": "ಕ",
   "Common": {
     "login": "ಲಾಗಿನ್",
-    "signup": "ಸೈನ್ ಅಪ್"
+    "signup": "ಸೈನ್ ಅಪ್",
+    "dark": "ಡಾರ್ಕ್",
+    "light": "ಲೈಟ್",
+    "forest": "ಫಾರೆಸ್ಟ್",
+    "retro": "ರೆಟ್ರೋ",
+    "sunset": "ಸನ್‌ಸೆಟ್",
+    "Dracula": "ಡ್ರಾಕುಲಾ",
+    "toasts": {
+      "login_success": "ಯಶಸ್ವಿಯಾಗಿ ಲಾಗಿನ್ ಆಗಿದೆ!",
+      "login_failure": "ಲಾಗಿನ್ ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಪ್ರಮಾಣಪತ್ರಗಳನ್ನು ಪರಿಶೀಲಿಸಿ.",
+      "signup_success": "ಖಾತೆ ಯಶಸ್ವಿಯಾಗಿ ರಚಿಸಲಾಗಿದೆ! ದಯವಿಟ್ಟು ಲಾಗಿನ್ ಮಾಡಿ.",
+      "account_exists": "ಖಾತೆ ಈಗಾಗಲೇ ಇದೆ. ದಯವಿಟ್ಟು ಲಾಗಿನ್ ಮಾಡಿ.",
+      "signup_failure": "ಸೈನ್ ಅಪ್ ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+      "logout_success": "ನೀವು ಲಾಗ್ ಔಟ್ ಆಗಿದ್ದೀರಿ.",
+      "location_selected": "ಸ್ಥಳವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಆಯ್ಕೆ ಮಾಡಲಾಗಿದೆ!",
+      "error_occurred": "ಒಂದು ದೋಷ ಸಂಭವಿಸಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+    }
   },
   "navbar": {
     "logo_text": "FarmAssist",
     "home": "ಹೋಮ್",
     "crop_recommendations": "ಬೆಳೆ ಸಲಹೆಗಳು",
     "about_us": "ನಮ್ಮ ಬಗ್ಗೆ",
-    "contact": "ಸಂಪರ್ಕಿಸಿ"
+    "contact": "ಸಂಪರ್ಕಿಸಿ",
+    "tooltips": {
+      "exit_fullscreen": "ಫುಲ್‌ಸ್ಕ್ರೀನ್ ನಿಂದ ನಿರ್ಗಮಿಸಿ",
+      "enter_fullscreen": "ಫುಲ್‌ಸ್ಕ್ರೀನ್ ಪ್ರವೇಶಿಸಿ",
+      "change_language": "ಭಾಷೆ ಬದಲಾಯಿಸಿ",
+      "change_theme": "ಥೀಮ್ ಬದಲಾಯಿಸಿ"
+    }
   },
   "hero": {
     "tagline": "AI-ಆಧಾರಿತ ನಿಖರ ಕೃಷಿ",

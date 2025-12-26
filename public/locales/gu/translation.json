@@ -1,15 +1,39 @@
 {
-  "lang_name": "Gujarati",
+  "lang_name": "ગુ",
   "Common": {
     "login": "લોગિન",
-    "signup": "સાઇન અપ"
+    "signup": "સાઇન અપ",
+    "logout": "લોગઆઉટ",
+    "submit": "સબમિટ કરો",
+    "dark": "ડાર્ક",
+    "light": "લાઇટ",
+    "forest": "ફોરેસ્ટ",
+    "retro": "રેત્રો",
+    "sunset": "સનસેટ",
+    "Dracula": "ડ્રાક્યુલા",
+    "toasts": {
+      "login_success": "સફળતાપૂર્વક લોગિન થયું!",
+      "login_failure": "લોગિન નિષ્ફળ. કૃપા કરીને તમારા ક્રેડેન્શિયલ્સ તપાસો.",
+      "signup_success": "એકાઉન્ટ સફળતાપૂર્વક બનાવાયું! કૃપા કરીને લોગિન કરો.",
+      "account_exists": "એકાઉન્ટ પહેલેથી જ અસ્તિત્વમાં છે. કૃપા કરીને લોગિન કરો.",
+      "signup_failure": "સાઇનઅપ નિષ્ફળ. ફરી પ્રયાસ કરો.",
+      "logout_success": "તમે લોગઆઉટ થઈ ગયા છો.",
+      "location_selected": "સ્થાન સફળતાપૂર્વક પસંદ કરાયું!",
+      "error_occurred": "એક ભૂલ આવી છે. ફરી પ્રયાસ કરો."
+    }
   },
   "navbar": {
     "logo_text": "FarmAssist",
     "home": "હોમ",
     "crop_recommendations": "પાક માટે સલાહ",
     "about_us": "અમારા વિશે",
-    "contact": "સંપર્ક"
+    "contact": "સંપર્ક",
+    "tooltips": {
+      "exit_fullscreen": "ફુલ સ્ક્રીન બંધ કરો",
+      "enter_fullscreen": "ફુલ સ્ક્રીન શરૂ કરો",
+      "change_language": "ભાષા બદલો",
+      "change_theme": "થિમ બદલો"
+    }
   },
   "hero": {
     "tagline": "AI-આધારિત સચોટ ખેતી",

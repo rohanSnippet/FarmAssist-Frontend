@@ -9,11 +9,10 @@ import Home from "./pages/Home.jsx";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoutes from "./components/ProtectedRoutes";
-import Login from "./components/Login";
 import { ModalProvider } from "./context/ModalContext";
 import GlobalModal from "./components/GlobalModal";
-import LoginWrapper from "./components/Login";
 import CropRecommendationForm from "./pages/CropRecommendationForm";
+import AuthPage from "./components/AuthPage";
 
 const router = createBrowserRouter([
   {
@@ -42,7 +41,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-  { path: "/login", element: <LoginWrapper /> },
+  { path: "/login", element: <AuthPage /> },
 ]);
 createRoot(document.getElementById("root")).render(
   <StrictMode>

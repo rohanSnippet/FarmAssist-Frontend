@@ -1,8 +1,26 @@
 {
-  "lang_name": "Assamese",
+  "lang_name": "অ",
   "Common": {
     "login": "লগইন",
-    "signup": "চাইন আপ"
+    "signup": "চাইন আপ",
+    "logout": "লগ আউট",
+    "submit": "জমা দিয়ক",
+    "dark": "ডাক",
+    "light": "লাইট",
+    "forest": "ফোরেস্ট",
+    "retro": "রেট্রো",
+    "sunset": "সানসেট",
+    "Dracula": "ড্রাকুলা",
+    "toasts": {
+      "login_success": "সফলভাবে লগইন হৈছে!",
+      "login_failure": "লগইন বিফল। অনুগ্ৰহ কৰি আপোনাৰ প্ৰমাণপত্ৰসমূহ পৰীক্ষা কৰক।",
+      "signup_success": "অ্যাকাউন্ট সফলতাৰে সৃষ্টি হৈছে! অনুগ্ৰহ কৰি লগইন কৰক।",
+      "account_exists": "অ্যাকাউন্ট ইতিমধ্যে আছে। অনুগ্ৰহ কৰি লগইন কৰক।",
+      "signup_failure": "চাইন আপ বিফল। অনুগ্ৰহ কৰি পুনৰ চেষ্টা কৰক।",
+      "logout_success": "আপোনাৰ লগ আউট হৈছে।",
+      "location_selected": "অৱস্থান সফলতাৰে নিৰ্বাচিত হৈছে!",
+      "error_occurred": "এটা ত্ৰুটি ঘটিছে। অনুগ্ৰহ কৰি পুনৰ চেষ্টা কৰক।"
+    }
   },
   "navbar": {
     "logo_text": "FarmAssist",
@@ -10,7 +28,13 @@
     "crop_recommendations": "শস্যৰ পৰামৰ্শ",
     "about_us": "আমাৰ বিষয়ে",
     "contact": "যোগাযোগ",
-    "lang_menu": "ভাষা"
+    "lang_menu": "ভাষা",
+    "tooltips": {
+      "exit_fullscreen": "ফুল স্ক্ৰীণ বন্ধ কৰক",
+      "enter_fullscreen": "ফুল স্ক্ৰীণ আৰম্ভ কৰক",
+      "change_language": "ভাষা সলনি কৰক",
+      "change_theme": "থীম সলনি কৰক"
+    }
   },
   "hero": {
     "tagline": "AI-চালিত নিখুঁত কৃষি",
