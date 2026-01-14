@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -23,9 +23,6 @@ import {
 } from "recharts";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import i18n from "../i18n";
-import LocationMap from "../components/LocationMap";
-import { set } from "zod";
 
 // --- Mock Data ---
 const weatherData = [
@@ -98,39 +95,6 @@ const staggerContainer = {
 };
 
 export default function Home() {
-  const [isMapOpen, setIsMapOpen] = useState(false);
-  const [userLocation, setUserLocation] = useState(null);
-  const [selectedLocation, setSelectedLocation] = useState(null);
-
-  // State for map view: 'light' | 'dark' | 'satellite'
-  // Ideally, sync 'light'/'dark' with your existing DaisyUI theme context
-  const [mapTheme, setMapTheme] = useState("light");
-
-  const handleShowMap = () => {
-    if (localStorage.getItem("selectedLocation")) {
-      const loc = JSON.parse(localStorage.getItem("selectedLocation"));
-      setUserLocation({ lat: loc.lat, lng: loc.lng });
-      setSelectedLocation({ lat: loc.lat, lng: loc.lng });
-      setIsMapOpen(true);
-    } else if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserLocation({ lat: latitude, lng: longitude });
-          setSelectedLocation({ lat: latitude, lng: longitude }); // Default select current
-          setIsMapOpen(true);
-        },
-        (error) => {
-          console.error("Error getting location", error);
-          // Fallback location (e.g., London) if user denies permission
-          setUserLocation({ lat: 51.505, lng: -0.09 });
-          setIsMapOpen(true);
-        }
-      );
-    } else {
-      alert("Geolocation is not supported by this browser.");
-    }
-  };
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -363,77 +327,6 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
-
-      {/* 2. DaisyUI Modal */}
-      {isMapOpen && (
-        <dialog className="modal modal-open">
-          <div className="modal-box w-11/12 max-w-5xl h-[600px] flex flex-col">
-            <h3 className="font-bold text-lg mb-4">Pick your location</h3>
-
-            {/* Map Controls (Theme Switcher) */}
-            <div className="flex gap-2 mb-2">
-              <button
-                className={`btn btn-xs ${
-                  mapTheme === "light" ? "btn-active" : ""
-                }`}
-                onClick={() => setMapTheme("light")}
-              >
-                Standard
-              </button>
-              <button
-                className={`btn btn-xs ${
-                  mapTheme === "dark" ? "btn-active" : ""
-                }`}
-                onClick={() => setMapTheme("dark")}
-              >
-                Dark
-              </button>
-              <button
-                className={`btn btn-xs ${
-                  mapTheme === "satellite" ? "btn-active" : ""
-                }`}
-                onClick={() => setMapTheme("satellite")}
-              >
-                Satellite
-              </button>
-            </div>
-
-            {/* Map Container */}
-            <div className="flex-grow relative z-0">
-              {/* z-0 ensures search bar overlay works */}
-              {userLocation && (
-                <LocationMap
-                  initialPosition={userLocation}
-                  onLocationSelect={setSelectedLocation}
-                  theme={mapTheme}
-                />
-              )}
-            </div>
-
-            <div className="modal-action flex justify-between items-center">
-              <span className="text-sm opacity-70">
-                Selected:{" "}
-                {selectedLocation
-                  ? `${selectedLocation.lat.toFixed(
-                      4
-                    )}, ${selectedLocation.lng.toFixed(4)}`
-                  : "None"}
-              </span>
-              <div className="flex gap-2">
-                <button
-                  className="btn btn-primary"
-                  onClick={() => setIsMapOpen(false)}
-                >
-                  Confirm Location
-                </button>
-                <button className="btn" onClick={() => setIsMapOpen(false)}>
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </dialog>
-      )}
     </div>
   );
 }
