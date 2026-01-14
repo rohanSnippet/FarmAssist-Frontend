@@ -5,9 +5,11 @@ import { useToast } from "../ui/Toast";
 import { motion } from "framer-motion";
 import SocialAuthSection from "./SocialAuthSection"; // Import this
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../context/AuthContext";
 
 const SignupForm = ({ switchToLogin, onPhoneClick }) => {
   const Toast = useToast();
+  const { loading, setLoading } = useAuth();
   const { t } = useTranslation();
   const {
     register,
@@ -17,6 +19,7 @@ const SignupForm = ({ switchToLogin, onPhoneClick }) => {
 
   const onSubmit = async (data) => {
     try {
+      setLoading(true);
       await api.post(`/api/register/`, data);
       Toast.fire({ icon: "success", title: t("Common.toasts.signup_success") }); // Hardcoded for simplicity or use t()
       setTimeout(() => switchToLogin(), 1000);
@@ -28,6 +31,8 @@ const SignupForm = ({ switchToLogin, onPhoneClick }) => {
       } else {
         Toast.fire({ icon: "error", title: "Signup Failed" });
       }
+    } finally {
+      setLoading(false);
     }
   };
 

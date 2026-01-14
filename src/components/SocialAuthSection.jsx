@@ -76,11 +76,12 @@ const SocialAuthSection = ({ mode, onPhoneClick }) => {
         </motion.button>
 
         <motion.button
+          data-tip="☹️ Not available yet!!"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.95 }}
           type="button"
           onClick={onPhoneClick}
-          className="btn btn-outline border-base-content/20 hover:bg-base-content hover:text-base-100 normal-case font-medium"
+          className="btn btn-outline border-base-content/20 hover:bg-base-content hover:text-base-100 normal-case font-medium tooltip tooltip-top tooltip-warning"
         >
           <Phone size={18} /> <span className="ml-2">Phone</span>
         </motion.button>
