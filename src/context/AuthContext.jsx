@@ -99,15 +99,17 @@ export const AuthProvider = ({ children }) => {
     loadUser();
   }, [loadUser]);
 
+  // console.log(auth.currentUser)
   // --- NEW: FIREBASE BACKEND EXCHANGE HELPER ---
   // This sends the Firebase Token to Django to get the JWT
-  const handleBackendFirebase = async (firebaseToken, mode) => {
+  const handleBackendFirebase = async (firebaseToken, mode, password) => {
     try {
       const res = await api.post("/api/auth/firebase/", {
         token: firebaseToken,
         mode: mode, // 'login' or 'signup'
+        password: password,
       });
-
+      
       const accessToken = res.data.access;
       const refreshToken = res.data.refresh;
 
@@ -168,13 +170,13 @@ export const AuthProvider = ({ children }) => {
 
   // --- 2. GOOGLE LOGIN ---
   // mode defaults to 'signup' but you can pass 'login' to enforce strict checks if needed
-  const googleLogin = async (mode = "signup") => {
+  /*   const googleLogin = async (mode = "signup") => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const token = await result.user.getIdToken();
       console.log(token);
       // Send to Django
-      return await handleBackendFirebase(token, mode);
+      return await handleBackendFirebase(token, mode, null);
     } catch (error) {
       console.error("Google Auth Error:", error);
       Toast.fire({
@@ -182,6 +184,54 @@ export const AuthProvider = ({ children }) => {
         title: error.message || "Google Authentication failed",
       });
       return false;
+    }
+  }; */
+
+  const googleLogin = async (mode = "signup") => {
+    setLoading(true);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const token = await result.user.getIdToken(); // or getIdToken(true) for fresh
+
+      const backendResponse = await handleBackendFirebase(token, mode, null);
+
+      if (!backendResponse || backendResponse.error) {
+        Toast.fire({
+          icon: "error",
+          title: backendResponse?.error || "Backend login failed",
+        });
+        return false;
+      }
+
+      Toast.fire({
+        icon: "success",
+        title:
+          mode === "signup"
+            ? "Signed up successfully"
+            : "Logged in successfully",
+      });
+
+      return backendResponse;
+    } catch (error) {
+      console.error("Google Auth Error:", error);
+
+      // Firebase-specific errors mapping
+      const firebaseErrors = {
+        "auth/popup-closed-by-user": "Popup closed before completing login",
+        "auth/cancelled-popup-request": "Cancelled previous popup request",
+        "auth/network-request-failed": "Network error. Try again",
+      };
+
+      Toast.fire({
+        icon: "error",
+        title:
+          firebaseErrors[error.code] ||
+          error.message ||
+          "Google Authentication failed",
+      });
+      return false;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -267,6 +317,7 @@ export const AuthProvider = ({ children }) => {
         sendPhoneOtp, // Phone Step 1
         verifyPhoneOtp, // Phone Step 2
         setupRecaptcha, // Phone Helper
+        handleBackendFirebase,
         logout,
       }}
     >

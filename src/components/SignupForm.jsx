@@ -6,10 +6,12 @@ import { motion } from "framer-motion";
 import SocialAuthSection from "./SocialAuthSection"; // Import this
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
+import { createUserWithEmailAndPassword, updateProfile} from "firebase/auth";
+import { auth } from "../firebase";
 
 const SignupForm = ({ switchToLogin, onPhoneClick }) => {
   const Toast = useToast();
-  const { loading, setLoading } = useAuth();
+  const { loading, setLoading} = useAuth();
   const { t } = useTranslation();
   const {
     register,
@@ -17,10 +19,75 @@ const SignupForm = ({ switchToLogin, onPhoneClick }) => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = async (data) => {
+const onSubmit = async (formData) => {
+  setLoading(true);
+
+  try {
+    const response = await api.post("/api/register/", formData);
+
+    console.log("Backend user created:", response.data);
+
+    const firebaseResult = await createUserWithEmailAndPassword(
+      auth,
+      formData.email,
+      formData.password
+    );
+
+    await updateProfile(firebaseResult.user, {
+      displayName: `${formData.firstName} ${formData.lastName || ""}`,
+    });
+    
+    console.log(firebaseResult.user)
+    Toast.fire({
+      icon: "success",
+      title: "Account created successfully",
+    });
+
+    setTimeout(() => switchToLogin(), 1000);
+  } catch (err) {
+    // Handle backend errors
+    if (err.response) {
+      const status = err.response.status;
+      Toast.fire({
+        icon: "error",
+        title:
+          status === 409
+            ? "Account already exists"
+            : status >= 500
+            ? "Server error. Try later"
+            : err.response.data?.error || "Signup failed",
+      });
+      return;
+    }
+
+    // Handle Firebase errors
+    if (err.code) {
+      const firebaseErrors = {
+        "auth/email-already-in-use": "Email already registered",
+        "auth/invalid-email": "Invalid email address",
+        "auth/weak-password": "Password is too weak",
+      };
+      Toast.fire({
+        icon: "error",
+        title: firebaseErrors[err.code] || "Signup failed",
+      });
+      return;
+    }
+
+    Toast.fire({ icon: "error", title: "Something went wrong" });
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+/*   const onSubmit = async (data) => {
     try {
       setLoading(true);
-      await api.post(`/api/register/`, data);
+      const result = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      const token = await result.user.getIdToken();
+      // await api.post(`/api/register/`, data);
+      await handleBackendFirebase(token, "signup");
       Toast.fire({ icon: "success", title: t("Common.toasts.signup_success") }); // Hardcoded for simplicity or use t()
       setTimeout(() => switchToLogin(), 1000);
     } catch (err) {
@@ -34,7 +101,7 @@ const SignupForm = ({ switchToLogin, onPhoneClick }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }; */
 
   return (
     <div className="w-full font-poppins">
