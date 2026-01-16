@@ -14,6 +14,9 @@ import {
   signInWithPopup,
   signInWithPhoneNumber,
   RecaptchaVerifier,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut
 } from "firebase/auth";
 
 const AuthContext = createContext();
@@ -102,12 +105,10 @@ export const AuthProvider = ({ children }) => {
   // console.log(auth.currentUser)
   // --- NEW: FIREBASE BACKEND EXCHANGE HELPER ---
   // This sends the Firebase Token to Django to get the JWT
-  const handleBackendFirebase = async (firebaseToken, mode, password) => {
+const handleBackendFirebase = async (firebaseToken, mode) => {
     try {
       const res = await api.post("/api/auth/firebase/", {
         token: firebaseToken,
-        mode: mode, // 'login' or 'signup'
-        password: password,
       });
       
       const accessToken = res.data.access;
@@ -140,7 +141,35 @@ export const AuthProvider = ({ children }) => {
   };
 
   // --- 1. EXISTING EMAIL/PASSWORD LOGIN ---
-  const login = async (email, password) => {
+ const login = async (email, password) => {
+    setLoading(true);
+    try {
+      // A. Login to Firebase
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      
+      // B. Get Token
+      const token = await userCredential.user.getIdToken();
+
+      // C. Sync with Django
+      const success = await handleBackendFirebase(token, "login");
+      
+      return success; // Returns true if Django accepted the token
+    } catch (error) {
+      console.error("Login Error:", error);
+      let msg = "Login failed";
+      if(error.code === 'auth/wrong-password') msg = "Incorrect password";
+      if(error.code === 'auth/user-not-found') msg = "No account found";
+      if(error.code === 'auth/invalid-credential') msg = "Invalid credentials";
+
+      Toast.fire({ icon: "error", title: msg });
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  //old login
+/*   const login = async (email, password) => {
     try {
       const res = await api.post("/api/token/", { email, password });
       const accessToken = res.data.access;
@@ -166,7 +195,7 @@ export const AuthProvider = ({ children }) => {
       }
       return false;
     }
-  };
+  }; */
 
   // --- 2. GOOGLE LOGIN ---
   // mode defaults to 'signup' but you can pass 'login' to enforce strict checks if needed
@@ -192,9 +221,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const token = await result.user.getIdToken(); // or getIdToken(true) for fresh
-
-      const backendResponse = await handleBackendFirebase(token, mode, null);
-
+      const backendResponse = await handleBackendFirebase(token, mode);
       if (!backendResponse || backendResponse.error) {
         Toast.fire({
           icon: "error",
@@ -202,7 +229,6 @@ export const AuthProvider = ({ children }) => {
         });
         return false;
       }
-
       Toast.fire({
         icon: "success",
         title:
@@ -237,8 +263,6 @@ export const AuthProvider = ({ children }) => {
 
   // --- 3. PHONE AUTH FUNCTIONS ---
 
-  // A. Setup Recaptcha (Call this once in useEffect or before sending OTP)
-  // elementId is the ID of the div in your component: <div id="recaptcha-container"></div>
   const setupRecaptcha = (elementId = "recaptcha-container") => {
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(auth, elementId, {
@@ -294,14 +318,33 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
+  const logout = async() => {
     localStorage.removeItem(ACCESS_TOKEN);
     localStorage.removeItem(REFRESH_TOKEN);
     setUser(null);
     // Optional: Sign out from Firebase too
-    auth.signOut();
+    // auth.signOut();
+    await signOut(auth);
     Toast.fire({ icon: "success", title: "Logged out successfully" });
   };
+
+  const forgotPassword = async(email) =>{
+      try {
+      await sendPasswordResetEmail(auth, email);
+      setStatus({ 
+        loading: false, 
+        error: "", 
+        success: "Reset link sent! Please check your inbox." 
+      });
+      // Optional: Close after 3 seconds on success
+      setTimeout(onClose, 3000);
+    } catch (error) {
+      console.error(error);
+      let msg = "Failed to send email.";
+      if (error.code === 'auth/user-not-found') msg = "No account found with this email.";
+      setStatus({ loading: false, error: msg, success: "" });
+    }
+  }
 
   const isAuthenticated = !!user;
 
@@ -319,6 +362,7 @@ export const AuthProvider = ({ children }) => {
         setupRecaptcha, // Phone Helper
         handleBackendFirebase,
         logout,
+        forgotPassword
       }}
     >
       {children}
