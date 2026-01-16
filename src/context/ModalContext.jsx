@@ -1,31 +1,28 @@
-import React, { createContext, useContext, useRef, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
+import GlobalModal from "../components/GlobalModal";
 
 const ModalContext = createContext();
 
 export const ModalProvider = ({ children }) => {
-  const modalRef = useRef(null);
   const [content, setContent] = useState(null);
   const [modalOptions, setModalOptions] = useState({});
 
   const openModal = (component, options = {}) => {
     setContent(component);
     setModalOptions(options);
-    modalRef.current?.showModal();
   };
 
   const closeModal = () => {
-    modalRef.current?.close();
-    setTimeout(() => {
-      setContent(null);
-      setModalOptions({});
-    }, 200);
+    setContent(null);
+    setModalOptions({});
   };
 
   return (
     <ModalContext.Provider
-      value={{ openModal, modalRef, content, modalOptions, closeModal }}
+      value={{ openModal, closeModal, content, modalOptions }}
     >
       {children}
+      <GlobalModal />
     </ModalContext.Provider>
   );
 };

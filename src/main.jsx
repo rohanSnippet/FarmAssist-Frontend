@@ -15,6 +15,7 @@ import CropRecommendationForm from "./pages/CropRecommendationForm";
 import AuthPage from "./components/AuthPage";
 import ApplicationLoader from "./ui/ApplicationLoader";
 import { AnimatePresence } from "framer-motion";
+import ResetPassword from "./components/ResetPassword";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,7 @@ const router = createBrowserRouter([
     ],
   },
   { path: "/login", element: <AuthPage /> },
+  { path: "/reset-password", element: <ResetPassword /> },
 ]);
 
 /* const AppInitialization = () => {
