@@ -8,7 +8,7 @@ const ThemeSwitcher = () => {
   const { t } = useTranslation();
 
   // List of available themes matching your translation keys
-  const themes = ["light", "dark", "retro", "forest", "sunset"];
+  const themes = ["light", "dark", "coffee", "forest", "sunset"];
 
   const handleThemeChange = (newTheme) => {
     setTheme(newTheme);

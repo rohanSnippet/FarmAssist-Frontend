@@ -362,6 +362,7 @@ const handleBackendFirebase = async (firebaseToken, mode) => {
         setupRecaptcha, // Phone Helper
         handleBackendFirebase,
         logout,
+        auth,
         forgotPassword
       }}
     >
