@@ -8,7 +8,7 @@ import { useToast } from "../ui/Toast";
 import { auth } from "../firebase";
 import LanguageGridContent from "../ui/LanguageGridContent";
 import LogoLight from "../assets/seedingL.png";
-import Logo from "../assets/seeding.png"
+import Logo from "../assets/seeding.png";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -18,7 +18,7 @@ const Navbar = () => {
 
   const { t, i18n } = useTranslation();
   const { isDark, setTheme, theme } = useTheme();
-  const { logout, user, auth} = useAuth();
+  const { logout, user, auth } = useAuth();
   const { openModal } = useModal();
   const Toast = useToast();
   const navigate = useNavigate();
@@ -64,7 +64,7 @@ const Navbar = () => {
       <React.Suspense fallback={<span className="loading loading-spinner" />}>
         <LanguageGridContent />
       </React.Suspense>,
-      { className: "max-w-4xl" }
+      { className: "max-w-4xl" },
     );
   };
 
@@ -192,7 +192,7 @@ const Navbar = () => {
         {/* 1. Navbar Start (Mobile Menu + Logo) */}
         <div className="navbar-start">
           {/* Mobile Hamburger - Only for NavLinks */}
-          <div className="dropdown lg:hidden">
+          {/*  <div className="dropdown lg:hidden">
             <div
               tabIndex={0}
               role="button"
@@ -217,6 +217,29 @@ const Navbar = () => {
                 </li>
               </ul>
             )}
+          </div> */}
+          <div className="dropdown lg:hidden">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-circle"
+            >
+              <IconMenu />
+            </div>
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-64"
+            >
+              <li>
+                <NavLink to="/">{t("navbar.home")}</NavLink>
+              </li>
+              <li>
+                <NavLink to="/about-us">{t("navbar.about_us")}</NavLink>
+              </li>
+              <li>
+                <NavLink to="/contact">{t("navbar.contact")}</NavLink>
+              </li>
+            </ul>
           </div>
 
           <Link
@@ -368,7 +391,8 @@ const Navbar = () => {
                   <div className="w-24 rounded-full ring-2 ring-primary ring-offset-base-100 ring-offset-3">
                     <img
                       src={
-                        user?.photoURL || auth?.currentUser?.photoURL ||
+                        user?.photoURL ||
+                        auth?.currentUser?.photoURL ||
                         "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
                       }
                       alt="User"
