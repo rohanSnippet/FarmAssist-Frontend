@@ -102,7 +102,6 @@ export const AuthProvider = ({ children }) => {
     loadUser();
   }, [loadUser]);
 
-  // console.log(auth.currentUser)
   // --- NEW: FIREBASE BACKEND EXCHANGE HELPER ---
   // This sends the Firebase Token to Django to get the JWT
 const handleBackendFirebase = async (firebaseToken, mode) => {
@@ -272,7 +271,6 @@ const handleBackendFirebase = async (firebaseToken, mode) => {
     return window.recaptchaVerifier;
   };
 
-  // B. Send OTP
   const sendPhoneOtp = async (phoneNumber) => {
     try {
       // Ensure recaptcha is ready. You might need to pass the ID if it varies.
