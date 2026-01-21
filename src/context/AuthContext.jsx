@@ -300,7 +300,7 @@ const handleBackendFirebase = async (firebaseToken, mode) => {
     }
   };
 
-  // C. Verify OTP & Login
+ 
   const verifyPhoneOtp = async (confirmationResult, otp, mode = "signup") => {
     try {
       const result = await confirmationResult.confirm(otp);
@@ -355,11 +355,11 @@ const handleBackendFirebase = async (firebaseToken, mode) => {
         loading,
         setLoading,
         isAuthenticated,
-        login, // Email/Pass
-        googleLogin, // Google
-        sendPhoneOtp, // Phone Step 1
-        verifyPhoneOtp, // Phone Step 2
-        setupRecaptcha, // Phone Helper
+        login, 
+        googleLogin,
+        sendPhoneOtp, 
+        verifyPhoneOtp, 
+        setupRecaptcha, 
         handleBackendFirebase,
         logout,
         auth,
