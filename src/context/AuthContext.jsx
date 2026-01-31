@@ -16,13 +16,14 @@ import {
   RecaptchaVerifier,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
 } from "firebase/auth";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const Toast = useToast();
 
@@ -40,6 +41,18 @@ export const AuthProvider = ({ children }) => {
       return null;
     }
   };
+
+  const fetchUserDetails = useCallback(async () => {
+    try {
+      const res = await api.get(`/api/me/`);
+      if (res.status == 200) {
+        setUserData(res.data);
+        console.log(res.data)
+      }
+    } catch (error) {
+      console.error("Failed to fetch user details:", error);
+    }
+  }, []);
 
   const refreshUserToken = useCallback(async () => {
     const refreshToken = localStorage.getItem(REFRESH_TOKEN);
@@ -89,6 +102,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         const userPayload = getUserFromToken(accessToken);
         setUser({ ...userPayload, token: accessToken });
+        await fetchUserDetails();
       }
     } catch (error) {
       console.error("Error loading user:", error);
@@ -96,7 +110,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [refreshUserToken]);
+  }, [refreshUserToken, fetchUserDetails]);
 
   useEffect(() => {
     loadUser();
@@ -104,12 +118,12 @@ export const AuthProvider = ({ children }) => {
 
   // --- NEW: FIREBASE BACKEND EXCHANGE HELPER ---
   // This sends the Firebase Token to Django to get the JWT
-const handleBackendFirebase = async (firebaseToken, mode) => {
+  const handleBackendFirebase = async (firebaseToken, mode) => {
     try {
       const res = await api.post("/api/auth/firebase/", {
         token: firebaseToken,
       });
-      
+
       const accessToken = res.data.access;
       const refreshToken = res.data.refresh;
 
@@ -120,6 +134,13 @@ const handleBackendFirebase = async (firebaseToken, mode) => {
       // Set User State
       const userPayload = getUserFromToken(accessToken);
       setUser({ ...userPayload, token: accessToken });
+
+      if (res.data.user) {
+        setUserData(res.data.user);
+      } else {
+        // Otherwise fetch it
+        await fetchUserDetails();
+      }
 
       Toast.fire({
         icon: "success",
@@ -140,25 +161,29 @@ const handleBackendFirebase = async (firebaseToken, mode) => {
   };
 
   // --- 1. EXISTING EMAIL/PASSWORD LOGIN ---
- const login = async (email, password) => {
+  const login = async (email, password) => {
     setLoading(true);
     try {
       // A. Login to Firebase
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+
       // B. Get Token
       const token = await userCredential.user.getIdToken();
 
       // C. Sync with Django
       const success = await handleBackendFirebase(token, "login");
-      
+
       return success; // Returns true if Django accepted the token
     } catch (error) {
       console.error("Login Error:", error);
       let msg = "Login failed";
-      if(error.code === 'auth/wrong-password') msg = "Incorrect password";
-      if(error.code === 'auth/user-not-found') msg = "No account found";
-      if(error.code === 'auth/invalid-credential') msg = "Invalid credentials";
+      if (error.code === "auth/wrong-password") msg = "Incorrect password";
+      if (error.code === "auth/user-not-found") msg = "No account found";
+      if (error.code === "auth/invalid-credential") msg = "Invalid credentials";
 
       Toast.fire({ icon: "error", title: msg });
       return false;
@@ -168,7 +193,7 @@ const handleBackendFirebase = async (firebaseToken, mode) => {
   };
 
   //old login
-/*   const login = async (email, password) => {
+  /*   const login = async (email, password) => {
     try {
       const res = await api.post("/api/token/", { email, password });
       const accessToken = res.data.access;
@@ -279,7 +304,7 @@ const handleBackendFirebase = async (firebaseToken, mode) => {
       const confirmationResult = await signInWithPhoneNumber(
         auth,
         phoneNumber,
-        appVerifier
+        appVerifier,
       );
 
       Toast.fire({
@@ -298,7 +323,6 @@ const handleBackendFirebase = async (firebaseToken, mode) => {
     }
   };
 
- 
   const verifyPhoneOtp = async (confirmationResult, otp, mode = "signup") => {
     try {
       const result = await confirmationResult.confirm(otp);
@@ -316,33 +340,35 @@ const handleBackendFirebase = async (firebaseToken, mode) => {
     }
   };
 
-  const logout = async() => {
+  const logout = async () => {
     localStorage.removeItem(ACCESS_TOKEN);
     localStorage.removeItem(REFRESH_TOKEN);
     setUser(null);
+    setUserData(null)
     // Optional: Sign out from Firebase too
     // auth.signOut();
     await signOut(auth);
     Toast.fire({ icon: "success", title: "Logged out successfully" });
   };
 
-  const forgotPassword = async(email) =>{
-      try {
+  const forgotPassword = async (email) => {
+    try {
       await sendPasswordResetEmail(auth, email);
-      setStatus({ 
-        loading: false, 
-        error: "", 
-        success: "Reset link sent! Please check your inbox." 
+      setStatus({
+        loading: false,
+        error: "",
+        success: "Reset link sent! Please check your inbox.",
       });
       // Optional: Close after 3 seconds on success
       setTimeout(onClose, 3000);
     } catch (error) {
       console.error(error);
       let msg = "Failed to send email.";
-      if (error.code === 'auth/user-not-found') msg = "No account found with this email.";
+      if (error.code === "auth/user-not-found")
+        msg = "No account found with this email.";
       setStatus({ loading: false, error: msg, success: "" });
     }
-  }
+  };
 
   const isAuthenticated = !!user;
 
@@ -350,18 +376,20 @@ const handleBackendFirebase = async (firebaseToken, mode) => {
     <AuthContext.Provider
       value={{
         user,
+        userData,
         loading,
+        loadUser,
         setLoading,
         isAuthenticated,
-        login, 
+        login,
         googleLogin,
-        sendPhoneOtp, 
-        verifyPhoneOtp, 
-        setupRecaptcha, 
+        sendPhoneOtp,
+        verifyPhoneOtp,
+        setupRecaptcha,
         handleBackendFirebase,
         logout,
         auth,
-        forgotPassword
+        forgotPassword,
       }}
     >
       {children}
