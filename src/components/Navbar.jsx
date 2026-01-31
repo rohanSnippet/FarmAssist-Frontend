@@ -17,7 +17,7 @@ const Navbar = () => {
 
   const { t, i18n } = useTranslation();
   const { isDark, setTheme, theme } = useTheme();
-  const { logout, userData, auth } = useAuth();
+  const { logout, userData, auth, loading } = useAuth();
   const { openModal } = useModal();
   const Toast = useToast();
   const navigate = useNavigate();
@@ -300,7 +300,12 @@ const Navbar = () => {
 
         {/* 3. Navbar End (Auth + Settings Trigger) */}
         <div className="navbar-end gap-2">
-          {userData ? (
+          {loading ? (
+            <div className="flex items-center gap-2">
+              {/* Skeleton for button */}
+              <div className="skeleton w-10 h-10 rounded-full shrink-0 bg-base-300"></div>
+            </div>
+          ) : userData ? (
             // LOGGED IN: Avatar opens Sidebar
             <button
               onClick={() => setSidebarOpen(true)}
@@ -406,10 +411,13 @@ const Navbar = () => {
                   {userData?.email}
                 </p>
 
-                <button onClick={()=>{
-                  navigate(`/me`)
-                  setSidebarOpen(false);
-                }} className="btn btn-outline btn-primary btn-sm mt-4 rounded-full px-6 gap-2">
+                <button
+                  onClick={() => {
+                    navigate(`/me`);
+                    setSidebarOpen(false);
+                  }}
+                  className="btn btn-primary btn-sm mt-4 px-6 gap-2"
+                >
                   Edit Profile
                 </button>
               </div>

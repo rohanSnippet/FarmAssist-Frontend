@@ -21,7 +21,7 @@ import PhotoUpdateModal from "./PhotoUploadModal";
 import { useTheme } from "../../context/ThemeContext";
 
 const UserProfile = () => {
-  const { user, userData, loadUser, auth } = useAuth();
+  const { userData, loadUser, auth } = useAuth();
   const {isDark} = useTheme();
   const Toast = useToast();
 
@@ -37,17 +37,17 @@ const UserProfile = () => {
 
   // Sync state with context data
   useEffect(() => {
-    const data = userData || user;
+    const data = userData || auth;
     if (data) {
       setFormData({
         first_name: data.first_name || data.displayName?.split(" ")[0] || "",
         last_name: data.last_name || data.displayName?.split(" ").slice(1).join(" ") || "",
         email: data.email || "",
         phone_number: data.phone_number || "",
-        photo_url: data.photo_url || data.photoURL || "",
+        photo_url: data.photo_url || auth?.currentUser?.photoURL || "",
       });
     }
-  }, [userData, user]);
+  }, [userData, auth]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
