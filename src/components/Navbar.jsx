@@ -5,7 +5,6 @@ import { useTheme } from "../context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { useModal } from "../context/ModalContext";
 import { useToast } from "../ui/Toast";
-import { auth } from "../firebase";
 import LanguageGridContent from "../ui/LanguageGridContent";
 import LogoLight from "../assets/seedingL.png";
 import Logo from "../assets/seeding.png";
@@ -18,7 +17,7 @@ const Navbar = () => {
 
   const { t, i18n } = useTranslation();
   const { isDark, setTheme, theme } = useTheme();
-  const { logout, user, auth } = useAuth();
+  const { logout, userData, auth } = useAuth();
   const { openModal } = useModal();
   const Toast = useToast();
   const navigate = useNavigate();
@@ -301,7 +300,7 @@ const Navbar = () => {
 
         {/* 3. Navbar End (Auth + Settings Trigger) */}
         <div className="navbar-end gap-2">
-          {user ? (
+          {userData ? (
             // LOGGED IN: Avatar opens Sidebar
             <button
               onClick={() => setSidebarOpen(true)}
@@ -310,10 +309,10 @@ const Navbar = () => {
             >
               {/* Added bg-base-300 to give the placeholder a background color that fits the theme */}
               <div className="w-10 rounded-full bg-base-300 flex items-center justify-center overflow-hidden">
-                {user?.photoURL || auth?.currentUser?.photoURL ? (
+                {userData?.photoURL || auth?.currentUser?.photoURL ? (
                   <img
                     alt="Profile"
-                    src={user?.photoURL || auth?.currentUser?.photoURL}
+                    src={userData?.photoURL || auth?.currentUser?.photoURL}
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover"
                   />
@@ -385,13 +384,13 @@ const Navbar = () => {
               <IconClose />
             </button>
 
-            {user || auth ? (
+            {userData ? (
               <div className="flex flex-col items-center mt-2">
                 <div className="avatar mb-3">
                   <div className="w-24 rounded-full ring-2 ring-primary ring-offset-base-100 ring-offset-3">
                     <img
                       src={
-                        user?.photoURL ||
+                        userData?.photoURL ||
                         auth?.currentUser?.photoURL ||
                         "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
                       }
@@ -401,13 +400,16 @@ const Navbar = () => {
                   </div>
                 </div>
                 <h3 className="font-bold text-xl text-center break-words w-full px-2">
-                  {user?.displayName || "Farmer"}
+                  {userData?.displayName || "Farmer"}
                 </h3>
                 <p className="text-sm text-base-content/60 truncate w-full text-center px-4">
-                  {user?.email}
+                  {userData?.email}
                 </p>
 
-                <button className="btn btn-outline btn-primary btn-sm mt-4 rounded-full px-6 gap-2">
+                <button onClick={()=>{
+                  navigate(`/me`)
+                  setSidebarOpen(false);
+                }} className="btn btn-outline btn-primary btn-sm mt-4 rounded-full px-6 gap-2">
                   Edit Profile
                 </button>
               </div>
@@ -473,7 +475,7 @@ const Navbar = () => {
             </div>
 
             {/* Additional Links for Logged In Users */}
-            {user && (
+            {userData && (
               <div className="mt-6">
                 <p className="text-xs font-bold text-base-content/40 uppercase mb-3 tracking-wider px-1">
                   Account
@@ -491,7 +493,7 @@ const Navbar = () => {
           </div>
 
           {/* Sidebar Footer: Logout */}
-          {user && (
+          {userData && (
             <div className="p-4 border-t border-base-200 bg-base-100">
               <button
                 onClick={handleLogout}
