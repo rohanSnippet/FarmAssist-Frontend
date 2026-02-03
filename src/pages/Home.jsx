@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -23,52 +23,8 @@ import {
 } from "recharts";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-
-// --- Mock Data ---
-const weatherData = [
-  {
-    day: "Mon",
-    temp: 24,
-    humidity: 45,
-    icon: <Sun className="w-5 h-5 text-warning" />,
-  },
-  {
-    day: "Tue",
-    temp: 22,
-    humidity: 50,
-    icon: <Cloud className="w-5 h-5 text-neutral-content" />,
-  },
-  {
-    day: "Wed",
-    temp: 19,
-    humidity: 60,
-    icon: <CloudRain className="w-5 h-5 text-info" />,
-  },
-  {
-    day: "Thu",
-    temp: 21,
-    humidity: 55,
-    icon: <Sun className="w-5 h-5 text-warning" />,
-  },
-  {
-    day: "Fri",
-    temp: 25,
-    humidity: 40,
-    icon: <Sun className="w-5 h-5 text-warning" />,
-  },
-  {
-    day: "Sat",
-    temp: 23,
-    humidity: 48,
-    icon: <Wind className="w-5 h-5 text-neutral-content" />,
-  },
-  {
-    day: "Sun",
-    temp: 26,
-    humidity: 42,
-    icon: <Sun className="w-5 h-5 text-warning" />,
-  },
-];
+import axios from "axios";
+import useGeoLocation from "../hooks/useGeoLocation";
 
 const marketData = [
   { name: "W1", Wheat: 2400, Rice: 3100 },
@@ -97,6 +53,70 @@ const staggerContainer = {
 export default function Home() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const {coordinates, loaded, error} = useGeoLocation();
+  
+
+  const [weatherData, setWeatherData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Helper to map WMO codes to Icons
+  const getWeatherIcon = (code) => {
+    if (code === 0 || code === 1)
+      return <Sun className="w-5 h-5 text-warning" />;
+    if (code === 2 || code === 3)
+      return <Cloud className="w-5 h-5 text-neutral-content" />;
+    if ([45, 48].includes(code))
+      return <Wind className="w-5 h-5 text-neutral-content" />;
+    if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code))
+      return <CloudRain className="w-5 h-5 text-info" />;
+    if ([71, 73, 75, 77, 85, 86].includes(code))
+      return <Snowflake className="w-5 h-5 text-info" />;
+    if ([95, 96, 99].includes(code))
+      return <CloudLightning className="w-5 h-5 text-warning" />;
+    return <Sun className="w-5 h-5 text-warning" />;
+  };
+
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        // COORDINATES: Currently hardcoded to Mumbai (19.07, 72.87).
+        // TODO: Replace with user's actual location from your context or navigator.geolocation
+        const lat = coordinates.lat || 19.07;
+        const lon = coordinates.lng || 72.87;
+
+        const response = await axios.get(
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,precipitation_probability_max,weathercode&timezone=auto`,
+        );
+
+        const {
+          time,
+          temperature_2m_max,
+          precipitation_probability_max,
+          weathercode,
+        } = response.data.daily;
+
+        // Transform API arrays into the object structure your UI expects
+        const formattedData = time.map((dateStr, index) => {
+          const date = new Date(dateStr);
+          return {
+            day: date.toLocaleDateString("en-US", { weekday: "short" }),
+            temp: Math.round(temperature_2m_max[index]),
+            humidity: precipitation_probability_max[index],
+            icon: getWeatherIcon(weathercode[index]),
+          };
+        });
+
+        // Limit to 7 days if API returns more
+        setWeatherData(formattedData.slice(0, 7));
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching weather:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchWeather();
+  }, []);
 
   return (
     <div className="min-h-screen bg-base-100 flex flex-col font-sans">
@@ -187,7 +207,32 @@ export default function Home() {
                     </h3>
                   </div>
                   <div className="p-4 space-y-2">
-                    {weatherData.map((d, i) => (
+                    {loading ? (
+                      <div className="flex justify-center p-4">
+                        <span className="loading loading-spinner loading-md text-primary"></span>
+                      </div>
+                    ) : (
+                      weatherData.map((d, i) => (
+                        <div
+                          key={i}
+                          className="flex items-center justify-between text-sm p-3 rounded-lg hover:bg-base-200 transition-colors group cursor-default"
+                        >
+                          <span className="font-bold w-10 opacity-70 group-hover:opacity-100">
+                            {d.day}
+                          </span>
+                          <div className="flex items-center gap-3">
+                            {d.icon}
+                            <span className="font-medium text-lg">
+                              {d.temp}°
+                            </span>
+                          </div>
+                          <span className="text-xs opacity-50 flex items-center gap-1 group-hover:text-primary transition-colors">
+                            <Droplets size={14} /> {d.humidity}%
+                          </span>
+                        </div>
+                      ))
+                    )}
+                    {/*   {weatherData.map((d, i) => (
                       <div
                         key={i}
                         className="flex items-center justify-between text-sm p-3 rounded-lg hover:bg-base-200 transition-colors group cursor-default"
@@ -203,7 +248,7 @@ export default function Home() {
                           <Droplets size={14} /> {d.humidity}%
                         </span>
                       </div>
-                    ))}
+                    ))} */}
                   </div>
                 </div>
               </div>

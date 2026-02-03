@@ -1,0 +1,45 @@
+// --- Mock Data ---
+/* const weatherData = [
+  {
+    day: "Mon",
+    temp: 24,
+    humidity: 45,
+    icon: <Sun className="w-5 h-5 text-warning" />,
+  },
+  {
+    day: "Tue",
+    temp: 22,
+    humidity: 50,
+    icon: <Cloud className="w-5 h-5 text-neutral-content" />,
+  },
+  {
+    day: "Wed",
+    temp: 19,
+    humidity: 60,
+    icon: <CloudRain className="w-5 h-5 text-info" />,
+  },
+  {
+    day: "Thu",
+    temp: 21,
+    humidity: 55,
+    icon: <Sun className="w-5 h-5 text-warning" />,
+  },
+  {
+    day: "Fri",
+    temp: 25,
+    humidity: 40,
+    icon: <Sun className="w-5 h-5 text-warning" />,
+  },
+  {
+    day: "Sat",
+    temp: 23,
+    humidity: 48,
+    icon: <Wind className="w-5 h-5 text-neutral-content" />,
+  },
+  {
+    day: "Sun",
+    temp: 26,
+    humidity: 42,
+    icon: <Sun className="w-5 h-5 text-warning" />,
+  },
+]; */
