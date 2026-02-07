@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
       const res = await api.get(`/api/me/`);
       if (res.status == 200) {
         setUserData(res.data);
-        console.log(res.data)
+        //console.log(res.data)
       }
     } catch (error) {
       console.error("Failed to fetch user details:", error);
