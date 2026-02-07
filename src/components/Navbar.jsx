@@ -425,7 +425,7 @@ console.log(userData)
                   </div>
                 </div>
                 <h3 className="font-bold text-xl text-center break-words w-full px-2">
-                  {userData?.displayName || "Farmer"}
+                  {userData?.first_name && userData?.last_name ? `${userData?.first_name} ${userData?.last_name}` : auth?.currentUser?.displayName || "Farmer"}
                 </h3>
                 <p className="text-sm text-base-content/60 truncate w-full text-center px-4">
                   {userData?.email}
