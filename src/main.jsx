@@ -16,6 +16,7 @@ import AuthPage from "./components/AuthPage";
 import ApplicationLoader from "./ui/ApplicationLoader";
 import ResetPassword from "./components/ResetPassword";
 import UserProfile from "./components/User/UserProfile";
+import { LocationProvider } from "./context/LocationContext";
 
 const router = createBrowserRouter([
   {
@@ -92,11 +93,13 @@ createRoot(document.getElementById("root")).render(
     <React.Suspense fallback={<ApplicationLoader />}>
       <ThemeProvider>
         <AuthProvider>
+          <LocationProvider>
           {" "}
           <ModalProvider>
             <GlobalModal />
             <RouterProvider router={router} />
           </ModalProvider>
+          </LocationProvider>
           {/* <AppInitialization /> */}
         </AuthProvider>
       </ThemeProvider>

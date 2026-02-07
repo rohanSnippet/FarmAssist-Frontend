@@ -8,6 +8,9 @@ import { useToast } from "../ui/Toast";
 import LanguageGridContent from "../ui/LanguageGridContent";
 import LogoLight from "../assets/seedingL.png";
 import Logo from "../assets/seeding.png";
+import { useUserLocation } from "../context/LocationContext";
+import { MapPin } from "lucide-react";
+import LocationModal from "./LocationModal";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -22,6 +25,8 @@ const Navbar = () => {
   const Toast = useToast();
   const navigate = useNavigate();
   const location = useLocation();
+  const [isLocModalOpen, setIsLocModalOpen] = useState(false);
+  const { curLocation, detectAndSaveLocation, loadingLoc } = useUserLocation();
 
   // Handle Scroll Effect for Glassmorphism
   useEffect(() => {
@@ -177,7 +182,7 @@ const Navbar = () => {
       />
     </svg>
   );
-
+console.log(userData)
   return (
     <>
       {/* ================= NAVBAR ================= */}
@@ -300,6 +305,23 @@ const Navbar = () => {
 
         {/* 3. Navbar End (Auth + Settings Trigger) */}
         <div className="navbar-end gap-2">
+          <button 
+            onClick={() => setIsLocModalOpen(true)}
+            className={`
+              btn btn-ghost btn-circle
+              md:w-auto md:px-3 md:rounded-full 
+              border border-transparent hover:border-primary/20 hover:bg-primary/5
+            `}
+            title="Location Settings"
+          >
+            <MapPin className={`w-5 h-5 ${curLocation?.label ? 'text-primary' : 'opacity-50'}`} />
+            
+            {/* Text hidden on mobile, visible on desktop */}
+            <span className="hidden md:block text-sm font-medium max-w-[120px] truncate">
+               {loadingLoc ? "..." : (curLocation?.label || "Set Location")}
+            </span>
+          </button>
+
           {loading ? (
             <div className="flex items-center gap-2">
               {/* Skeleton for button */}
@@ -314,10 +336,10 @@ const Navbar = () => {
             >
               {/* Added bg-base-300 to give the placeholder a background color that fits the theme */}
               <div className="w-10 rounded-full bg-base-300 flex items-center justify-center overflow-hidden">
-                {userData?.photoURL || auth?.currentUser?.photoURL ? (
+                { userData?.photo_url || auth?.currentUser?.photoURL ? (
                   <img
                     alt="Profile"
-                    src={userData?.photoURL || auth?.currentUser?.photoURL}
+                    src={userData?.photo_url || auth?.currentUser?.photoURL}
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover"
                   />
@@ -394,9 +416,7 @@ const Navbar = () => {
                 <div className="avatar mb-3">
                   <div className="w-24 rounded-full ring-2 ring-primary ring-offset-base-100 ring-offset-3">
                     <img
-                      src={
-                        userData?.photoURL ||
-                        auth?.currentUser?.photoURL ||
+                      src={userData?.photo_url || auth?.currentUser?.photoURL ||
                         "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
                       }
                       alt="User"
@@ -513,6 +533,13 @@ const Navbar = () => {
           )}
         </div>
       </div>
+      <LocationModal 
+        isOpen={isLocModalOpen} 
+        onClose={() => setIsLocModalOpen(false)}
+        location={curLocation}
+        onDetect={detectAndSaveLocation}
+        loading={loadingLoc}
+      />
     </>
   );
 };
