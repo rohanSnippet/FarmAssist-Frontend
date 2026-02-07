@@ -117,7 +117,7 @@ const UserProfile = () => {
     hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0 }
   };
-
+ console.log(formData.photo_url)
   return (
     <div className="min-h-screen w-full bg-base-200 relative overflow-hidden flex items-center justify-center p-4 md:p-8">
       
