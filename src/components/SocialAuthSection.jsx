@@ -59,7 +59,7 @@ const SocialAuthSection = ({ mode, onPhoneClick }) => {
       <div className="relative flex py-1 items-center">
         <div className="flex-grow border-t border-base-content/20"></div>
         <span className="flex-shrink-0 mx-4 text-xs font-medium text-base-content/50 uppercase tracking-widest">
-          Or continue with
+         {t("Socialauth.continue_with")}
         </span>
         <div className="flex-grow border-t border-base-content/20"></div>
       </div>
@@ -72,18 +72,18 @@ const SocialAuthSection = ({ mode, onPhoneClick }) => {
           onClick={handleGoogle}
           className="btn btn-outline border-base-content/20 hover:bg-base-content hover:text-base-100 normal-case font-medium"
         >
-          <GoogleIcon /> <span className="ml-2">Google</span>
+          <GoogleIcon /> <span className="ml-2">{t("Socialauth.google")}</span>
         </motion.button>
 
         <motion.button
-          data-tip="☹️ Not available yet!!"
+          data-tip={t("Socialauth.not_available")}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.95 }}
           type="button"
           onClick={onPhoneClick}
           className="btn btn-outline border-base-content/20 hover:bg-base-content hover:text-base-100 normal-case font-medium tooltip tooltip-top tooltip-warning"
         >
-          <Phone size={18} /> <span className="ml-2">Phone</span>
+          <Phone size={18} /> <span className="ml-2">{t("Socialauth.phone")}</span>
         </motion.button>
       </div>
     </div>

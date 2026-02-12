@@ -11,6 +11,8 @@ const GlobalModal = () => {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
   };
+  
+  
 
   const modalVariants = {
     hidden: { opacity: 0, y: -50, scale: 0.95 },
@@ -22,9 +24,9 @@ const GlobalModal = () => {
     },
     exit: { opacity: 0, y: 20, scale: 0.95 }
   };
-
   return (
     <AnimatePresence>
+      
       {content && (
         <motion.div
           className="modal modal-open modal-bottom sm:modal-middle backdrop-blur-sm"

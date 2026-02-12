@@ -41,7 +41,7 @@ const SignupForm = ({ switchToLogin, onPhoneClick }) => {
       console.log(firebaseResult.user);
       Toast.fire({
         icon: "success",
-        title: "Account created successfully",
+        title: t("Common.toasts.signup_success"),
       });
 
       setTimeout(() => switchToLogin(), 1000);
@@ -53,10 +53,10 @@ const SignupForm = ({ switchToLogin, onPhoneClick }) => {
           icon: "error",
           title:
             status === 409
-              ? "Account already exists"
+              ? t("Common.toasts.account_exists")
               : status >= 500
               ? "Server error. Try later"
-              : err.response.data?.error || "Signup failed",
+              : err.response.data?.error || t("Common.toasts.signup_failure"),
         });
         return;
       }
@@ -64,18 +64,18 @@ const SignupForm = ({ switchToLogin, onPhoneClick }) => {
       // Handle Firebase errors
       if (err.code) {
         const firebaseErrors = {
-          "auth/email-already-in-use": "Email already registered",
-          "auth/invalid-email": "Invalid email address",
-          "auth/weak-password": "Password is too weak",
+          "auth/email-already-in-use": t("Common.toasts.account_exists"),
+          "auth/invalid-email":  t("Signup.invalid_email"),
+          "auth/weak-password": t("Signup.weak_password"),
         };
         Toast.fire({
           icon: "error",
-          title: firebaseErrors[err.code] || "Signup failed",
+          title: firebaseErrors[err.code] || t("Common.toasts.signup_failure"),
         });
         return;
       }
 
-      Toast.fire({ icon: "error", title: "Something went wrong" });
+      Toast.fire({ icon: "error", title: t("Common.toasts.error_occurred") });
     } finally {
       setLoading(false);
     }
@@ -106,7 +106,7 @@ const SignupForm = ({ switchToLogin, onPhoneClick }) => {
   return (
     <div className="w-full font-poppins">
       <h2 className="text-xl font-semibold text-center mb-6 text-base-content">
-        Create Account
+        {t("Authpage.create_account")}
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
@@ -116,14 +116,14 @@ const SignupForm = ({ switchToLogin, onPhoneClick }) => {
             <input
               {...register("first_name", { required: "Required" })}
               className="input input-bordered w-full bg-base-200/50 focus:bg-base-100 focus:border-primary focus:shadow-[0_0_15px_rgba(var(--p),0.3)] transition-all"
-              placeholder="First Name"
+              placeholder={t("Signup.first_name")}
             />
           </div>
           <div className="w-1/2">
             <input
               {...register("last_name")}
               className="input input-bordered w-full bg-base-200/50 focus:bg-base-100 focus:border-primary focus:shadow-[0_0_15px_rgba(var(--p),0.3)] transition-all"
-              placeholder="Last Name"
+              placeholder={t("Signup.last_name")}
             />
           </div>
         </div>
@@ -137,21 +137,21 @@ const SignupForm = ({ switchToLogin, onPhoneClick }) => {
             })}
             type="email"
             className="input input-bordered w-full bg-base-200/50 focus:bg-base-100 focus:border-primary focus:shadow-[0_0_15px_rgba(var(--p),0.3)] transition-all"
-            placeholder="Email Address"
+            placeholder={t("Authpage.email_addres")}
           />
         </div>
 
         <div className="relative">
           <input
             {...register("password", {
-              required: "Password required",
-              minLength: { value: 6, message: "Min 6 chars" },
+              required: t("Signup.pass_required"),
+              minLength: { value: 6, message: t("Signup.pass_min") },
             })}
             type={showPassword ? "text" : "password"}
             className={`input input-bordered w-full bg-base-200/50 focus:bg-base-100 focus:border-primary focus:shadow-[0_0_15px_rgba(var(--p),0.3)] transition-all duration-300 pr-10 ${
               errors.password ? "input-error" : ""
             }`}
-            placeholder="Password"
+            placeholder={t("Authpage.pass")}
           />
           <button
             type="button"
@@ -203,7 +203,7 @@ const SignupForm = ({ switchToLogin, onPhoneClick }) => {
           type="submit"
           className="btn btn-primary w-full shadow-lg shadow-primary/30 mt-2 text-primary-content font-bold tracking-wide"
         >
-          Sign Up
+           {t("Common.signup")}
         </motion.button>
       </form>
 
@@ -211,13 +211,13 @@ const SignupForm = ({ switchToLogin, onPhoneClick }) => {
       <SocialAuthSection mode="signup" onPhoneClick={onPhoneClick} />
 
       <p className="text-center mt-6 text-sm text-base-content/70">
-        Already have an account?{" "}
+       {t("Common.toasts.account_exists")}{""}
         <button
           type="button"
           className="link link-hover text-primary font-bold ml-1 transition-colors"
           onClick={switchToLogin}
         >
-          Login Here
+          {t("Common.lgnhere")}
         </button>
       </p>
     </div>

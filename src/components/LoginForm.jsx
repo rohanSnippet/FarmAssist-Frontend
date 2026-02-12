@@ -7,9 +7,13 @@ import { motion } from "framer-motion";
 import SocialAuthSection from "./SocialAuthSection";
 import { useModal } from "../context/ModalContext";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { useTranslation } from "react-i18next";
+
+
 
 // --- INTERNAL COMPONENT: Forgot Password Modal ---
 const ForgotPasswordModal = ({ onClose }) => {
+  const {t}=useTranslation();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState({
     loading: false,
@@ -36,15 +40,15 @@ const ForgotPasswordModal = ({ onClose }) => {
       setStatus({
         loading: false,
         error: "",
-        success: "Reset link sent! Please check your inbox.",
+        success: t("Login.reset_sent"),
       });
       // Optional: Close after 3 seconds on success
       setTimeout(onClose, 3000);
     } catch (error) {
       console.error(error);
-      let msg = "Failed to send email.";
+      let msg = t("Login.reset_failed");
       if (error.code === "auth/user-not-found")
-        msg = "No account found with this email.";
+        msg = t("Login.no_account");
       setStatus({ loading: false, error: msg, success: "" });
     }
   };
@@ -52,8 +56,7 @@ const ForgotPasswordModal = ({ onClose }) => {
   return (
     <div className="w-full max-w-sm">
       <p className="text-base-content/70 text-sm mb-4">
-        Enter your email address and we'll send you a link to reset your
-        password.
+        {t("Login.reset_desc")}
       </p>
 
       {status.success && (
@@ -70,7 +73,7 @@ const ForgotPasswordModal = ({ onClose }) => {
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <input
           type="email"
-          placeholder="Enter your email"
+          placeholder={t("Login.enter_email")}
           className="input input-bordered w-full focus:input-primary"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -82,7 +85,7 @@ const ForgotPasswordModal = ({ onClose }) => {
             onClick={onClose}
             className="btn btn-ghost btn-sm"
           >
-            Cancel
+            {t("Login.cancel")}
           </button>
           <button
             type="submit"
@@ -91,7 +94,7 @@ const ForgotPasswordModal = ({ onClose }) => {
             }`}
             disabled={status.loading || status.success}
           >
-            {status.loading ? "Sending..." : "Send Link"}
+            {status.loading ? t("Login.sending") : t("Login.send_link")}
           </button>
         </div>
       </form>
@@ -106,6 +109,7 @@ const LoginForm = ({ switchToSignup, onPhoneClick }) => {
   const Toast = useToast();
   const navigate = useNavigate();
   const location = useLocation();
+  const {t}=useTranslation();
   const from = location.state?.from?.pathname || "/";
   const [showPassword, setShowPassword] = useState(false);
   const {
@@ -119,13 +123,13 @@ const LoginForm = ({ switchToSignup, onPhoneClick }) => {
       setLoading(true);
       const success = await login(data.email, data.password);
       if (success) {
-        Toast.fire({ icon: "success", title: "Logged in Successfully" });
+        Toast.fire({ icon: "success", title: t("Common.toasts.login_success") });
         navigate(from, { replace: true });
       } else {
-        Toast.fire({ icon: "error", title: "Invalid Credentials" });
+        Toast.fire({ icon: "error", title: t("Common.toasts.login_failure") });
       }
     } catch (err) {
-      Toast.fire({ icon: "error", title: "Something went wrong." });
+      Toast.fire({ icon: "error", title: t("Common.toasts.error_occurred") });
     } finally {
       setLoading(false);
     }
@@ -137,14 +141,14 @@ const LoginForm = ({ switchToSignup, onPhoneClick }) => {
     openModal(
       // Pass closeModal so the internal Cancel button works
       <ForgotPasswordModal onClose={closeModal} />,
-      { title: "Reset Password", className: "max-w-md" }
+      { title: t("Login.reset_title"), className: "max-w-md" }
     );
   };
 
   return (
     <div className="w-full font-poppins">
       <h2 className="text-xl font-semibold text-center mb-6 text-base-content">
-        Welcome Back 👋
+         {t("Authpage.welcome_back")} 👋
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -152,14 +156,14 @@ const LoginForm = ({ switchToSignup, onPhoneClick }) => {
         <div className="form-control">
           <input
             {...register("email", {
-              required: "Email is required",
-              pattern: { value: /^\S+@\S+$/i, message: "Enter a valid email" },
+              required: t("Login.email_required"),
+              pattern: { value: /^\S+@\S+$/i, message: t("Login.email_valid") },
             })}
             type="email"
             className={`input input-bordered w-full bg-base-200/50 focus:bg-base-100 focus:border-primary focus:shadow-[0_0_15px_rgba(var(--p),0.3)] transition-all duration-300 ${
               errors.email ? "input-error" : ""
             }`}
-            placeholder="Email Address"
+            placeholder= {t("Login.email")}
           />
           {errors.email && (
             <span className="text-error text-xs mt-1 ml-1">
@@ -173,14 +177,14 @@ const LoginForm = ({ switchToSignup, onPhoneClick }) => {
           <div className="relative">
             <input
               {...register("password", {
-                required: "Password required",
-                minLength: { value: 6, message: "Min 6 chars" },
+                required: t("Login.pass_required"),
+                minLength: { value: 6, message: t("Login.pass_required") },
               })}
               type={showPassword ? "text" : "password"}
               className={`input input-bordered w-full bg-base-200/50 focus:bg-base-100 focus:border-primary focus:shadow-[0_0_15px_rgba(var(--p),0.3)] transition-all duration-300 pr-10 ${
                 errors.password ? "input-error" : ""
               }`}
-              placeholder="Password"
+              placeholder={t("Login.pass")}
             />
 
             {/* FIX: Added 'z-10' to the button class below */}
@@ -240,7 +244,7 @@ const LoginForm = ({ switchToSignup, onPhoneClick }) => {
           type="submit"
           className="btn btn-primary w-full shadow-lg shadow-primary/30 mt-2 text-primary-content font-bold tracking-wide"
         >
-          Sign In
+          {t("Login.sign")}
         </motion.button>
       </form>
 
@@ -249,7 +253,7 @@ const LoginForm = ({ switchToSignup, onPhoneClick }) => {
           onClick={handleForgotPassword}
           className="text-xs text-primary hover:underline hover:text-primary-focus transition-colors"
         >
-          Forgot Password?
+          {t("Login.Forgot")}
         </button>
       </div>
 
@@ -257,13 +261,13 @@ const LoginForm = ({ switchToSignup, onPhoneClick }) => {
       <SocialAuthSection mode="login" onPhoneClick={onPhoneClick} />
 
       <p className="text-center mt-6 text-sm text-base-content/70">
-        New here?{" "}
+        {t("Authpage.new_here")}{" "}
         <button
           type="button"
           className="link link-hover text-primary font-bold ml-1 transition-colors"
           onClick={switchToSignup}
         >
-          Create Account
+          {t("Login.create_account")}
         </button>
       </p>
     </div>

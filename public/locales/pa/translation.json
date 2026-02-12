@@ -9,6 +9,7 @@
     "retro": "ਰੇਟ੍ਰੋ",
     "sunset": "ਸਨਸੈੱਟ",
     "Dracula": "ਡਰੈਕੂਲਾ",
+    "lgnhere": "ਇੱਥੇ ਲਾਗਇਨ ਕਰੋ",
     "toasts": {
       "login_success": "ਸਫਲਤਾਪੂਰਵਕ ਲੌਗਇਨ ਹੋ ਗਿਆ!",
       "login_failure": "ਲੌਗਇਨ ਅਸਫਲ. ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੀਆਂ ਜਾਣਕਾਰੀਆਂ ਦੀ ਜਾਂਚ ਕਰੋ.",
@@ -49,5 +50,109 @@
   "footer": {
     "slogan": "2025 ਤੋਂ ਭਰੋਸੇਮੰਦ ਤਕਨਾਲੋਜੀ",
     "copyright": "Copyright © 2025 - ਸਾਰੇ ਹੱਕ ਰਾਖਵੇਂ ਹਨ"
+  },
+   "Authpage": {
+    "empowering_agriculture": "ਖੇਤੀ ਨੂੰ ਮਜ਼ਬੂਤ ਬਣਾਉਂਦੇ ਹਾਂ",
+    "welcome_back": "ਮੁੜ ਸੁਆਗਤ ਹੈ!",
+    "email_addres": "ਈਮੇਲ ਪਤਾ",
+    "pass": "ਪਾਸਵਰਡ",
+    "forgot": "ਪਾਸਵਰਡ ਭੁੱਲ ਗਏ?",
+    "cont": "ਇਸ ਨਾਲ ਜਾਰੀ ਰੱਖੋ",
+    "new_here": "ਇੱਥੇ ਨਵੇਂ ਹੋ?",
+    "create_account": "ਖਾਤਾ ਬਣਾਓ",
+    "back_home": "ਹੋਮ ਤੇ ਵਾਪਸ ਜਾਓ",
+    "logging_in": "ਤੁਹਾਨੂੰ ਲਾਗਇਨ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ",
+    "creating_account": "ਤੁਹਾਡਾ ਖਾਤਾ ਬਣਾਇਆ ਜਾ ਰਿਹਾ ਹੈ"
+  },
+  "Login": {
+    "sign": "ਸਾਈਨ ਇਨ",
+    "reset_sent": "ਪਾਸਵਰਡ ਰੀਸੈਟ ਲਿੰਕ ਤੁਹਾਡੇ ਈਮੇਲ ਤੇ ਭੇਜਿਆ ਗਿਆ ਹੈ.",
+    "reset_failed": "ਰੀਸੈਟ ਲਿੰਕ ਭੇਜਣ ਵਿੱਚ ਅਸਫਲ. ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ.",
+    "no_account": "ਇਸ ਈਮੇਲ ਨਾਲ ਕੋਈ ਖਾਤਾ ਨਹੀਂ ਮਿਲਿਆ.",
+    "reset_desc": "ਪਾਸਵਰਡ ਰੀਸੈਟ ਲਿੰਕ ਲਈ ਆਪਣਾ ਈਮੇਲ ਦਰਜ ਕਰੋ.",
+    "enter_email": "ਆਪਣਾ ਈਮੇਲ ਪਤਾ ਦਰਜ ਕਰੋ",
+    "cancel": "ਰੱਦ ਕਰੋ",
+    "sending": "ਰੀਸੈਟ ਲਿੰਕ ਭੇਜਿਆ ਜਾ ਰਿਹਾ ਹੈ...",
+    "send_link": "ਲਿੰਕ ਭੇਜੋ",
+    "reset_title": "ਆਪਣਾ ਪਾਸਵਰਡ ਰੀਸੈਟ ਕਰੋ",
+    "email_required": "ਈਮੇਲ ਲਾਜ਼ਮੀ ਹੈ.",
+    "email_valid": "ਸਹੀ ਈਮੇਲ ਦਰਜ ਕਰੋ",
+    "pass_required": "ਪਾਸਵਰਡ ਲਾਜ਼ਮੀ ਹੈ",
+    "pass_min": "ਘੱਟੋ-ਘੱਟ 6 ਅੱਖਰ",
+    "email": "ਈਮੇਲ",
+    "pass": "ਪਾਸਵਰਡ",
+    "Forgot": "ਪਾਸਵਰਡ ਭੁੱਲ ਗਏ?",
+    "create_account": "ਖਾਤਾ ਬਣਾਓ",
+    "back": "ਹੋਮ ਤੇ ਵਾਪਸ ਜਾਓ"
+  },
+  "Signup": {
+    "invalid_email": "ਗਲਤ ਈਮੇਲ ਪਤਾ.",
+    "week_password": "ਪਾਸਵਰਡ ਬਹੁਤ ਕਮਜ਼ੋਰ ਹੈ",
+    "first_name": "ਪਹਿਲਾ ਨਾਮ",
+    "last_name": "ਅਖੀਰਲਾ ਨਾਮ",
+    "pass_min": "ਘੱਟੋ-ਘੱਟ 6 ਅੱਖਰ",
+    "pass_required": "ਪਾਸਵਰਡ ਲਾਜ਼ਮੀ ਹੈ",
+    "pass": "ਪਾਸਵਰਡ"
+  },
+  "Socialauth": {
+    "google": "Google",
+    "phone": "ਫੋਨ",
+    "continue_with": "ਇਸ ਨਾਲ ਜਾਰੀ ਰੱਖੋ",
+    "not_available": "ਇਹ ਫੀਚਰ ਅਜੇ ਉਪਲਬਧ ਨਹੀਂ ਹੈ."
+  },
+  "PhoneLoginModal": {
+    "title_phone": "ਫੋਨ ਨੰਬਰ ਦਰਜ ਕਰੋ",
+    "title_otp": "OTP ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ",
+
+    "mobile_label": "ਮੋਬਾਈਲ ਨੰਬਰ",
+    "mobile_placeholder": "+91 99999 99999",
+
+    "phone_required": "ਫੋਨ ਨੰਬਰ ਲਾਜ਼ਮੀ ਹੈ",
+    "phone_invalid": "ਗਲਤ ਫੋਨ ਨੰਬਰ",
+
+    "otp_label": "ਵਨ ਟਾਈਮ ਪਾਸਵਰਡ",
+    "otp_placeholder": "123456",
+
+    "otp_required": "OTP ਲਾਜ਼ਮੀ ਹੈ",
+    "otp_length": "6 ਅੰਕਾਂ ਦਾ OTP ਲਾਜ਼ਮੀ ਹੈ",
+
+    "change_phone": "ਫੋਨ ਨੰਬਰ ਬਦਲੋ",
+
+    "send_code": "ਕੋਡ ਭੇਜੋ",
+    "verify_login": "ਪੁਸ਼ਟੀ ਕਰੋ ਅਤੇ ਲਾਗਇਨ ਕਰੋ"
+  },
+  "Contact": {
+    "title": "ਸੰਪਰਕ ਕਰੋ",
+    "description": "ਸਾਡੇ ਨਾਲ ਸੰਪਰਕ ਕਰੋ ਅਤੇ ਮਦਦ ਪ੍ਰਾਪਤ ਕਰੋ. ਸਾਡੀ ਟੀਮ ਹਮੇਸ਼ਾਂ ਤਿਆਰ ਹੈ.",
+    "cta": "ਅਨੁਮਾਨ ਪ੍ਰਾਪਤ ਕਰੋ"
+  },
+
+  "About": {
+    "hero_title_1": "ਅਸੀਂ ਬਣਾਉਂਦੇ ਹਾਂ",
+    "hero_title_2": "ਭਵਿੱਖ",
+    "hero_desc": "ਅਸੀਂ ਡਿਵੈਲਪਰ ਅਤੇ ਸਿਰਜਣਹਾਰਾਂ ਦੀ ਜਜ਼ਬੇ ਵਾਲੀ ਟੀਮ ਹਾਂ.",
+    "hero_cta": "ਸਾਡੀ ਯਾਤਰਾ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ",
+
+    "values": {
+      "fast_title": "ਤੇਜ਼",
+      "fast_desc": "ਕਾਰਗੁਜ਼ਾਰੀ ਸਾਡੀ ਪਹਿਲ ਹੈ.",
+      "clean_title": "ਸਾਫ਼",
+      "clean_desc": "ਆਪਣੇ ਆਪ ਬੋਲਦਾ ਕੋਡ.",
+      "passion_title": "ਜਜ਼ਬਾ",
+      "passion_desc": "ਪਿਆਰ ਅਤੇ ਦੇਖਭਾਲ ਨਾਲ ਬਣਾਇਆ."
+    },
+
+    "team_title": "ਸਾਡੀ ਟੀਮ",
+    "connect_with": "ਜੁੜੋ",
+
+    "roles": {
+      "backend": "ਬੈਕਐਂਡ ਡਿਵੈਲਪਰ",
+      "frontend": "ਫਰੰਟਐਂਡ ਡਿਵੈਲਪਰ",
+      "ml": "ਐਮਐਲ ਟ੍ਰੇਨਰ"
+    },
+
+    "footer_title": "ਕੀ ਤੁਹਾਡੇ ਕੋਲ ਕੋਈ ਪ੍ਰੋਜੈਕਟ ਹੈ?",
+    "footer_desc": "ਆਓ ਇਕੱਠੇ ਕੁਝ ਸ਼ਾਨਦਾਰ ਬਣਾਈਏ.",
+    "footer_btn": "ਸੰਪਰਕ ਕਰੋ"
   }
 }
