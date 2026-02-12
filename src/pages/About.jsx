@@ -8,6 +8,7 @@ import {
   FaCode,
   FaHeart,
 } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 // Team Data Configuration
 const teamMembers = [
@@ -57,6 +58,14 @@ const itemVariants = {
 };
 
 const About = () => {
+
+  const { t } = useTranslation();
+
+  const values = [
+    { icon: FaRocket, title: t("About.values.fast_title"), desc: t("About.values.fast_desc") },
+    { icon: FaCode, title: t("About.values.clean_title"), desc: t("About.values.clean_desc") },
+    { icon: FaHeart, title: t("About.values.passion_title"), desc: t("About.values.passion_desc") },
+  ];
   return (
     <div className="min-h-screen bg-base-200 overflow-x-hidden">
       {/* --- HERO SECTION --- */}
@@ -73,18 +82,16 @@ const About = () => {
               transition={{ duration: 0.8 }}
             >
               <h1 className="text-5xl md:text-7xl font-bold mb-6">
-                We Build The{" "}
+                {t("About.hero_title_1")}{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-                  Future
+                 {t("About.hero_title_2")}
                 </span>
               </h1>
               <p className="py-6 text-lg md:text-xl text-base-content/80">
-                We are a passionate team of developers, thinkers, and creators.
-                Our mission is to deliver exceptional digital experiences that
-                live at the intersection of art and engineering.
+                {t("About.hero_desc")}
               </p>
               <button className="btn btn-primary btn-lg shadow-lg hover:scale-105 transition-transform">
-                Join Our Journey
+               {t("About.hero_cta")}
               </button>
             </motion.div>
           </div>
@@ -94,35 +101,14 @@ const About = () => {
       {/* --- VALUES SECTION --- */}
       <div className="py-20 px-4 md:px-8">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            {
-              icon: FaRocket,
-              title: "Fast",
-              desc: "Performance is our priority.",
-            },
-            {
-              icon: FaCode,
-              title: "Clean",
-              desc: "Code that speaks for itself.",
-            },
-            {
-              icon: FaHeart,
-              title: "Passion",
-              desc: "Built with love and care.",
-            },
-          ].map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.2 }}
-              className="card bg-base-100 shadow-xl border-b-4 border-primary hover:-translate-y-2 transition-transform duration-300"
-            >
-              <div className="card-body items-center text-center">
-                <item.icon className="text-4xl text-secondary mb-4" />
-                <h2 className="card-title text-2xl">{item.title}</h2>
-                <p>{item.desc}</p>
+           {values.map((item, index) => (
+            <motion.div key={index} whileInView={{ opacity: 1 }}>
+              <div className="card bg-base-100 shadow-xl">
+                <div className="card-body items-center text-center">
+                  <item.icon className="text-4xl text-secondary mb-4" />
+                  <h2 className="card-title text-2xl">{item.title}</h2>
+                  <p>{item.desc}</p>
+                </div>
               </div>
             </motion.div>
           ))}
@@ -137,7 +123,7 @@ const About = () => {
             whileInView={{ opacity: 1 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold mb-4">Meet The Minds</h2>
+            <h2 className="text-4xl font-bold mb-4">{t("About.team_title")}</h2>
             <div className="h-1 w-24 bg-primary mx-auto rounded-full"></div>
           </motion.div>
 
@@ -160,7 +146,7 @@ const About = () => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
                       <p className="text-white font-semibold">
-                        Connect with {member.name.split(" ")[0]}
+                         {t("About.connect_with")} {member.name.split(" ")[0]}
                       </p>
                     </div>
                   </figure>
@@ -217,11 +203,11 @@ const About = () => {
       <div className="hero bg-base-200 py-20">
         <div className="hero-content text-center">
           <div className="max-w-md">
-            <h1 className="text-3xl font-bold">Have a project in mind?</h1>
+            <h1 className="text-3xl font-bold"> {t("About.footer_title")}</h1>
             <p className="py-6">
-              Let's collaborate and build something amazing together.
+              {t("About.footer_desc")}
             </p>
-            <button className="btn btn-wide btn-primary">Contact Us</button>
+            <button className="btn btn-wide btn-primary"> {t("About.footer_btn")}</button>
           </div>
         </div>
       </div>

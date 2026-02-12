@@ -9,6 +9,7 @@
     "retro": "ریٹرو",
     "sunset": "سن سیٹ",
     "Dracula": "ڈریکولا",
+    "lgnhere": "یہاں لاگ اِن کریں",
     "toasts": {
       "login_success": "کامیابی سے لاگ ان ہو گئے!",
       "login_failure": "لاگ ان ناکام۔ براہ کرم اپنی اسناد چیک کریں۔",
@@ -53,5 +54,110 @@
   "footer": {
     "slogan": "2025 سے قابل اعتماد ٹیکنالوجی",
     "copyright": "Copyright © 2025 - جملہ حقوق محفوظ ہیں"
+  },
+  "Authpage": {
+    "empowering_agriculture": "زراعت کو بااختیار بنانا",
+    "welcome_back": "خوش آمدید!",
+    "email_addres": "ای میل پتہ",
+    "pass": "پاس ورڈ",
+    "forgot": "پاس ورڈ بھول گئے؟",
+    "cont": "کے ساتھ جاری رکھیں",
+    "new_here": "یہاں نئے ہیں؟",
+    "create_account": "اکاؤنٹ بنائیں",
+    "back_home": "ہوم پر واپس جائیں",
+    "logging_in": "آپ کو لاگ اِن کیا جا رہا ہے",
+    "creating_account": "آپ کا اکاؤنٹ بنایا جا رہا ہے"
+  },
+  "Login": {
+    "sign": "سائن اِن",
+    "reset_sent": "پاس ورڈ ری سیٹ لنک آپ کے ای میل پر بھیج دیا گیا ہے۔",
+    "reset_failed": "ری سیٹ لنک بھیجنے میں ناکامی۔ دوبارہ کوشش کریں۔",
+    "no_account": "اس ای میل کے ساتھ کوئی اکاؤنٹ نہیں ملا۔",
+    "reset_desc": "پاس ورڈ ری سیٹ لنک حاصل کرنے کے لیے اپنا ای میل درج کریں۔",
+    "enter_email": "اپنا ای میل پتہ درج کریں",
+    "cancel": "منسوخ",
+    "sending": "ری سیٹ لنک بھیجا جا رہا ہے...",
+    "send_link": "لنک بھیجیں",
+    "reset_title": "اپنا پاس ورڈ ری سیٹ کریں",
+    "email_required": "ای میل ضروری ہے۔",
+    "email_valid": "درست ای میل درج کریں",
+    "pass_required": "پاس ورڈ ضروری ہے",
+    "pass_min": "کم از کم 6 حروف",
+    "email": "ای میل",
+    "pass": "پاس ورڈ",
+    "Forgot": "پاس ورڈ بھول گئے؟",
+    "create_account": "اکاؤنٹ بنائیں",
+    "back": "ہوم پر واپس جائیں"
+  },
+  "Signup": {
+    "invalid_email": "غلط ای میل پتہ۔",
+    "week_password": "پاس ورڈ بہت کمزور ہے",
+    "first_name": "پہلا نام",
+    "last_name": "آخری نام",
+    "pass_min": "کم از کم 6 حروف",
+    "pass_required": "پاس ورڈ ضروری ہے",
+    "pass": "پاس ورڈ"
+  },
+  "Socialauth": {
+    "google": "Google",
+    "phone": "فون",
+    "continue_with": "کے ساتھ جاری رکھیں",
+    "not_available": "یہ فیچر ابھی دستیاب نہیں ہے۔"
+  },
+  "PhoneLoginModal": {
+    "title_phone": "فون نمبر درج کریں",
+    "title_otp": "OTP کی تصدیق کریں",
+
+    "mobile_label": "موبائل نمبر",
+    "mobile_placeholder": "+91 99999 99999",
+
+    "phone_required": "فون نمبر ضروری ہے",
+    "phone_invalid": "غلط فون نمبر",
+
+    "otp_label": "ون ٹائم پاس ورڈ",
+    "otp_placeholder": "123456",
+
+    "otp_required": "OTP ضروری ہے",
+    "otp_length": "6 ہندسوں کا OTP ضروری ہے",
+
+    "change_phone": "فون نمبر تبدیل کریں",
+
+    "send_code": "کوڈ بھیجیں",
+    "verify_login": "تصدیق کریں اور لاگ اِن کریں"
+  },
+  "Contact": {
+    "title": "رابطہ کریں",
+    "description": "ہم سے رابطہ کریں اور مدد حاصل کریں۔ ہماری ٹیم ہمیشہ تیار ہے۔",
+    "cta": "پیش گوئی حاصل کریں"
+  },
+
+  "About": {
+    "hero_title_1": "ہم تعمیر کرتے ہیں",
+    "hero_title_2": "مستقبل",
+    "hero_desc": "ہم ڈویلپرز اور تخلیق کاروں کی پرجوش ٹیم ہیں۔",
+    "hero_cta": "ہمارے سفر میں شامل ہوں",
+
+    "values": {
+      "fast_title": "تیز",
+      "fast_desc": "کارکردگی ہماری ترجیح ہے۔",
+      "clean_title": "صاف",
+      "clean_desc": "خود بولنے والا کوڈ۔",
+      "passion_title": "جذبہ",
+      "passion_desc": "محبت اور خیال سے تیار کیا گیا۔"
+    },
+
+    "team_title": "ہماری ٹیم",
+    "connect_with": "جڑیں",
+
+    "roles": {
+      "backend": "بیک اینڈ ڈویلپر",
+      "frontend": "فرنٹ اینڈ ڈویلپر",
+      "ml": "ایم ایل ٹرینر"
+    },
+
+    "footer_title": "کیا آپ کے پاس کوئی پروجیکٹ ہے؟",
+    "footer_desc": "آئیں مل کر کچھ شاندار بنائیں۔",
+    "footer_btn": "رابطہ کریں"
   }
 }
+

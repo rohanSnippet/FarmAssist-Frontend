@@ -2,6 +2,7 @@
   "lang_name": "EN",
   "Common": {
     "login": "Login",
+    "sign":"Sign In",
     "signup": "Sign Up",
     "logout": "Logout",
     "submit": "Submit",
@@ -11,6 +12,7 @@
     "retro": "Retro",
     "sunset": "Sunset",
     "Dracula": "Dracula",
+    "lgnhere": "Login here",
     "toasts": {
       "login_success": "Successfully logged in!",
       "login_failure": "Login failed. Please check your credentials.",
@@ -20,6 +22,8 @@
       "logout_success": "You have been logged out.",
       "location_selected": "Location selected successfully!",
       "error_occurred": "An error occurred. Please try again."
+
+
     }
   },
   "navbar": {
@@ -33,6 +37,7 @@
       "enter_fullscreen": "Enter Fullscreen",
       "change_language": "Change Language",
       "change_theme": "Switch Theme"
+
     }
   },
   "hero": {
@@ -55,5 +60,109 @@
   "footer": {
     "slogan": "Providing reliable tech since 2025",
     "copyright": "Copyright © 2025 - All rights reserved"
-  }
+  },
+  "Authpage":{
+    "empowering_agriculture":"EmpoWering Agriculture",
+    "welcome_back":"Welcome Back!",
+    "email_addres":"Email Address",
+    "pass":"Password",
+    "forgot":"Forgot Password?",
+    "cont":"Continue with",
+    "new_here":"New here?",
+    "create_account":"Create an account",
+    "back_home":"Back to Home",
+    "logging_in": "Logging You In",
+    "creating_account": "Creating Your Account"
+  },
+  "Login":{
+    "sign":"Sign In",
+    "reset_sent":"Password reset link sent to your email.",
+    "reset_failed":"Failed to send reset link. Please try again.",
+    "no_account":"No account found with this email.",
+    "reset_desc":"Enter your email to receive a password reset link.",
+    "enter_email":"Enter your email address",
+    "cancel":"Cancel",
+    "sending":"Sending Reset Link...",
+    "send_link":"Send Link",
+    "reset_title":"Reset Your Password",
+    "email_required":"Email is required.",
+    "email_valid": "Enter a valid email",
+    "pass_required": "Password required",
+    "pass_min": "Minimum 6 characters",
+    "email":"Email",
+    "pass":"Password",
+    "Forgot":"Forgot Password?",
+    "create_account":"Create an account",
+    "back":"Back to Home"
+  },
+  "Signup":{
+    "invalid_email": "Invalid email address.",
+    "week_password": "Password is too weak",
+    "first_name":"First Name",
+    "last_name":"Last Name",
+    "pass_min": "Minimum 6 characters",
+    "pass_required": "Password required",
+    "pass":"Password"
+  },
+  "Socialauth": {
+    "google":"Google",
+    "phone":"Phone",
+    "continue_with":"Continue with",
+    "not_available":"This feature is not available yet."
+  },
+  "PhoneLoginModal": {
+    "title_phone": "Enter Phone Number",
+    "title_otp": "Verify OTP",
+
+    "mobile_label": "Mobile Number",
+    "mobile_placeholder": "+91 99999 99999",
+
+    "phone_required": "Phone number required",
+    "phone_invalid": "Invalid phone number",
+
+    "otp_label": "One Time Password",
+    "otp_placeholder": "123456",
+
+    "otp_required": "OTP is required",
+    "otp_length": "6 digits required",
+
+    "change_phone": "Change Phone Number",
+
+    "send_code": "Send Code",
+    "verify_login": "Verify & Login"
+  },
+  "Contact": {
+  "title": "Contact us",
+  "description": "Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.",
+  "cta": "Get Predictions"
+},
+"About": {
+  "hero_title_1": "We Build The",
+  "hero_title_2": "Future",
+  "hero_desc": "We are a passionate team of developers, thinkers, and creators.",
+  "hero_cta": "Join Our Journey",
+
+  "values": {
+    "fast_title": "Fast",
+    "fast_desc": "Performance is our priority.",
+    "clean_title": "Clean",
+    "clean_desc": "Code that speaks for itself.",
+    "passion_title": "Passion",
+    "passion_desc": "Built with love and care."
+  },
+
+  "team_title": "Meet The Minds",
+  "connect_with": "Connect with",
+
+  "roles": {
+    "backend": "Backend Developer",
+    "frontend": "Frontend Developer",
+    "ml": "ML Trainer"
+  },
+
+  "footer_title": "Have a project in mind?",
+  "footer_desc": "Let's collaborate and build something amazing together.",
+  "footer_btn": "Contact Us"
+}
+
 }

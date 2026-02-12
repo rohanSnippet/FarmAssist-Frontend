@@ -3,9 +3,12 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, CheckCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const PhoneLoginModal = ({ isOpen, onClose, mode }) => {
   const { sendPhoneOtp, verifyPhoneOtp, setupRecaptcha } = useAuth();
+  const { t } = useTranslation();
+  
   const [step, setStep] = useState("PHONE"); // PHONE | OTP
   const [confirmObj, setConfirmObj] = useState(null);
   const [isSending, setIsSending] = useState(false);
@@ -68,7 +71,7 @@ const PhoneLoginModal = ({ isOpen, onClose, mode }) => {
         <div className="card-body p-6">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-bold">
-              {step === "PHONE" ? "Enter Phone Number" : "Verify OTP"}
+              {step === "PHONE" ? t("PhoneLoginModal.title_phone") : t("PhoneLoginModal.title_otp")}
             </h3>
             <button
               onClick={onClose}
@@ -92,18 +95,18 @@ const PhoneLoginModal = ({ isOpen, onClose, mode }) => {
                 >
                   <div className="form-control">
                     <label className="label">
-                      <span className="label-text">Mobile Number</span>
+                      <span className="label-text">{t("PhoneLoginModal.mobile_label")}</span>
                     </label>
                     <input
                       {...register("phone", {
-                        required: "Phone number required",
+                        required: t("PhoneLoginModal.phone_required"),
                         pattern: {
                           value: /^[0-9+]{10,13}$/,
-                          message: "Invalid phone number",
+                          message: t("PhoneLoginModal.phone_invalid"),
                         },
                       })}
                       type="tel"
-                      placeholder="+91 99999 99999"
+                      placeholder={t("PhoneLoginModal.mobile_placeholder")}
                       className={`input input-bordered w-full ${
                         errors.phone ? "input-error" : ""
                       }`}
@@ -124,15 +127,15 @@ const PhoneLoginModal = ({ isOpen, onClose, mode }) => {
                 >
                   <div className="form-control">
                     <label className="label">
-                      <span className="label-text">One Time Password</span>
+                      <span className="label-text"> {t("PhoneLoginModal.otp_label")}</span>
                     </label>
                     <input
                       {...register("otp", {
-                        required: "OTP is required",
-                        minLength: { value: 6, message: "6 digits required" },
+                        required: t("PhoneLoginModal.otp_required"),
+                        minLength: { value: 6, message: t("PhoneLoginModal.otp_length"), },
                       })}
                       type="text"
-                      placeholder="123456"
+                      placeholder={t("PhoneLoginModal.otp_placeholder")}
                       className="input input-bordered w-full tracking-widest text-center text-lg"
                     />
                     {errors.otp && (
@@ -147,7 +150,7 @@ const PhoneLoginModal = ({ isOpen, onClose, mode }) => {
                       onClick={() => setStep("PHONE")}
                       className="link link-hover text-xs text-base-content/60"
                     >
-                      Change Phone Number
+                       {t("PhoneLoginModal.change_phone")}
                     </button>
                   </div>
                 </motion.div>
@@ -166,11 +169,11 @@ const PhoneLoginModal = ({ isOpen, onClose, mode }) => {
                 <span className="loading loading-spinner"></span>
               ) : step === "PHONE" ? (
                 <>
-                  Send Code <ArrowRight size={16} />
+                  {t("PhoneLoginModal.send_code")} <ArrowRight size={16} />
                 </>
               ) : (
                 <>
-                  Verify & Login <CheckCircle size={16} />
+                  {t("PhoneLoginModal.verify_login")} <CheckCircle size={16} />
                 </>
               )}
             </button>

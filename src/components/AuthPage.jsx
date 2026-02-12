@@ -8,12 +8,15 @@ import LoaderOverlay from "./LoadingSpinner";
 import { Home } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import PhoneLoginModal from "./PhoneLoginModal"; // Import this
+import { useTranslation } from "react-i18next";
 
 const AuthPage = () => {
   const { loading } = useAuth();
   const { theme } = useTheme();
   const [searchParams, setSearchParams] = useSearchParams();
   const isSignup = searchParams.get("mode") === "signup";
+  const {t}=useTranslation();
+
 
   // State for Phone Modal
   const [isPhoneModalOpen, setPhoneModalOpen] = useState(false);
@@ -39,8 +42,8 @@ const AuthPage = () => {
         <LoaderOverlay
           content={
             searchParams.get("mode") === "login"
-              ? `Logging You In`
-              : `Creating Your Account`
+              ? t("Authpage.logging_in")
+              : t("Authpage.creating_account")
           }
         />
       )}
@@ -63,7 +66,7 @@ const AuthPage = () => {
               Farm<span className="text-primary text-glow">Assist</span>
             </h1>
             <p className="text-base-content/60 text-sm mt-1 font-medium tracking-wide">
-              Empowering Agriculture
+              {t('Authpage.empowering_agriculture')}
             </p>
           </div>
 
@@ -108,7 +111,7 @@ const AuthPage = () => {
               className="btn btn-ghost btn-sm w-full gap-2 text-base-content/70 hover:text-primary hover:bg-transparent transition-all"
             >
               <Home size={16} />
-              <span className="font-medium">Back to Home</span>
+              <span className="font-medium">{t('Authpage.back_home')}</span>
             </Link>
           </div>
         </motion.div>
