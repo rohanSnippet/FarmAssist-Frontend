@@ -48,7 +48,7 @@
     "cta_button": "Start Analysis"
   },
   "dashboard": {
-    "weather_title": "Field History (7 Days)",
+    "weather_title": "Weather Prediction (7 Days)",
     "market_title": "Market Intelligence",
     "market_subtitle": "Real-time price fluctuations (INR/Quintal)",
     "market_badge": "Last 5 Weeks",
