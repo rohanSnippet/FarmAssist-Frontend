@@ -22,15 +22,31 @@ const LoaderOverlay = () => (
 const getCropImage = (cropName) => {
   const images = {
     coffee:
-      "https://images.unsplash.com/photo-1552346990-35431633512e?auto=format&fit=crop&w=800&q=80",
-    rice: "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=800&q=80",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTe4yrLCeFKzilrAmAk5JIigzAByi9j6acYEA&s",
+    rice: 
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyvKlKT-apF06j5nheDJb5X3F5FoRdZ0Dilg&s",
     maize:
       "https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&w=800&q=80",
     chickpea:
-      "https://images.unsplash.com/photo-1515543904379-3d757afe7264?auto=format&fit=crop&w=800&q=80",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5_XDg88wObYm8nxDqJY8O1O7FSI9Oruh3QQ&s",
+    muskmelon:
+      "https://images.unsplash.com/photo-1571575173700-afb9492e6a50?auto=format&fit=crop&w=800&q=80",
+    mango:
+      "https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=800&q=80",
+    cotton:
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKrll3LfHucKQsZx2eA_QY6chEWgY4n-TR1w&s",
+    coconut:
+    "https://www.biovie.fr/modules/prestablog/views/img/grid-for-1-7/up-img/750.jpg",
+    jute:
+    "https://researchoutreach.org/wp-content/uploads/2021/06/Shahidul-Islam-3-Main-Image-1200x720.jpg",
+    papaya:
+    "https://www.dreamfoodscaribe.com/wp-content/uploads/2024/07/papaya-fruit.webp",
+    orange:
+    "https://i0.wp.com/cdn-prod.medicalnewstoday.com/content/images/articles/272/272782/oranges-in-a-box.jpg?w=1155&h=1444",
     default:
-      "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=800&q=80",
   };
+
   return images[cropName?.toLowerCase()] || images["default"];
 };
 
