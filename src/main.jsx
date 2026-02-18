@@ -17,6 +17,7 @@ import ApplicationLoader from "./ui/ApplicationLoader";
 import ResetPassword from "./components/ResetPassword";
 import UserProfile from "./components/User/UserProfile";
 import { LocationProvider } from "./context/LocationContext";
+import NotFound from "./pages/NotFound";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,7 @@ const router = createBrowserRouter([
   { path: "/login", element: <AuthPage /> },
   { path: "/reset-password", element: <ResetPassword /> },
   { path: "/me", element: <UserProfile /> },
+  {path: "*", element: <NotFound />},
 ]);
 
 /* const AppInitialization = () => {
