@@ -26,7 +26,7 @@ Follow the steps below to run the project locally:
 ### 1️⃣ Navigate to the Frontend Directory
 
 ```bash
-cd FarmAssist/Frontend
+cd FarmAssist-Frontend
 ```
 
 ### 2️⃣ Install All Dependencies
