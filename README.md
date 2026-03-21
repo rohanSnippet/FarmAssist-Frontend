@@ -1,6 +1,6 @@
 # FarmAssist — Frontend Repository
 
-![home page](https://repository-images.githubusercontent.com/1105741573/55be4b79-a6dc-4ba2-89db-85df304c82d3)
+![home page](https://repository-images.githubusercontent.com/1105741573/b1dbf559-1119-4cc7-b5bf-a98583009f96)
 
 ---
 
@@ -26,7 +26,7 @@ Follow the steps below to run the project locally:
 ### 1️⃣ Navigate to the Frontend Directory
 
 ```bash
-cd FarmAssist/Frontend
+cd FarmAssist-Frontend
 ```
 
 ### 2️⃣ Install All Dependencies
