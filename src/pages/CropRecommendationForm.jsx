@@ -122,8 +122,8 @@ const CropRecommendationForm = () => {
     }
   };
 
+  // UPDATED: Actual integration with Django Gemini backend
   const handleProcessFile = async (file) => {
-    // Validate file type
     if (!file.type.startsWith("image/") && file.type !== "application/pdf") {
       Toast.fire({ icon: "error", title: "Only Images or PDFs allowed" });
       return;
@@ -133,27 +133,30 @@ const CropRecommendationForm = () => {
     setIsExtracting(true);
 
     try {
-      // Create FormData to send file to backend
       const formData = new FormData();
-      formData.append("soil_card", file);
+      // 'image' must match the request.FILES.get('image') in your Django view
+      formData.append("image", file);
 
-      // --- SIMULATED BACKEND CALL (Replace with your actual endpoint) ---
-      // const response = await api.post('/ocr/extract', formData);
+      // Make sure this URL matches your Django urls.py setup
+      const response = await api.post('/ocr-soil-card/', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+      });
       
-      // Simulating a delay for UX
-      await new Promise(resolve => setTimeout(resolve, 2500));
-      
-      // Simulating extracted data
+      // Map the backend JSON (N, P, K) to your form schema (nitrogen, phosphorus, potassium)
       const extractedData = {
-        nitrogen: 120,
-        phosphorus: 42,
-        potassium: 30,
-        ph: 6.5,
+        nitrogen: response.data.N,
+        phosphorus: response.data.P,
+        potassium: response.data.K,
+        ph: response.data.ph,
       };
 
-      // Fill form values
+      // Fill form values only if they exist in the response
       Object.keys(extractedData).forEach(key => {
-        setValue(key, extractedData[key]);
+        if (extractedData[key] !== undefined && extractedData[key] !== null) {
+            setValue(key, Number(extractedData[key])); 
+        }
       });
 
       Toast.fire({ icon: "success", title: "Data Extracted Successfully" });
@@ -161,8 +164,8 @@ const CropRecommendationForm = () => {
       setUploadedFile(null); // Clear file after processing
 
     } catch (error) {
-      console.error(error);
-      Toast.fire({ icon: "error", title: "Failed to extract data" });
+      console.error("OCR Extraction Error:", error);
+      Toast.fire({ icon: "error", title: "Failed to read document. Please check the image and try again." });
     } finally {
       setIsExtracting(false);
     }
@@ -329,7 +332,7 @@ const CropRecommendationForm = () => {
                             <div className="flex flex-col items-center">
                                 <span className="loading loading-spinner loading-lg text-primary mb-6"></span>
                                 <h3 className="text-xl font-black uppercase text-base-content mb-2">Analyzing Document</h3>
-                                <p className="text-base-content/60">Extracting soil parameters using OCR...</p>
+                                <p className="text-base-content/60 font-bold">Extracting soil parameters...</p>
                             </div>
                         ) : (
                             <div className="max-w-md w-full">
