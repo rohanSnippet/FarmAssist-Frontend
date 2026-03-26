@@ -18,6 +18,7 @@ import ResetPassword from "./components/ResetPassword";
 import UserProfile from "./components/User/UserProfile";
 import { LocationProvider } from "./context/LocationContext";
 import NotFound from "./pages/NotFound";
+import RecommendationHistory from "./components/User/RecommendationHistory";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,14 @@ const router = createBrowserRouter([
           </ProtectedRoutes>
         ),
       },
+      {
+        path: "/history",
+        element:(
+          <ProtectedRoutes>
+            <RecommendationHistory/>
+          </ProtectedRoutes>
+        )
+      }
     ],
   },
   { path: "/login", element: <AuthPage /> },
