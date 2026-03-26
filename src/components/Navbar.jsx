@@ -182,7 +182,7 @@ const Navbar = () => {
       />
     </svg>
   );
-console.log(userData)
+// console.log(userData)
   return (
     <>
       {/* ================= NAVBAR ================= */}
@@ -513,7 +513,7 @@ console.log(userData)
                     <a>My Farms</a>
                   </li>
                   <li>
-                    <a>Saved Recommendations</a>
+                    <a href="/history">Saved Recommendations</a>
                   </li>
                 </ul>
               </div>
