@@ -221,7 +221,8 @@ const CropRecommendationForm = () => {
   const onSubmit = async (data) => {
     try {
       const response = await api.post(`/predict/`, data);
-      setPrediction(response?.data?.recommended_crop);
+      // Store the full object (recommended_crop & alternatives)
+      setPrediction(response?.data);
       Toast.fire({ icon: "success", title: "Analysis Complete" });
     } catch (err) {
       Toast.fire({ icon: "error", title: "Prediction Failed" });
@@ -236,15 +237,19 @@ const CropRecommendationForm = () => {
     setLoadingWeather(true);
     try {
       const { lat, lng } = coordinates;
+      // Updated URL to accurately fetch current humidity alongside temperature
       const response = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true&daily=precipitation_sum&timezone=auto`,
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,relative_humidity_2m&daily=precipitation_sum&timezone=auto`,
       );
       const data = await response.json();
-      console.log(data);
+      console.log("Weather fetched manually:", data);
 
-      setValue("temperature", data.current_weather.temperature);
-      setValue("humidity", data.daily_units.relative_humidity_2m_mean);
-      setValue("rainfall", data.daily.precipitation_sum[0]);
+      setValue("temperature", data.current.temperature_2m);
+      setValue("humidity", data.current.relative_humidity_2m);
+
+      if (data.daily && data.daily.precipitation_sum) {
+        setValue("rainfall", data.daily.precipitation_sum[0]);
+      }
       Toast.fire({ icon: "info", title: "Weather data synced" });
     } catch (error) {
       Toast.fire({ icon: "error", title: "Weather Sync Failed" });
@@ -291,17 +296,21 @@ const CropRecommendationForm = () => {
 
     try {
       const formData = new FormData();
-      // 'image' must match the request.FILES.get('image') in your Django view
       formData.append("image", file);
 
-      // Make sure this URL matches your Django urls.py setup
+      // Send coordinates to the backend if they are available for fallback
+      if (locationLoaded && coordinates) {
+        formData.append("lat", coordinates.lat);
+        formData.append("lng", coordinates.lng);
+      }
+
       const response = await api.post("/ocr-soil-card/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      // Map the backend JSON (N, P, K) to your form schema (nitrogen, phosphorus, potassium)
+      // Map the backend JSON to the form schema
       const extractedData = {
         nitrogen: response.data.N,
         phosphorus: response.data.P,
@@ -312,33 +321,43 @@ const CropRecommendationForm = () => {
         humidity: response.data.humidity,
       };
 
-      console.log(extractedData);
+      console.log("Extracted Data via AI:", extractedData);
 
       // Fill form values only if they exist in the response
+      let weatherIncluded = false;
       Object.keys(extractedData).forEach((key) => {
         if (extractedData[key] !== undefined && extractedData[key] !== null) {
           setValue(key, Number(extractedData[key]));
+          if (["temperature", "humidity", "rainfall"].includes(key)) {
+            weatherIncluded = true;
+          }
         }
       });
 
-      Toast.fire({ icon: "success", title: "Data Extracted Successfully" });
+      Toast.fire({
+        icon: "success",
+        title: weatherIncluded
+          ? "Data & Weather Extracted"
+          : "Nutrients Extracted Successfully",
+      });
       setActiveTab("manual"); // Switch to form to show data
       setUploadedFile(null); // Clear file after processing
     } catch (error) {
       console.error("OCR Extraction Error:", error);
       if (
-        error?.response?.data?.error ==
-        "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+        error?.response?.data?.error?.includes("503 UNAVAILABLE") ||
+        error?.response?.data?.error?.includes("429")
       ) {
         Toast.fire({
           icon: "error",
           title: "Too many requests. Please try again after some time.",
         });
-      }else{
+      } else {
         Toast.fire({
-        icon: "error",
-        title: "Failed to read document. Please check the image and try again.",
-      });
+          icon: "error",
+          title:
+            "Failed to read document. Please check the image and try again.",
+        });
       }
     } finally {
       setIsExtracting(false);
@@ -385,7 +404,7 @@ const CropRecommendationForm = () => {
         </motion.div>
 
         {prediction ? (
-          /* RESULT VIEW */
+          /* RESULT VIEW (Updated with Alternatives) */
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -394,29 +413,65 @@ const CropRecommendationForm = () => {
             <div className="flex flex-col md:flex-row h-full">
               <div className="md:w-1/2 relative min-h-[300px]">
                 <img
-                  src={getCropImage(prediction)}
+                  src={getCropImage(prediction.recommended_crop)}
                   className="absolute inset-0 w-full h-full object-cover"
-                  alt={prediction}
+                  alt={prediction.recommended_crop}
                 />
                 <div className="absolute inset-0 bg-primary/20 mix-blend-multiply"></div>
               </div>
               <div className="md:w-1/2 p-10 flex flex-col justify-center items-start bg-base-100">
                 <div className="badge badge-primary badge-outline rounded-sm mb-4 uppercase font-bold tracking-widest">
-                  Top Recommendation
+                  Top Match
                 </div>
-                <h2 className="text-5xl font-black mb-6 uppercase text-base-content">
-                  {prediction}
+
+                <h2 className="text-5xl font-black mb-2 uppercase text-base-content">
+                  {prediction.recommended_crop}
                 </h2>
-                <p className="text-base-content/60 mb-8 leading-relaxed">
-                  Based on the nitrogen, phosphorus, and climatic data provided,
-                  this crop offers the highest probability of optimal yield.
-                </p>
+
+                <div className="text-primary font-black text-2xl mb-6">
+                  {prediction.alternatives && prediction.alternatives.length > 0
+                    ? `${prediction.alternatives[0].probability}% Match`
+                    : ""}
+                </div>
+
+                {/* Alternative Crops List */}
+                {prediction.alternatives &&
+                  prediction.alternatives.length > 1 && (
+                    <div className="w-full mb-8">
+                      <h3 className="text-xs font-bold uppercase tracking-widest text-base-content/50 mb-4 border-b border-base-content/10 pb-2">
+                        Other Viable Crops
+                      </h3>
+                      <div className="space-y-3">
+                        {prediction.alternatives.slice(1).map((alt, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between"
+                          >
+                            <span className="font-bold uppercase text-base-content/80 text-sm">
+                              {alt.crop}
+                            </span>
+                            <div className="flex items-center gap-3 w-1/2">
+                              <progress
+                                className="progress progress-primary w-full bg-base-200"
+                                value={alt.probability}
+                                max="100"
+                              ></progress>
+                              <span className="text-xs font-mono font-bold opacity-60 w-12 text-right">
+                                {alt.probability}%
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                 <button
                   onClick={() => {
                     setPrediction(null);
                     reset();
                   }}
-                  className="btn btn-primary btn-block rounded-sm uppercase tracking-wider font-bold"
+                  className="btn btn-primary btn-block rounded-sm uppercase tracking-wider font-bold mt-auto"
                 >
                   Analyze New Sample
                 </button>
@@ -588,7 +643,7 @@ const CropRecommendationForm = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
-                  className="bg-base-100 border border-base-200 shadow-xl p-12 rounded-sm text-center min-h-[500px] flex flex-col justify-center items-center relative"
+                  className="bg-base-100 border border-base-200 shadow-xl px-12 rounded-sm text-center min-h-[400px] flex flex-col justify-center items-center relative"
                 >
                   {isExtracting ? (
                     <div className="flex flex-col items-center">
@@ -597,14 +652,14 @@ const CropRecommendationForm = () => {
                         Analyzing Document
                       </h3>
                       <p className="text-base-content/60 font-bold">
-                        Extracting soil parameters...
+                        Extracting soil parameters & localized weather data...
                       </p>
                     </div>
                   ) : (
                     <div className="max-w-md w-full">
-                      <div className="mb-8 p-6 bg-primary/5 rounded-full inline-block">
+                      {/*                       <div className="mb-8 p-6 bg-primary/5 rounded-full inline-block">
                         <FiUploadCloud className="w-12 h-12 text-primary" />
-                      </div>
+                      </div> */}
                       <h3 className="text-2xl font-black uppercase mb-2">
                         Soil Health Card
                       </h3>
@@ -628,14 +683,19 @@ const CropRecommendationForm = () => {
                           onChange={handleFileSelect}
                           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
                         />
-
-                        <FiFile className="w-8 h-8 opacity-20 mb-4 group-hover:scale-110 transition-transform" />
+                        <div className="mb-8 p-6 bg-primary/5 rounded-full inline-block">
+                          <FiUploadCloud className="w-12 h-12 text-primary" />
+                        </div>
+                        <span className="outline-0 btn-sm rounded-sm uppercase tracking-wider pointer-events-none">
+                          Select File or drag and drop here
+                        </span>
+                        {/* <FiFile className="w-8 h-8 opacity-20 mb-4 group-hover:scale-110 transition-transform" />
                         <span className="btn btn-outline btn-sm rounded-sm uppercase tracking-wider pointer-events-none">
                           Select File
                         </span>
                         <p className="text-xs opacity-40 pt-2 pointer-events-none">
                           or drag and drop here
-                        </p>
+                        </p> */}
                       </div>
 
                       <div className="mt-8 flex items-center justify-center gap-2 text-xs opacity-50 uppercase tracking-widest font-bold">
