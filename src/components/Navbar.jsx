@@ -182,7 +182,7 @@ const Navbar = () => {
       />
     </svg>
   );
-// console.log(userData)
+  // console.log(userData)
   return (
     <>
       {/* ================= NAVBAR ================= */}
@@ -232,7 +232,7 @@ const Navbar = () => {
             </div>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-64"
+              className="menu menu-sm dropdown-content mt-3 z-1 p-2 shadow bg-base-100 rounded-box w-64"
             >
               <li>
                 <NavLink to="/">{t("navbar.home")}</NavLink>
@@ -305,7 +305,7 @@ const Navbar = () => {
 
         {/* 3. Navbar End (Auth + Settings Trigger) */}
         <div className="navbar-end gap-2">
-          <button 
+          <button
             onClick={() => setIsLocModalOpen(true)}
             className={`
               btn btn-ghost btn-circle
@@ -314,11 +314,13 @@ const Navbar = () => {
             `}
             title="Location Settings"
           >
-            <MapPin className={`w-5 h-5 ${curLocation?.label ? 'text-primary' : 'opacity-50'}`} />
-            
+            <MapPin
+              className={`w-5 h-5 ${curLocation?.label ? "text-primary" : "opacity-50"}`}
+            />
+
             {/* Text hidden on mobile, visible on desktop */}
             <span className="hidden md:block text-sm font-medium max-w-[120px] truncate">
-               {loadingLoc ? "..." : (curLocation?.label || "Set Location")}
+              {loadingLoc ? "..." : curLocation?.label || "Set Location"}
             </span>
           </button>
 
@@ -336,7 +338,7 @@ const Navbar = () => {
             >
               {/* Added bg-base-300 to give the placeholder a background color that fits the theme */}
               <div className="w-10 rounded-full bg-base-300 flex items-center justify-center overflow-hidden">
-                { userData?.photo_url || auth?.currentUser?.photoURL ? (
+                {userData?.photo_url || auth?.currentUser?.photoURL ? (
                   <img
                     alt="Profile"
                     src={userData?.photo_url || auth?.currentUser?.photoURL}
@@ -416,7 +418,9 @@ const Navbar = () => {
                 <div className="avatar mb-3">
                   <div className="w-24 rounded-full ring-2 ring-primary ring-offset-base-100 ring-offset-3">
                     <img
-                      src={userData?.photo_url || auth?.currentUser?.photoURL ||
+                      src={
+                        userData?.photo_url ||
+                        auth?.currentUser?.photoURL ||
                         "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
                       }
                       alt="User"
@@ -425,7 +429,9 @@ const Navbar = () => {
                   </div>
                 </div>
                 <h3 className="font-bold text-xl text-center break-words w-full px-2">
-                  {userData?.first_name && userData?.last_name ? `${userData?.first_name} ${userData?.last_name}` : auth?.currentUser?.displayName || "Farmer"}
+                  {userData?.first_name && userData?.last_name
+                    ? `${userData?.first_name} ${userData?.last_name}`
+                    : auth?.currentUser?.displayName || "Farmer"}
                 </h3>
                 <p className="text-sm text-base-content/60 truncate w-full text-center px-4">
                   {userData?.email}
@@ -504,16 +510,16 @@ const Navbar = () => {
 
             {/* Additional Links for Logged In Users */}
             {userData && (
-              <div className="mt-6">
+              <div className="mt-6 ">
                 <p className="text-xs font-bold text-base-content/40 uppercase mb-3 tracking-wider px-1">
                   Account
                 </p>
-                <ul className="menu bg-base-200/30 rounded-box p-2">
+                <ul className="menu bg-base-200/30 rounded-box p-2 w-full">
                   <li>
-                    <a>My Farms</a>
+                    <Link to="/my-farms">My Farms</Link>
                   </li>
                   <li>
-                    <a href="/history">Saved Recommendations</a>
+                    <Link to="/history">Saved Recommendations</Link>
                   </li>
                 </ul>
               </div>
@@ -533,8 +539,8 @@ const Navbar = () => {
           )}
         </div>
       </div>
-      <LocationModal 
-        isOpen={isLocModalOpen} 
+      <LocationModal
+        isOpen={isLocModalOpen}
         onClose={() => setIsLocModalOpen(false)}
         location={curLocation}
         onDetect={detectAndSaveLocation}
