@@ -25,6 +25,9 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import useGeoLocation from "../hooks/useGeoLocation";
+import MarketForecastChart from "../components/User/MarketForcastChart";
+import TopPerformersDashboard from "../components/User/TopPerformersDashboard";
+
 
 const marketData = [
   { name: "W1", Wheat: 2400, Rice: 3100 },
@@ -255,7 +258,9 @@ export default function Home() {
             </div>
 
             {/* 2. MARKET TRENDS CHART (Right Side) */}
-            <div className="col-span-1 lg:col-span-8 flex flex-col">
+            <TopPerformersDashboard/>
+            {/* <MarketForecastChart /> */}
+           {/*  <div className="col-span-1 lg:col-span-8 flex flex-col">
               <div className="card bg-base-100 shadow-2xl border border-base-200 h-full">
                 <div className="card-body p-6 md:p-8">
                   <div className="flex justify-between items-start mb-8">
@@ -368,7 +373,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </motion.div>
         </div>
       </section>
