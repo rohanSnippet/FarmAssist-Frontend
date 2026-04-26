@@ -14,7 +14,9 @@ export const ThemeProvider = ({ children }) => {
 
   const getInitialTheme = () => {
     const savedTheme = localStorage.getItem(STORAGE_KEY);
-    return savedTheme || getSystemTheme();
+    let data = savedTheme || getSystemTheme();
+    if(data == undefined) data = 'forest';
+    return data;
   };
 
   const [theme, setTheme] = useState(getInitialTheme);
