@@ -11,6 +11,7 @@ import {
   Droplets,
   Calendar,
   Activity,
+  CloudLightning
 } from "lucide-react";
 import {
   AreaChart,
@@ -27,6 +28,7 @@ import axios from "axios";
 import useGeoLocation from "../hooks/useGeoLocation";
 import MarketForecastChart from "../components/User/MarketForcastChart";
 import TopPerformersDashboard from "../components/User/TopPerformersDashboard";
+
 
 
 const marketData = [
