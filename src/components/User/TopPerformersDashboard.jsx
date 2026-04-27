@@ -83,7 +83,7 @@ export default function TopPerformersDashboard() {
   const [error, setError] = useState(null);
 
   const [selectedState, setSelectedState] = useState("Maharashtra");
-  const [selectedMarket, setSelectedMarket] = useState("Pune");
+  const [selectedMarket, setSelectedMarket] = useState("Kamthi APMC");
   const [timeScale, setTimeScale] = useState("weekly"); // daily=30days, weekly=90days, monthly=all
   const [hoveredCrop, setHoveredCrop] = useState(null);
   const [selectedOtherCrop, setSelectedOtherCrop] = useState("");
