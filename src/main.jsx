@@ -19,6 +19,8 @@ import UserProfile from "./components/User/UserProfile";
 import { LocationProvider } from "./context/LocationContext";
 import NotFound from "./pages/NotFound";
 import RecommendationHistory from "./components/User/RecommendationHistory";
+import ManageFarms from "./components/ManageFarms.jsx";
+import CropScannerPage from "./pages/CropScannerPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -45,11 +47,27 @@ const router = createBrowserRouter([
           </ProtectedRoutes>
         ),
       },
+       {
+        path: "/pest-prediction",
+        element: (
+          <ProtectedRoutes>
+            <CropScannerPage />
+          </ProtectedRoutes>
+        ),
+      },
       {
         path: "/history",
         element:(
           <ProtectedRoutes>
             <RecommendationHistory/>
+          </ProtectedRoutes>
+        )
+      },
+      {
+        path: "/my-farms",
+        element:(
+          <ProtectedRoutes>
+            <ManageFarms/>
           </ProtectedRoutes>
         )
       }
