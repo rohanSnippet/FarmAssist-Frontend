@@ -260,7 +260,7 @@ export default function Home() {
             </div>
 
             {/* 2. MARKET TRENDS CHART (Right Side) */}
-            <TopPerformersDashboard/>
+            {/* <TopPerformersDashboard/> */}
             {/* <MarketForecastChart /> */}
            {/*  <div className="col-span-1 lg:col-span-8 flex flex-col">
               <div className="card bg-base-100 shadow-2xl border border-base-200 h-full">
