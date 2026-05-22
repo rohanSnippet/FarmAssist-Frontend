@@ -138,6 +138,7 @@ const Navbar = () => {
               <li><NavLink to="/">{t("navbar.home")}</NavLink></li>
               <li><NavLink to="/about-us">{t("navbar.about_us")}</NavLink></li>
               <li><NavLink to="/contact">{t("navbar.contact")}</NavLink></li>
+              <li><NavLink to="/my-farms">My Farms</NavLink></li>
               <li><NavLink to="/pest-prediction">Pest Prediction</NavLink></li>
             </ul>
           </div>
@@ -166,8 +167,8 @@ const Navbar = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/crop-recommendations" className={({ isActive }) => isActive ? "active font-bold text-primary bg-primary/10" : "hover:text-primary" }>
-                Crop Recommendation
+              <NavLink to="/my-farms" className={({ isActive }) => isActive ? "active font-bold text-primary bg-primary/10" : "hover:text-primary" }>
+                My Farms
               </NavLink>
             </li>
             <li>
@@ -180,7 +181,7 @@ const Navbar = () => {
 
         <div className="navbar-end gap-2">
           {/* Location Settings Button */}
-          <button
+         {/*  <button
             onClick={() => setIsLocModalOpen(true)}
             className="btn btn-ghost btn-circle md:w-auto md:px-3 md:rounded-full border border-transparent hover:border-primary/20 hover:bg-primary/5"
             title="Location Settings"
@@ -189,7 +190,7 @@ const Navbar = () => {
             <span className="hidden md:block text-sm font-medium max-w-[120px] truncate">
               {loadingLoc ? "..." : curLocation?.label || "Set Location"}
             </span>
-          </button>
+          </button> */}
 
           {/* NOTIFICATION BELL (Only visible to logged-in users) */}
           {userData && (
