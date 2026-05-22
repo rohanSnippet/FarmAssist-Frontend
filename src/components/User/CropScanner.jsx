@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import useGeoLocation from '../../hooks/useGeoLocation'; // Your custom hook
+import useGeoLocation from '../../hooks/useGeoLocation'; 
 import api from '../../axios';
 
 // --- MATH HELPERS ---
@@ -66,7 +66,7 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
   const processContextAndScan = async (file) => {
     setIsScanning(true);
 
-    // 1. RUN CONTEXT-AWARE MATH INSTANTLY IN THE BACKGROUND
+    // 1. RUN CONTEXT-AWARE MATH TO AUTO-SELECT THE FARM FOR THE UI
     let matchResult = { type: 'NO_FARMS' };
     
     if (farms.length > 0) {
@@ -89,14 +89,12 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
     }
     setLocationMatch(matchResult);
 
-    // 2. SEND TO AI ENGINE (Simulated Delay)
+    // 2. SEND TO AI ENGINE
     try {
-      // NOTE: Replace this setTimeout with your actual api.post() call when ready
-      
       const formData = new FormData();
       formData.append('image', file);
 
-      // Hits the @action we just built in Django!
+      // Hits the @action we built in Django
       const response = await api.post('/api/detections/scan/', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
@@ -115,22 +113,16 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
     if (!targetFarmId) return alert("Please select a farm to broadcast the alert.");
     
     try {
-      // Build the final payload with the image AND the confirmed data
+      // Build the final payload
       const finalData = new FormData();
       finalData.append('image', imageFile);
       finalData.append('farm_id', targetFarmId);
       finalData.append('pest_name', scanResult.disease);
       finalData.append('severity_level', scanResult.severity);
       
-      // If we have GPS, send it. Otherwise Django defaults to the farm's center
-      if (coordinates.lng && coordinates.lat) {
-        finalData.append('detection_location', JSON.stringify({
-          type: "Point",
-          coordinates: [coordinates.lng, coordinates.lat]
-        }));
-      }
+      // NOTICE: We NO LONGER append 'detection_location' here! 
+      // The backend strictly uses the farm_id's mathematical centroid.
 
-      // Hits the perform_create method in Django!
       await api.post('/api/detections/', finalData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
