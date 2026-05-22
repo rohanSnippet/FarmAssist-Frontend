@@ -151,6 +151,7 @@ const MyFarmsDashboard = () => {
   const [farms, setFarms] = useState([]);
   const [selectedFarm, setSelectedFarm] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [modalMap, setModalMap] = useState(null); 
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -199,6 +200,18 @@ const MyFarmsDashboard = () => {
     // 5. Call the function
     fetchFarms();
   }, []);
+
+  // --- ADD THIS EFFECT ---
+  useEffect(() => {
+    if (modalMap && selectedFarm) {
+      const paths = convertGeoJsonToGoolePaths(selectedFarm.boundaries);
+      if (paths.length > 0) {
+        const bounds = new window.google.maps.LatLngBounds();
+        paths.forEach((point) => bounds.extend(point));
+        modalMap.fitBounds(bounds);
+      }
+    }
+  }, [modalMap, selectedFarm]);
 
   const handleDeleteFarm = async () => {
     if (
@@ -371,11 +384,13 @@ const MyFarmsDashboard = () => {
               {selectedFarm && (
                 <GoogleMap
                   mapContainerStyle={mapContainerStyle}
-                  onLoad={(map) => {
+                  /* onLoad={(map) => {
                     const bounds = new window.google.maps.LatLngBounds();
                     selectedPaths.forEach((point) => bounds.extend(point));
                     map.fitBounds(bounds);
-                  }}
+                  }} */
+                  onLoad={(map) => setModalMap(map)}
+                  onUnmount={() => setModalMap(null)}
                   options={{
                     mapTypeId: "satellite",
                     zoomControl: true,
