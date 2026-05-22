@@ -1,106 +1,72 @@
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  ArrowRight,
-  Sun,
-  Cloud,
-  CloudRain,
-  Wind,
-  TrendingUp,
-  Leaf,
-  Droplets,
-  Calendar,
-  Activity,
-  CloudLightning
+  Sun, Cloud, CloudRain, Wind, Droplets,
+  MapPin, Scan, Users, CloudLightning, Snowflake,
+  Activity, Layers, Maximize, Minimize, Lock
 } from "lucide-react";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
-import useGeoLocation from "../hooks/useGeoLocation";
-import MarketForecastChart from "../components/User/MarketForcastChart";
-import TopPerformersDashboard from "../components/User/TopPerformersDashboard";
 
+// --- IMPORT GLOBAL CONTEXTS ---
+import { useAuth } from "../context/AuthContext";
+import { useUserLocation } from "../context/LocationContext";
 
-
-const marketData = [
-  { name: "W1", Wheat: 2400, Rice: 3100 },
-  { name: "W2", Wheat: 2350, Rice: 3200 },
-  { name: "W3", Wheat: 2500, Rice: 3150 },
-  { name: "W4", Wheat: 2600, Rice: 3300 },
-  { name: "W5", Wheat: 2550, Rice: 3400 },
-];
-
-// --- Animation Variants ---
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-    },
-  },
-};
+import CommunityFeed from "../components/User/CommunityFeed";
 
 export default function Home() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const {coordinates, loaded, error} = useGeoLocation();
   
-
+  const { userData, user, isAuthenticated } = useAuth();
+  const { curLocation } = useUserLocation();
+  
+  const firstName = userData?.first_name || user?.first_name || "Farmer";
+  const locationLabel = curLocation?.label ? curLocation.label.split(',')[0] : "Location Unknown";
+  
   const [weatherData, setWeatherData] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // State for Full-Screen Feed
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // Helper to map WMO codes to Icons
+  const today = new Date().toLocaleDateString('en-US', {
+    weekday: 'long', month: 'long', day: 'numeric'
+  });
+
   const getWeatherIcon = (code) => {
-    if (code === 0 || code === 1)
-      return <Sun className="w-5 h-5 text-warning" />;
-    if (code === 2 || code === 3)
-      return <Cloud className="w-5 h-5 text-neutral-content" />;
-    if ([45, 48].includes(code))
-      return <Wind className="w-5 h-5 text-neutral-content" />;
-    if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code))
-      return <CloudRain className="w-5 h-5 text-info" />;
-    if ([71, 73, 75, 77, 85, 86].includes(code))
-      return <Snowflake className="w-5 h-5 text-info" />;
-    if ([95, 96, 99].includes(code))
-      return <CloudLightning className="w-5 h-5 text-warning" />;
-    return <Sun className="w-5 h-5 text-warning" />;
+    if (code === 0 || code === 1) return <Sun className="w-6 h-6 text-warning" />;
+    if (code === 2 || code === 3) return <Cloud className="w-6 h-6 text-base-content/50" />;
+    if ([45, 48].includes(code)) return <Wind className="w-6 h-6 text-base-content/50" />;
+    if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(code)) return <CloudRain className="w-6 h-6 text-info" />;
+    if ([71, 73, 75, 77, 85, 86].includes(code)) return <Snowflake className="w-6 h-6 text-info" />;
+    if ([95, 96, 99].includes(code)) return <CloudLightning className="w-6 h-6 text-primary" />;
+    return <Sun className="w-6 h-6 text-warning" />;
   };
+
+  // Lock background scrolling when feed is full screen
+  useEffect(() => {
+    if (isFullscreen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => { document.body.style.overflow = "unset"; };
+  }, [isFullscreen]);
 
   useEffect(() => {
     const fetchWeather = async () => {
       try {
-        // COORDINATES: Currently hardcoded to Mumbai (19.07, 72.87).
-        // TODO: Replace with user's actual location from your context or navigator.geolocation
-        const lat = coordinates.lat || 19.07;
-        const lon = coordinates.lng || 72.87;
+        const lat = curLocation?.lat || 19.24; 
+        const lon = curLocation?.lng || 73.13;
 
         const response = await axios.get(
-          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,precipitation_probability_max,weathercode&timezone=auto`,
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,precipitation_probability_max,weathercode&timezone=auto`
         );
+        
+        const { time, temperature_2m_max, precipitation_probability_max, weathercode } = response.data.daily;
 
-        const {
-          time,
-          temperature_2m_max,
-          precipitation_probability_max,
-          weathercode,
-        } = response.data.daily;
-
-        // Transform API arrays into the object structure your UI expects
         const formattedData = time.map((dateStr, index) => {
           const date = new Date(dateStr);
           return {
@@ -108,277 +74,196 @@ export default function Home() {
             temp: Math.round(temperature_2m_max[index]),
             humidity: precipitation_probability_max[index],
             icon: getWeatherIcon(weathercode[index]),
+            isToday: index === 0
           };
         });
-
-        // Limit to 7 days if API returns more
         setWeatherData(formattedData.slice(0, 7));
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching weather:", error);
+      } finally {
         setLoading(false);
       }
     };
-
+    
     fetchWeather();
-  }, []);
+  }, [curLocation?.lat, curLocation?.lng]); 
+
+  const fadeIn = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  };
 
   return (
-    <div className="min-h-screen bg-base-100 flex flex-col font-sans">
-      {/* --- HERO SECTION --- */}
-      <div
-        className="hero min-h-[85vh] relative"
-        style={{
-          backgroundImage:
-            'url("https://img.freepik.com/free-photo/beautiful-view-field-covered-green-grass-captured-canggu-bali_181624-7666.jpg?t=st=1766565466~exp=1766569066~hmac=b2192402a900bb3f053a77b0f5088763672eb075350cdbe51470e2c6a6d9e743&w=1480")',
-          backgroundAttachment: "fixed",
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-        }}
-      >
-        {/* Overlays for readability */}
-        <div className="hero-overlay bg-black/40 mix-blend-multiply"></div>
-        <div className="hero-overlay bg-gradient-to-t from-base-100 via-base-100/20 to-transparent"></div>
-
-        <div className="hero-content text-center text-neutral-content z-10 w-full max-w-5xl">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={staggerContainer}
-            className="w-full"
-          >
-            {/* Tagline */}
-            <motion.div
-              variants={fadeInUp}
-              className="flex justify-center mb-6"
-            >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-base-100/10 backdrop-blur-md border border-white/20 text-white text-sm font-medium">
-                <Activity size={16} className="text-primary" />
-                {/* AI-Powered Precision Agriculture  */} {t("hero.tagline")}
-              </div>
-            </motion.div>
-
-            {/* Main Title */}
-            <motion.h1
-              variants={fadeInUp}
-              className="mb-6 text-5xl md:text-7xl font-extrabold leading-tight text-white tracking-tight"
-            >
-              {t("hero.title_part1")} <br />
-              <span className="text-primary">{t("hero.title_part2")}</span>
-            </motion.h1>
-
-            {/* Subtitle */}
-            <motion.p
-              variants={fadeInUp}
-              className="mb-10 text-xl text-gray-200 max-w-2xl mx-auto leading-relaxed"
-            >
-              {t("hero.subtitle")}
-            </motion.p>
-
-            {/* CTA Button */}
-            <motion.div variants={fadeInUp}>
-              <a
-                onClick={() => navigate("/crop-recommendations")}
-                className="btn btn-primary btn-lg shadow-xl hover:shadow-primary/50 hover:scale-105 transition-all duration-300 border-none"
-              >
-                {t("hero.cta_button")} <ArrowRight className="w-5 h-5 ml-2" />
-              </a>
-              {/* <button className="btn btn-primary" onClick={handleShowMap}>
-                Show Map
-              </button> */}
-            </motion.div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* --- DASHBOARD PREVIEW SECTION (Overlapping Hero) --- */}
-      <section className="relative z-20 px-4 pb-24">
-        <div className="container mx-auto max-w-7xl">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-6"
-          >
-            {/* 1. WEATHER WIDGET (Left Side) */}
-            <div className="col-span-1 lg:col-span-4 flex flex-col">
-              <div className="card bg-base-100 shadow-2xl border border-base-200 h-full overflow-hidden">
-                <div className="card-body p-0">
-                  <div className="p-6 bg-base-200/50 border-b border-base-200">
-                    <h3 className="card-title text-base font-bold flex items-center gap-2">
-                      <Calendar className="w-5 h-5 text-primary" />
-                      {t("dashboard.weather_title")}
-                    </h3>
-                  </div>
-                  <div className="p-4 space-y-2">
-                    {loading ? (
-                      <div className="flex justify-center p-4">
-                        <span className="loading loading-spinner loading-md text-primary"></span>
-                      </div>
-                    ) : (
-                      weatherData.map((d, i) => (
-                        <div
-                          key={i}
-                          className="flex items-center justify-between text-sm p-3 rounded-lg hover:bg-base-200 transition-colors group cursor-default"
-                        >
-                          <span className="font-bold w-10 opacity-70 group-hover:opacity-100">
-                            {d.day}
-                          </span>
-                          <div className="flex items-center gap-3">
-                            {d.icon}
-                            <span className="font-medium text-lg">
-                              {d.temp}°
-                            </span>
-                          </div>
-                          <span className="text-xs opacity-50 flex items-center gap-1 group-hover:text-primary transition-colors">
-                            <Droplets size={14} /> {d.humidity}%
-                          </span>
-                        </div>
-                      ))
-                    )}
-                    {/*   {weatherData.map((d, i) => (
-                      <div
-                        key={i}
-                        className="flex items-center justify-between text-sm p-3 rounded-lg hover:bg-base-200 transition-colors group cursor-default"
-                      >
-                        <span className="font-bold w-10 opacity-70 group-hover:opacity-100">
-                          {d.day}
-                        </span>
-                        <div className="flex items-center gap-3">
-                          {d.icon}
-                          <span className="font-medium text-lg">{d.temp}°</span>
-                        </div>
-                        <span className="text-xs opacity-50 flex items-center gap-1 group-hover:text-primary transition-colors">
-                          <Droplets size={14} /> {d.humidity}%
-                        </span>
-                      </div>
-                    ))} */}
-                  </div>
-                </div>
-              </div>
+    <div className="min-h-screen bg-base-300 text-base-content font-sans pb-24">
+      
+      {/* THEME-AWARE AMBIENT LIGHTING */}
+      <div className="absolute top-[-10%] left-[-5%] w-[50vw] h-[50vh] bg-primary/20 blur-[150px] rounded-full pointer-events-none z-0" />
+      <div className="absolute bottom-[10%] right-[-5%] w-[40vw] h-[60vh] bg-secondary/15 blur-[150px] rounded-full pointer-events-none z-0" />
+      
+      {/* COMMAND HEADER */}
+      <header className="relative w-full pt-24 pb-8 px-4 md:px-8 xl:px-12 2xl:px-16 border-b border-base-content/10 bg-base-100/40 backdrop-blur-md z-10">
+        <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+          <motion.div initial="hidden" animate="visible" variants={fadeIn}>
+            <div className="flex items-center gap-2 text-primary font-semibold text-sm mb-2 uppercase tracking-widest">
+              <MapPin size={16} /> 
+              <span>{locationLabel}</span>
+              <span className="text-base-content/30 px-1">•</span>
+              <span className="text-base-content/70">{today}</span>
             </div>
+            
+            <h1 className="text-3xl md:text-5xl font-light tracking-tight text-base-content">
+              {isAuthenticated ? (
+                <>Overview, <span className="font-bold text-primary">{firstName}</span></>
+              ) : (
+                <>Welcome to <span className="font-bold text-primary">FarmAssist</span></>
+              )}
+            </h1>
+          </motion.div>
 
-            {/* 2. MARKET TRENDS CHART (Right Side) */}
-            {/* <TopPerformersDashboard/> */}
-            {/* <MarketForecastChart /> */}
-           {/*  <div className="col-span-1 lg:col-span-8 flex flex-col">
-              <div className="card bg-base-100 shadow-2xl border border-base-200 h-full">
-                <div className="card-body p-6 md:p-8">
-                  <div className="flex justify-between items-start mb-8">
-                    <div>
-                      <h3 className="card-title text-xl font-bold flex items-center gap-2">
-                        <TrendingUp className="w-6 h-6 text-secondary" />{" "}
-                        {t("dashboard.market_title")}
-                      </h3>
-                      <p className="text-sm opacity-60 mt-1">
-                        {t("dashboard.market_subtitle")}
-                      </p>
-                    </div>
-                    <div className="badge badge-outline p-3">
-                      {t("dashboard.market_badge")}
-                    </div>
-                  </div>
+          <motion.div initial="hidden" animate="visible" variants={fadeIn} transition={{ delay: 0.1 }}>
+            <button 
+              onClick={() => navigate('/pest-prediction')}
+              className="btn btn-primary px-8 shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform"
+            >
+              <Scan size={20} className="mr-2" /> Start Pest Detection
+            </button>
+          </motion.div>
+          
+        </div>
+      </header>
 
-                  <div className="h-[350px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart
-                        data={marketData}
-                        margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-                      >
-                        <defs>
-                          <linearGradient
-                            id="colorWheat"
-                            x1="0"
-                            y1="0"
-                            x2="0"
-                            y2="1"
-                          >
-                            <stop
-                              offset="5%"
-                              stopColor="oklch(var(--p))"
-                              stopOpacity={0.2}
-                            />
-                            <stop
-                              offset="95%"
-                              stopColor="oklch(var(--p))"
-                              stopOpacity={0}
-                            />
-                          </linearGradient>
-                          <linearGradient
-                            id="colorRice"
-                            x1="0"
-                            y1="0"
-                            x2="0"
-                            y2="1"
-                          >
-                            <stop
-                              offset="5%"
-                              stopColor="oklch(var(--s))"
-                              stopOpacity={0.2}
-                            />
-                            <stop
-                              offset="95%"
-                              stopColor="oklch(var(--s))"
-                              stopOpacity={0}
-                            />
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid
-                          strokeDasharray="3 3"
-                          stroke="currentColor"
-                          className="opacity-10"
-                          vertical={false}
-                        />
-                        <XAxis
-                          dataKey="name"
-                          stroke="currentColor"
-                          className="text-xs opacity-50"
-                          tickLine={false}
-                          axisLine={false}
-                          dy={10}
-                        />
-                        <YAxis
-                          stroke="currentColor"
-                          className="text-xs opacity-50"
-                          tickLine={false}
-                          axisLine={false}
-                          tickFormatter={(value) => `₹${value}`}
-                          dx={-10}
-                        />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "oklch(var(--b1))",
-                            borderColor: "oklch(var(--b3))",
-                            borderRadius: "0.5rem",
-                            boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)",
-                          }}
-                        />
-                        <Area
-                          type="monotone"
-                          dataKey="Wheat"
-                          stroke="oklch(var(--p))"
-                          strokeWidth={3}
-                          fillOpacity={1}
-                          fill="url(#colorWheat)"
-                        />
-                        <Area
-                          type="monotone"
-                          dataKey="Rice"
-                          stroke="oklch(var(--s))"
-                          strokeWidth={3}
-                          fillOpacity={1}
-                          fill="url(#colorRice)"
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
+      {/* MAIN GRID */}
+      <main className="relative w-full px-4 md:px-8 xl:px-12 2xl:px-16 mt-8 z-10">
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 xl:gap-8 w-full">
+          
+          {/* LEFT COLUMN: Tools & Weather */}
+          <div className="col-span-1 xl:col-span-4 flex flex-col gap-6">
+            
+            <motion.div initial="hidden" animate="visible" variants={fadeIn} transition={{ delay: 0.2 }} className="card bg-base-100/70 backdrop-blur-xl border border-base-content/10 shadow-xl rounded-2xl overflow-hidden">
+              <div className="p-5 border-b border-base-content/10 flex justify-between items-center bg-base-200/50">
+                <h3 className="font-semibold text-sm tracking-wide text-base-content/80 uppercase">Atmospheric Conditions</h3>
+              </div>
+              <div className="p-5">
+                {loading ? (
+                  <div className="flex justify-center p-8"><span className="loading loading-ring text-primary w-10"></span></div>
+                ) : (
+                  <div className="flex flex-row overflow-x-auto pb-2 gap-3 hide-scrollbar">
+                    {weatherData.map((d, i) => (
+                      <div key={i} className={`min-w-[85px] flex flex-col items-center justify-between p-4 rounded-xl border transition-colors ${d.isToday ? 'border-primary bg-primary/10 shadow-sm' : 'border-base-content/10 bg-base-100/50 hover:bg-base-200'}`}>
+                        <span className={`text-xs font-bold mb-3 uppercase tracking-wider ${d.isToday ? 'text-primary' : 'text-base-content/60'}`}>{d.isToday ? 'Now' : d.day}</span>
+                        {d.icon}
+                        <span className="text-xl font-bold text-base-content mt-3">{d.temp}°</span>
+                        <div className="flex items-center gap-1 text-[11px] font-bold text-info mt-2 bg-info/10 px-2 py-1 rounded-md"><Droplets size={12} /> {d.humidity}%</div>
+                      </div>
+                    ))}
                   </div>
+                )}
+              </div>
+            </motion.div>
+
+            <motion.div initial="hidden" animate="visible" variants={fadeIn} transition={{ delay: 0.3 }} className="card bg-base-100/70 backdrop-blur-xl border border-base-content/10 shadow-xl rounded-2xl p-6">
+              <h3 className="font-semibold text-sm tracking-wide text-base-content/80 uppercase mb-5">Quick Actions</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-4">
+                 <button onClick={() => navigate("/crop-recommendations")} className="btn btn-outline border-base-content/10 hover:bg-base-200 hover:border-base-content/20 text-base-content h-auto py-5 justify-start px-6 rounded-xl group">
+                   <div className="p-2 bg-primary/10 text-primary rounded-lg mr-2 group-hover:scale-110 transition-transform"><Activity size={20} /></div>
+                   <span className="text-base font-medium">Crop Engine</span>
+                 </button>
+                 <button onClick={() => navigate(isAuthenticated ? "/my-farms" : "/login")} className="btn btn-outline border-base-content/10 hover:bg-base-200 hover:border-base-content/20 text-base-content h-auto py-5 justify-start px-6 rounded-xl group">
+                   <div className="p-2 bg-secondary/10 text-secondary rounded-lg mr-2 group-hover:scale-110 transition-transform">{isAuthenticated ? <Layers size={20} /> : <Lock size={20} />}</div>
+                   <span className="text-base font-medium">{isAuthenticated ? 'My Land Data' : 'Login to Manage Land'}</span>
+                 </button>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* RIGHT COLUMN: The Feed */}
+          <div className="col-span-1 xl:col-span-8 flex flex-col relative z-20">
+            {/* Invisible Placeholder to maintain grid layout when expanded */}
+            <div className="w-full h-[750px] pointer-events-none" />
+
+            <AnimatePresence>
+              {!isFullscreen && (
+                <motion.div 
+                  layoutId="feed-container"
+                  className="absolute inset-0 card bg-base-100/70 backdrop-blur-xl border border-base-content/10 shadow-xl flex flex-col overflow-hidden"
+                >
+                  <motion.div layoutId="feed-header" className="p-5 md:p-6 border-b border-base-content/10 bg-base-200/50 z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
+                    <div className="flex items-center gap-4">
+                      <motion.div layoutId="feed-icon" className="p-3 bg-primary/10 rounded-xl text-primary"><Users size={24} /></motion.div>
+                      <div>
+                        <motion.h2 layoutId="feed-title" className="text-xl font-bold text-base-content tracking-tight">Community Feed</motion.h2>
+                        <motion.p layoutId="feed-subtitle" className="text-sm text-base-content/60 mt-1 font-medium hidden sm:block">Regional agricultural updates</motion.p>
+                      </div>
+                    </div>
+                    <motion.button 
+                      layoutId="feed-button"
+                      onClick={() => setIsFullscreen(true)}
+                      className="btn btn-outline border-base-content/20 rounded-xl gap-2 hover:scale-105 transition-transform"
+                    >
+                      <Maximize size={18} /> Explore Feed
+                    </motion.button>
+                  </motion.div>
+
+                  <motion.div layoutId="feed-content" className="relative flex-1 bg-base-100/30 overflow-hidden">
+                    <div className="absolute inset-0 p-4 md:p-6 overflow-y-auto w-full custom-scrollbar flex justify-center">
+                      <div className="w-full max-w-3xl pointer-events-auto">
+                        <CommunityFeed />
+                      </div>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </main>
+
+      {/* ================= FULLSCREEN OVERLAY ================= */}
+      {/* Renders completely outside the grid to ensure 100% viewport coverage */}
+      <AnimatePresence>
+        {isFullscreen && (
+          <motion.div
+            layoutId="feed-container"
+            className="fixed top-0 left-0 w-[100vw] h-[100dvh] z-[999999] bg-base-100/95 backdrop-blur-3xl flex flex-col m-0 p-0 shadow-2xl overflow-hidden"
+          >
+            <motion.div layoutId="feed-header" className="p-6 md:p-8 border-b border-base-content/10 bg-base-200/80 z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 shrink-0 shadow-sm">
+              <div className="flex items-center gap-5">
+                <motion.div layoutId="feed-icon" className="p-4 bg-primary/10 rounded-2xl text-primary">
+                  <Users size={32} />
+                </motion.div>
+                <div>
+                  <motion.h2 layoutId="feed-title" className="text-2xl md:text-3xl font-bold text-base-content tracking-tight">Regional Community Feed</motion.h2>
+                  <motion.p layoutId="feed-subtitle" className="text-base text-base-content/60 mt-1 font-medium">Real-time agricultural updates, alerts, and discussions</motion.p>
                 </div>
               </div>
-            </div> */}
+              <motion.button 
+                layoutId="feed-button"
+                onClick={() => setIsFullscreen(false)}
+                className="btn btn-neutral rounded-xl gap-2 hover:scale-105 transition-transform px-8"
+              >
+                <Minimize size={18} /> Collapse Feed
+              </motion.button>
+            </motion.div>
+
+            <motion.div layoutId="feed-content" className="relative flex-1 bg-transparent overflow-hidden">
+              <div className="absolute inset-0 p-6 overflow-y-auto w-full custom-scrollbar flex justify-center">
+                <div className="w-full max-w-5xl">
+                  <CommunityFeed />
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
-        </div>
-      </section>
+        )}
+      </AnimatePresence>
+
+      <style dangerouslySetInnerHTML={{__html: `
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: oklch(var(--bc) / 0.2); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background-color: oklch(var(--bc) / 0.4); }
+      `}} />
     </div>
   );
 }
