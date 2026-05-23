@@ -1,10 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useGeoLocation from '../../hooks/useGeoLocation'; 
 import api from '../../axios';
+import { saveToOutbox, getOutbox, removeFromOutbox } from '../../lib/indexedDB';
 
-// --- MATH HELPERS ---
-// 1. Safely extract PostGIS/GeoJSON boundaries into a flat [lng, lat] array
+// --- MATH HELPERS (Extracted to prevent re-allocation on render) ---
 const extractPolygon = (boundaries) => {
   if (!boundaries) return [];
   if (typeof boundaries === 'object' && boundaries.coordinates) {
@@ -22,10 +22,9 @@ const extractPolygon = (boundaries) => {
   return [];
 };
 
-// 2. Ray-Casting Algorithm: Checks if a GPS point is inside a polygon
 const isPointInPolygon = (point, polygon) => {
   if (!polygon || polygon.length === 0) return false;
-  const [px, py] = point; // [lng, lat]
+  const [px, py] = point;
   let isInside = false;
   for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
     const [xi, yi] = polygon[i];
@@ -34,6 +33,13 @@ const isPointInPolygon = (point, polygon) => {
     if (intersect) isInside = !isInside;
   }
   return isInside;
+};
+
+// --- ANIMATION VARIANTS (Optimized for performance) ---
+const fadeAnim = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+  exit: { opacity: 0, transition: { duration: 0.2 } }
 };
 
 // --- MAIN COMPONENT ---
@@ -46,10 +52,59 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isScanning, setIsScanning] = useState(false);
   const [scanResult, setScanResult] = useState(null);
+  const [isDeviceOnline, setIsDeviceOnline] = useState(navigator.onLine);
+  const [outboxCount, setOutboxCount] = useState(0);
+  const [isSyncing, setIsSyncing] = useState(false);
   
   // Context-Aware States
   const [locationMatch, setLocationMatch] = useState(null);
   const [selectedFallbackFarm, setSelectedFallbackFarm] = useState("");
+
+  useEffect(() => {
+    const handleOnline = () => { setIsDeviceOnline(true); triggerBackgroundSync(); };
+    const handleOffline = () => setIsDeviceOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    updateOutboxCount();
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  const updateOutboxCount = async () => {
+    const pending = await getOutbox();
+    setOutboxCount(pending.length);
+  };
+
+  const triggerBackgroundSync = async () => {
+    const pendingItems = await getOutbox();
+    if (pendingItems.length === 0 || isSyncing) return;
+
+    setIsSyncing(true);
+    for (const item of pendingItems) {
+      try {
+        const scanFormData = new FormData();
+        scanFormData.append('image', item.imageFile);
+        const scanResponse = await api.post('/api/detections/scan/', scanFormData);
+
+        const finalData = new FormData();
+        finalData.append('image', item.imageFile);
+        finalData.append('farm_id', item.farmId);
+        finalData.append('pest_name', scanResponse.data.disease);
+        finalData.append('severity_level', scanResponse.data.severity);
+
+        await api.post('/api/detections/', finalData);
+        await removeFromOutbox(item.id);
+      } catch (err) {
+        console.error("Failed syncing outbox item", err);
+      }
+    }
+    setIsSyncing(false);
+    updateOutboxCount();
+  };
 
   const handleCameraClick = () => fileInputRef.current.click();
 
@@ -66,9 +121,7 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
   const processContextAndScan = async (file) => {
     setIsScanning(true);
 
-    // 1. RUN CONTEXT-AWARE MATH TO AUTO-SELECT THE FARM FOR THE UI
     let matchResult = { type: 'NO_FARMS' };
-    
     if (farms.length > 0) {
       if (loaded && !error && coordinates.lat && coordinates.lng) {
         const userPoint = [coordinates.lng, coordinates.lat];
@@ -84,21 +137,28 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
         }
         if (!foundMatch) matchResult = { type: 'NO_MATCH' };
       } else {
-        matchResult = { type: 'NO_LOCATION' }; // Fallback if GPS fails
+        matchResult = { type: 'NO_LOCATION' };
       }
     }
     setLocationMatch(matchResult);
 
-    // 2. SEND TO AI ENGINE
+    if (!navigator.onLine) {
+      setTimeout(() => {
+        setScanResult({
+          disease: "Offline Capture Mode",
+          treatment: "Scan queued locally. Analysis will run automatically upon network reconnection.",
+          severity: 1,
+          isOfflineMock: true
+        });
+        setIsScanning(false);
+      }, 800);
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append('image', file);
-
-      // Hits the @action we built in Django
-      const response = await api.post('/api/detections/scan/', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      
+      const response = await api.post('/api/detections/scan/', formData);
       setScanResult(response.data);
     } catch (err) {
       console.error("Scanning failed", err);
@@ -110,29 +170,39 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
 
   const confirmAndBroadcast = async () => {
     const targetFarmId = locationMatch?.type === 'MATCH' ? locationMatch.farm.id : selectedFallbackFarm;
-    if (!targetFarmId) return alert("Please select a farm to broadcast the alert.");
+    if (!targetFarmId) return alert("Please select a farm to link this report.");
     
+    if (!isDeviceOnline || scanResult?.isOfflineMock) {
+      try {
+        await saveToOutbox({
+          imageFile: imageFile,
+          farmId: targetFarmId,
+          timestamp: new Date().toISOString()
+        });
+        
+        alert("🚨 Saved to Outbox! The app will analyze and broadcast this when you regain connection.");
+        updateOutboxCount();
+        resetScanner();
+      } catch (err) {
+        console.error("Failed storing item offline", err);
+        alert("Failed to queue item locally.");
+      }
+      return;
+    }
+
     try {
-      // Build the final payload
       const finalData = new FormData();
       finalData.append('image', imageFile);
       finalData.append('farm_id', targetFarmId);
       finalData.append('pest_name', scanResult.disease);
       finalData.append('severity_level', scanResult.severity);
       
-      // NOTICE: We NO LONGER append 'detection_location' here! 
-      // The backend strictly uses the farm_id's mathematical centroid.
-
-      await api.post('/api/detections/', finalData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      
-      alert("Alert successfully broadcasted to nearby farmers!");
+      await api.post('/api/detections/', finalData);
+      alert("Alert successfully broadcasted to regional network!");
       resetScanner();
-
     } catch (err) {
       console.error("Failed to broadcast", err);
-      alert(err.response?.data?.farm_id?.[0] || "Failed to broadcast alert.");
+      alert("Failed to broadcast alert. Please try again.");
     }
   };
 
@@ -144,122 +214,144 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto bg-base-100 rounded-2xl shadow-2xl border border-base-300 overflow-hidden relative">
-      <div className="p-4 bg-primary/10 border-b border-primary/20 text-center">
-        <h2 className="text-xl font-bold flex items-center justify-center gap-2 text-primary">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-          Crop Health Scanner
-        </h2>
-      </div>
+    <div className="relative w-full max-w-md mx-auto z-10">
+      
+      {/* Ambient Background Glow (Matched to Home) */}
+      <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-primary/20 blur-[100px] rounded-full pointer-events-none z-0" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-secondary/15 blur-[100px] rounded-full pointer-events-none z-0" />
 
-      <div className="p-6 flex flex-col items-center">
-        <input type="file" accept="image/*" capture="environment" ref={fileInputRef} onChange={handleImageCapture} className="hidden" />
+      {/* Main Glassmorphism Card */}
+      <div className="bg-base-100/70 backdrop-blur-xl border border-base-content/10 shadow-xl rounded-xl overflow-hidden relative z-10">
+        
+        {/* Outbox Banner */}
+        {outboxCount > 0 && (
+          <div className="bg-warning/10 border-b border-warning/20 text-warning px-5 py-3 text-sm flex justify-between items-center backdrop-blur-md">
+            <span className="font-medium flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
+              {outboxCount} Pending Sync{outboxCount > 1 ? 's' : ''}
+            </span>
+            {isDeviceOnline && (
+              <button onClick={triggerBackgroundSync} disabled={isSyncing} className="text-xs font-bold hover:text-warning/70 transition-colors">
+                {isSyncing ? "SYNCING..." : "SYNC NOW"}
+              </button>
+            )}
+          </div>
+        )}
 
-        <AnimatePresence mode="wait">
-          {/* STATE 1: IDLE */}
-          {!previewUrl && (
-            <motion.button
-              key="idle"
-              initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
-              onClick={handleCameraClick}
-              className="w-48 h-48 rounded-full bg-primary/10 border-4 border-dashed border-primary/40 flex flex-col items-center justify-center text-primary hover:bg-primary/20 hover:scale-105 transition-all cursor-pointer group"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mb-2 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" /></svg>
-              <span className="font-bold">Tap to Scan</span>
-            </motion.button>
-          )}
+        {/* Clean Header */}
+        <div className="p-5 border-b border-base-content/10 bg-base-200/50 flex justify-between items-center">
+          <div>
+            <h2 className="text-lg font-bold text-base-content tracking-tight">AI Crop Scanner</h2>
+            <p className="text-xs text-base-content/60 font-medium">Capture & Broadcast Threats</p>
+          </div>
+          
+          {/* Subtle Network Indicator */}
+          <div className={`flex items-center gap-2 text-xs font-bold px-2.5 py-1 rounded-md border ${isDeviceOnline ? 'bg-success/10 text-success border-success/20' : 'bg-error/10 text-error border-error/20'}`}>
+            <span className={`w-2 h-2 rounded-full ${isDeviceOnline ? 'bg-success' : 'bg-error animate-pulse'}`} />
+            {isDeviceOnline ? "ONLINE" : "OFFLINE"}
+          </div>
+        </div>
 
-          {/* STATE 2: SCANNING */}
-          {previewUrl && !scanResult && (
-            <motion.div 
-              key="scanning"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="relative w-full aspect-square rounded-xl overflow-hidden border-2 border-primary/30"
-            >
-              <img src={previewUrl} alt="Crop scan" className="w-full h-full object-cover grayscale-[20%]" />
-              <motion.div className="absolute left-0 right-0 h-1 bg-primary shadow-[0_0_15px_3px_rgba(var(--p),0.8)]" animate={{ top: ["0%", "100%", "0%"] }} transition={{ duration: 2, ease: "linear", repeat: Infinity }} />
-              <div className="absolute bottom-4 left-0 right-0 text-center"><span className="badge badge-primary badge-lg font-bold shadow-lg animate-bounce">Analyzing...</span></div>
-            </motion.div>
-          )}
+        <div className="p-6 flex flex-col items-center">
+          <input type="file" accept="image/*" capture="environment" ref={fileInputRef} onChange={handleImageCapture} className="hidden" />
 
-          {/* STATE 3: RESULT & CONTEXT UI */}
-          {scanResult && (
-            <motion.div key="result" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full">
-              
-              {/* Diagnosis Header */}
-              <div className={`alert ${scanResult.severity >= 4 ? 'alert-error' : 'alert-warning'} shadow-lg mb-4 rounded-xl`}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                <div>
-                  <h3 className="font-bold text-lg">{scanResult.disease}</h3>
-                  <div className="text-xs opacity-80">Treatment: {scanResult.treatment}</div>
+          <AnimatePresence mode="wait">
+            {/* IDLE STATE: Sleek Dashed Box instead of a circle */}
+            {!previewUrl && (
+              <motion.button
+                key="idle"
+                variants={fadeAnim} initial="hidden" animate="visible" exit="exit"
+                onClick={handleCameraClick}
+                className="w-full aspect-[4/3] rounded-xl bg-base-200/50 border-2 border-dashed border-base-content/20 flex flex-col items-center justify-center text-base-content/60 hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer group"
+              >
+                <div className="p-4 bg-base-100 rounded-xl shadow-sm border border-base-content/5 mb-3 group-hover:scale-105 transition-transform">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 </div>
-              </div>
+                <span className="font-semibold tracking-wide">Initialize Camera</span>
+              </motion.button>
+            )}
 
-              {/* CONTEXT-AWARE LOCATION CARD */}
-              <div className="bg-base-200 border border-base-300 p-4 rounded-xl mb-4">
-                {locationMatch?.type === 'MATCH' && (
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-start gap-2">
-                      <span className="text-xl">📍</span>
-                      <div>
-                        <h4 className="font-bold text-sm text-success">Location Verified</h4>
-                        <p className="text-xs text-base-content/70">You are standing in <span className="font-bold">{locationMatch.farm.name}</span>.</p>
-                      </div>
-                    </div>
-                    <button onClick={confirmAndBroadcast} className="btn btn-primary w-full shadow-lg">Confirm & Broadcast Alert</button>
+            {/* SCANNING STATE: Sharp Image Preview */}
+            {previewUrl && !scanResult && (
+              <motion.div 
+                key="scanning"
+                variants={fadeAnim} initial="hidden" animate="visible" exit="exit"
+                className="relative w-full aspect-[4/3] rounded-xl overflow-hidden border border-base-content/10 shadow-inner"
+              >
+                <img src={previewUrl} alt="Crop scan" className="w-full h-full object-cover brightness-75" />
+                <motion.div className="absolute left-0 right-0 h-0.5 bg-primary shadow-[0_0_10px_2px_rgba(var(--p),0.8)]" animate={{ top: ["0%", "100%", "0%"] }} transition={{ duration: 2.5, ease: "linear", repeat: Infinity }} />
+                <div className="absolute inset-0 flex items-center justify-center bg-base-100/20 backdrop-blur-[2px]">
+                   <span className="px-4 py-2 bg-base-100/90 text-primary font-bold text-sm rounded-lg shadow-xl border border-base-content/10">
+                     {isDeviceOnline ? "Processing Vision Model..." : "Queueing Offline Storage..."}
+                   </span>
+                </div>
+              </motion.div>
+            )}
+
+            {/* RESULT & CONTEXT STATE: Glass Cards */}
+            {scanResult && (
+              <motion.div key="result" variants={fadeAnim} initial="hidden" animate="visible" className="w-full mt-2">
+                
+                {/* AI Result Card */}
+                <div className={`p-4 mb-4 rounded-xl border backdrop-blur-sm shadow-sm flex gap-3 ${scanResult.isOfflineMock ? 'bg-info/10 border-info/20 text-info-content' : scanResult.severity >= 4 ? 'bg-error/10 border-error/20 text-error-content' : 'bg-warning/10 border-warning/20 text-warning-content'}`}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="shrink-0 h-5 w-5 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <div>
+                    <h3 className="font-bold text-base leading-tight">{scanResult.disease}</h3>
+                    <p className="text-xs opacity-80 mt-1 leading-snug">{scanResult.treatment}</p>
                   </div>
-                )}
+                </div>
 
-                {locationMatch?.type === 'NO_MATCH' && (
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-start gap-2">
-                      <span className="text-xl">📍</span>
+                {/* Location Context Card */}
+                <div className="bg-base-200/50 backdrop-blur-md border border-base-content/10 p-4 rounded-xl mb-5">
+                  {locationMatch?.type === 'MATCH' && (
+                    <div className="flex flex-col gap-4">
                       <div>
-                        <h4 className="font-bold text-sm text-warning">Outside Known Boundaries</h4>
-                        <p className="text-xs text-base-content/70 mb-2">We couldn't verify which farm you are in. Please select one or digitize this land.</p>
-                        <select 
-                          className="select select-bordered select-sm w-full bg-base-100" 
-                          value={selectedFallbackFarm} 
-                          onChange={(e) => setSelectedFallbackFarm(e.target.value)}
-                        >
-                          <option value="" disabled>Select Farm...</option>
+                        <h4 className="font-bold text-sm text-success flex items-center gap-1"><span className="w-1.5 h-1.5 bg-success rounded-full"></span> Boundary Confirmed</h4>
+                        <p className="text-xs text-base-content/70 mt-1">Standing inside <span className="font-semibold text-base-content">{locationMatch.farm.name}</span></p>
+                      </div>
+                      <button onClick={confirmAndBroadcast} className="btn btn-primary rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform">
+                        {isDeviceOnline ? "Broadcast Threat" : "Queue to Outbox"}
+                      </button>
+                    </div>
+                  )}
+
+                  {locationMatch?.type === 'NO_MATCH' && (
+                    <div className="flex flex-col gap-4">
+                      <div>
+                        <h4 className="font-bold text-sm text-warning flex items-center gap-1"><span className="w-1.5 h-1.5 bg-warning rounded-full"></span> Manual Assignment Required</h4>
+                        <p className="text-xs text-base-content/70 mt-1 mb-3">GPS indicates you are outside registered boundaries.</p>
+                        <select className="select select-bordered select-sm w-full bg-base-100 rounded-lg text-sm" value={selectedFallbackFarm} onChange={(e) => setSelectedFallbackFarm(e.target.value)}>
+                          <option value="" disabled>Assign to farm...</option>
                           {farms.map(f => <option key={f.id} value={f.id}>{f.name}</option>)}
                         </select>
                       </div>
-                    </div>
-                    <div className="flex gap-2 mt-1">
-                      <button onClick={onDigitizeNew} className="btn btn-outline btn-sm flex-1">Map New Land</button>
-                      <button onClick={confirmAndBroadcast} disabled={!selectedFallbackFarm} className="btn btn-primary btn-sm flex-1">Broadcast</button>
-                    </div>
-                  </div>
-                )}
-
-                {locationMatch?.type === 'NO_FARMS' && (
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-start gap-2">
-                      <span className="text-xl">⚠️</span>
-                      <div>
-                        <h4 className="font-bold text-sm text-error">No Digitized Land</h4>
-                        <p className="text-xs text-base-content/70">To warn nearby farmers about this pest, you must map your land boundary first.</p>
+                      <div className="flex gap-2">
+                        <button onClick={onDigitizeNew} className="btn btn-outline border-base-content/20 btn-sm rounded-lg flex-1">Draw Map</button>
+                        <button onClick={confirmAndBroadcast} disabled={!selectedFallbackFarm} className="btn btn-primary btn-sm rounded-lg flex-1">
+                          {isDeviceOnline ? "Broadcast" : "Queue"}
+                        </button>
                       </div>
                     </div>
-                    <button onClick={onDigitizeNew} className="btn btn-secondary w-full shadow-lg">Digitize My Land Now</button>
-                  </div>
-                )}
-                
-                {locationMatch?.type === 'NO_LOCATION' && (
-                  <div className="text-center text-sm text-base-content/70 py-2">
-                    GPS Signal Lost. Please check your device location permissions.
-                  </div>
-                )}
-              </div>
+                  )}
 
-              <button onClick={resetScanner} className="btn btn-ghost btn-block text-base-content/50 hover:text-base-content">
-                Discard & Scan Again
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                  {locationMatch?.type === 'NO_FARMS' && (
+                    <div className="flex flex-col gap-4">
+                      <div>
+                        <h4 className="font-bold text-sm text-error flex items-center gap-1"><span className="w-1.5 h-1.5 bg-error rounded-full"></span> Zero Registered Land</h4>
+                        <p className="text-xs text-base-content/70 mt-1">You must define your property boundaries before broadcasting spatial alerts.</p>
+                      </div>
+                      <button onClick={onDigitizeNew} className="btn btn-neutral rounded-xl w-full">Digitize Boundaries</button>
+                    </div>
+                  )}
+                </div>
+
+                <button onClick={resetScanner} className="w-full text-xs font-bold text-base-content/50 hover:text-base-content transition-colors py-2 uppercase tracking-wider">
+                  Discard & Rescan
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );
