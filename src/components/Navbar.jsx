@@ -137,7 +137,7 @@ const Navbar = () => {
             <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-1 p-2 shadow bg-base-100 rounded-box w-64">
               <li><NavLink to="/">{t("navbar.home")}</NavLink></li>
               <li><NavLink to="/about-us">{t("navbar.about_us")}</NavLink></li>
-              <li><NavLink to="/contact">{t("navbar.contact")}</NavLink></li>
+              {/* <li><NavLink to="/contact">{t("navbar.contact")}</NavLink></li> */}
               <li><NavLink to="/my-farms">My Farms</NavLink></li>
               <li><NavLink to="/pest-prediction">Pest Prediction</NavLink></li>
             </ul>
@@ -161,11 +161,11 @@ const Navbar = () => {
                 {t("navbar.about_us")}
               </NavLink>
             </li>
-            <li>
+            {/* <li>
               <NavLink to="/contact" className={({ isActive }) => isActive ? "active font-bold text-primary bg-primary/10" : "hover:text-primary" }>
                 {t("navbar.contact")}
               </NavLink>
-            </li>
+            </li> */}
             <li>
               <NavLink to="/my-farms" className={({ isActive }) => isActive ? "active font-bold text-primary bg-primary/10" : "hover:text-primary" }>
                 My Farms
