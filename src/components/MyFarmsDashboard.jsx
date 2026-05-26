@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import api from "../axios"; // <-- MISSING IMPORT ADDED
 
 // <-- MISSING CONSTANT ADDED (Must be outside the component!)
-const libraries = ["drawing"];
+const libraries = ["drawing", "places"];
 
 const mapContainerStyle = { width: "100%", height: "100%" };
 
