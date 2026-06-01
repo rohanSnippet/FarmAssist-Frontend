@@ -346,16 +346,16 @@ export default function Home() {
               <div className="flex items-center gap-5">
                 <motion.div
                   layoutId="feed-icon"
-                  className="p-4 bg-primary/10 rounded-md text-primary"
+                  className="p-2 bg-primary/10 rounded-md text-primary"
                 >
-                  <Users size={16} />
+                  <Users size={12} />
                 </motion.div>
                 <div>
                   <motion.h2
                     layoutId="feed-title"
                     className="text-md md:text-lg font-bold text-base-content tracking-tight"
                   >
-                    Regional Community Feed
+                    Regional Community Feed For {firstName}
                   </motion.h2>
                  {/*  <motion.p
                     layoutId="feed-subtitle"
