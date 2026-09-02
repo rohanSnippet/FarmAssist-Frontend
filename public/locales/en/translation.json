@@ -32,6 +32,21 @@
     "crop_recommendations": "Crop Recommendations",
     "about_us": "About Us",
     "contact": "Contact Us",
+    "my_farms": "My Farms",
+    "pest_detection": "Pest Detection",
+    "pest_alerts": "Pest & Disease Alerts",
+    "welcome": "Welcome to FarmAssist",
+    "login_to_access": "Log in to access crop recommendations.",
+    "login_now": "Log In Now",
+    "edit_profile": "Edit Profile",
+    "settings_tools": "Settings & Tools",
+    "scan_crop_health": "Scan Crop Health",
+    "language": "Language",
+    "theme": "Theme",
+    "enter_fullscreen": "Enter Fullscreen Mode",
+    "exit_fullscreen": "Exit Fullscreen",
+    "account": "Account",
+    "saved_recommendations": "Saved Recommendations",
     "tooltips": {
       "exit_fullscreen": "Exit Fullscreen",
       "enter_fullscreen": "Enter Fullscreen",
@@ -164,5 +179,13 @@
   "footer_desc": "Let's collaborate and build something amazing together.",
   "footer_btn": "Contact Us"
 }
-
+,"LocationModal": {
+    "close": "Close location dialog",
+    "title": "Your Location",
+    "description": "We use this to provide accurate weather forecasts and crop recommendations for your farm.",
+    "current_setting": "Current Setting",
+    "not_set": "Not Set",
+    "detecting": "Detecting Satellite Signal...",
+    "detect": "Detect My Location"
+  }
 }
