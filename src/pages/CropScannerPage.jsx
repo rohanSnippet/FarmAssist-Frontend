@@ -1,58 +1,55 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import CropScanner from '../components/User/CropScanner';
 import api from '../axios';
-import CropScanner from '../components/User/CropScanner'; // The component we just built!
 
 const CropScannerPage = () => {
   const [farms, setFarms] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch the user's farms for the Point-in-Polygon math
-    const fetchFarms = async () => {
+    // Fetch registered farms to enable spatial boundary matching in the scanner
+    const fetchUserFarms = async () => {
       try {
         const response = await api.get('/api/farms/');
         setFarms(response.data);
-      } catch (err) {
-        console.error("Failed to fetch farms", err);
+      } catch (error) {
+        console.error("Failed to load farm boundaries. Scanner will default to unlinked mode.", error);
+        // Fallback to empty array so the scanner can still operate anonymously
+        setFarms([]); 
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
-    fetchFarms();
+    // If offline, bypass the fetch to let the scanner load immediately
+    if (navigator.onLine) {
+      fetchUserFarms();
+    } else {
+      setIsLoading(false);
+    }
   }, []);
 
-  return (
-    <div className="min-h-screen bg-base-200 pt-24 pb-12 px-4 md:px-8">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-3xl mx-auto"
-      >
-        <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-            Plant Doctor
-          </h1>
-          <p className="text-base-content/70 mt-2">
-            Instantly diagnose crop diseases and get treatment recommendations.
-          </p>
-        </div>
+  const handleDigitizeNew = () => {
+    // Redirect users to the mapping tool if they select "Digitize Boundaries"
+    navigate('/manage-farms'); // Adjust route to match your FarmBoundaryMapper location
+  };
 
-        {loading ? (
-          <div className="flex justify-center h-64 items-center">
-            <span className="loading loading-spinner text-primary loading-lg"></span>
-          </div>
-        ) : (
-          <CropScanner 
-            farms={farms} 
-            // If they are outside a farm, send them to the farm management page to draw one!
-            onDigitizeNew={() => navigate('/my-farms')} 
-          />
-        )}
-      </motion.div>
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-20">
+      <CropScanner 
+        farms={farms} 
+        onDigitizeNew={handleDigitizeNew} 
+      />
     </div>
   );
 };
