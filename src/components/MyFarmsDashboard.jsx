@@ -157,6 +157,7 @@ const MyFarmsDashboard = () => {
     id: "google-map-script",
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
     libraries: libraries,
+    version:"3.64"
   });
 
   // Add an error state at the top of your component alongside farms, selectedFarm, and loading

@@ -5,7 +5,7 @@ import { Navigation, Edit3, Play, Square, Check, X, MapPin, Info, MousePointer2,
 import { useTranslation } from 'react-i18next';
 import useGeoLocation from '../hooks/useGeoLocation';
 
-const libraries = ['drawing', 'places'];
+const libraries = ['drawing','places'];
 
 const mapContainerStyle = {
   width: '100%',
@@ -39,7 +39,8 @@ export default function FarmBoundaryMapper({ onSaveFarm, onCancel }) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-    libraries: libraries
+    libraries: libraries,
+    version: "3.64"
   });
 
   const containerRef = useRef(null);
