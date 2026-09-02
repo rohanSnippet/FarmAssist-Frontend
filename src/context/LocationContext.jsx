@@ -24,7 +24,7 @@ const isUsableLocation = (location) => {
 };
 
 export const LocationProvider = ({ children }) => {
-  const { user, token, setUser, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const Toast = useToast();
   const { t } = useTranslation();
  
@@ -55,8 +55,16 @@ export const LocationProvider = ({ children }) => {
 
   // --- Core Logic: Detect & Save ---
   const detectAndSaveLocation = useCallback(() => {
+    if (!window.isSecureContext) {
+      Toast.fire({
+        icon: "error",
+        title: "Location needs HTTPS on a phone. Open FarmAssist over HTTPS and try again.",
+      });
+      return;
+    }
+
     if (!("geolocation" in navigator)) {
-      Toast.fire({ icon: "error", title: t("Common.toasts.error_occurred") });
+      Toast.fire({ icon: "error", title: "Location is not supported by this browser." });
       return;
     }
 
@@ -70,27 +78,30 @@ export const LocationProvider = ({ children }) => {
         // 1. Get readable name
         const label = await fetchLocationLabel(lat, lng);
         const newLocData = { label, lat, lng, isLoaded: true };
+        // Keep the latest successful fix available immediately, including if
+        // the account sync is temporarily unavailable.
+        localStorage.setItem("guest_location", JSON.stringify(newLocData));
      
         // 2. Storage Logic
         if (user) {
         //  console.log(user, token)
           // A. Logged In? Save to DB
           try {
-            const res = await api.patch(
+            await api.patch(
               "/api/me/", // Ensure this endpoint exists
               { location_label: label, latitude: lat, longitude: lng }
             );
 
-            console.log(res.data)
-            // Update Auth Context to keep everything in sync
             Toast.fire({ icon: "success", title: t("Common.toasts.location_selected") });
           } catch (err) {
             console.error("DB Sync failed", err);
-            Toast.fire({ icon: "warning", title: t("Common.toasts.error_occurred") });
+            Toast.fire({
+              icon: "warning",
+              title: "Location updated on this device, but account sync failed.",
+            });
           }
         } else {
           // B. Guest? Save to LocalStorage
-          localStorage.setItem("guest_location", JSON.stringify(newLocData));
           Toast.fire({ icon: "success", title: t("Common.toasts.location_selected") });
         }
 
@@ -100,9 +111,22 @@ export const LocationProvider = ({ children }) => {
       },
       (error) => {
         console.error(error);
-        Toast.fire({ icon: "error", title: t("Common.toasts.error_occurred") });
+        const messageByCode = {
+          1: "Location permission was denied. Allow location in your browser settings.",
+          2: "Your location is unavailable. Check GPS, signal, and location services.",
+          3: "Location request timed out. Move to an area with a clearer signal and try again.",
+        };
+        Toast.fire({
+          icon: "error",
+          title: messageByCode[error.code] || "Unable to detect your location. Please try again.",
+        });
         setLoadingLoc(false);
-      }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0,
+      },
     );
   }, [Toast, fetchLocationLabel, t, user]);
 
