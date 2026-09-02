@@ -137,17 +137,26 @@ export default function Home() {
       <div className="absolute bottom-[10%] right-[-5%] w-[40vw] h-[60vh] bg-secondary/15 blur-[150px] rounded-full pointer-events-none z-0" />
 
       {/* COMMAND HEADER */}
-      <header className="relative w-full pt-24 pb-8 px-4 md:px-8 xl:px-12 2xl:px-16 border-b border-base-content/10 bg-base-100/40 backdrop-blur-md z-10">
-        <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-          <motion.div initial="hidden" animate="visible" variants={fadeIn}>
-            <div className="flex items-center gap-2 text-primary font-semibold text-sm mb-2 uppercase tracking-widest">
-              <MapPin size={16} />
-              <span>{locationLabel}</span>
-              <span className="text-base-content/30 px-1">•</span>
-              <span className="text-base-content/70">{today}</span>
+      <header className="relative w-full pt-10 pb-5 px-4 md:pt-24 md:pb-8 md:px-8 xl:px-12 2xl:px-16 border-b border-base-content/10 bg-base-100/40 backdrop-blur-md z-10">
+        <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-4 md:gap-6">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeIn}
+            className="w-full md:w-auto overflow-hidden"
+          >
+            {/* Location & Date - Scaled down for mobile, truncated to prevent awkward wrapping */}
+            <div className="flex items-center gap-1.5 md:gap-2 text-primary font-semibold text-[10px] sm:text-xs md:text-sm mb-1.5 md:mb-2 uppercase tracking-widest w-full">
+              <MapPin size={15} className="shrink-0" />
+              <span className="truncate max-w-[40%] md:max-w-none">
+                {locationLabel}
+              </span>
+              <span className="text-base-content/30 px-0.5">•</span>
+              <span className="text-base-content/70 truncate">{today}</span>
             </div>
 
-            <h1 className="text-3xl md:text-5xl font-light tracking-tight text-base-content">
+            {/* Main Greeting - Reduced text size and tighter line spacing on mobile */}
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-light tracking-tight text-base-content leading-tight">
               {isAuthenticated ? (
                 <>
                   Overview,{" "}
@@ -162,17 +171,20 @@ export default function Home() {
             </h1>
           </motion.div>
 
+          {/* Primary Action - Full width on mobile, auto width on desktop */}
           <motion.div
             initial="hidden"
             animate="visible"
             variants={fadeIn}
             transition={{ delay: 0.1 }}
+            className="w-full md:w-auto mt-2 md:mt-0"
           >
             <button
               onClick={() => navigate("/pest-prediction")}
-              className="btn btn-primary px-8 shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform"
+              className="btn btn-primary w-full md:w-auto md:px-8 shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform rounded-xl"
             >
-              <Scan size={20} className="mr-2" /> Start Pest Detection
+              <Scan size={18} className="mr-2 md:w-5 md:h-5" /> Start Pest
+              Detection
             </button>
           </motion.div>
         </div>
@@ -188,36 +200,49 @@ export default function Home() {
               animate="visible"
               variants={fadeIn}
               transition={{ delay: 0.2 }}
-              className="card bg-base-100/70 backdrop-blur-xl border border-base-content/10 shadow-xl rounded-2xl overflow-hidden"
+              // 1. Prefix container styles with 'md:' to remove the surrounding card on mobile
+              className="md:card md:bg-base-100/70 md:backdrop-blur-xl md:border md:border-base-content/10 md:shadow-xl rounded-2xl md:overflow-hidden"
             >
-              <div className="p-5 border-b border-base-content/10 flex justify-between items-center bg-base-200/50">
-                <h3 className="font-semibold text-sm tracking-wide text-base-content/80 uppercase">
+              <div className="mb-3 md:mb-0 md:p-5 md:border-b border-base-content/10 flex justify-between items-center md:bg-base-200/50">
+                <h3 className="font-semibold text-sm tracking-wide text-base-content/80 uppercase px-1 md:px-0">
                   Atmospheric Conditions
                 </h3>
               </div>
-              <div className="p-5">
+              <div className="md:p-5">
                 {loading ? (
                   <div className="flex justify-center p-8">
                     <span className="loading loading-ring text-primary w-10"></span>
                   </div>
                 ) : (
-                  <div className="flex flex-row overflow-x-auto pb-2 gap-3 hide-scrollbar">
+                  // 2. Add negative margins (-mx-4 px-4) on mobile so the scroll bleeds beautifully to the edge of the phone screen
+                  <div className="flex flex-row overflow-x-auto pb-4 gap-3 hide-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
                     {weatherData.map((d, i) => (
                       <div
                         key={i}
-                        className={`min-w-[85px] flex flex-col items-center justify-between p-4 rounded-xl border transition-colors ${d.isToday ? "border-primary bg-primary/10 shadow-sm" : "border-base-content/10 bg-base-100/50 hover:bg-base-200"}`}
+                        className={`min-w-[70px] md:min-w-[85px] flex flex-col items-center justify-between py-2 px-2 md:p-4 rounded-full md:rounded-2xl border transition-colors ${
+                          d.isToday
+                            ? "border-primary bg-primary/10 shadow-md"
+                            : "border-base-content/10 bg-base-100/80 backdrop-blur-md shadow-sm hover:bg-base-200"
+                        }`}
                       >
                         <span
-                          className={`text-xs font-bold mb-3 uppercase tracking-wider ${d.isToday ? "text-primary" : "text-base-content/60"}`}
+                          className={`text-[10px] md:text-xs font-bold mb-1 md:mb-3 uppercase tracking-wider ${
+                            d.isToday ? "text-primary" : "text-base-content/60"
+                          }`}
                         >
                           {d.isToday ? "Now" : d.day}
                         </span>
-                        {d.icon}
-                        <span className="text-xl font-bold text-base-content mt-3">
+
+                        {/* Scale down the icon slightly on mobile */}
+                        <div className="scale-60 md:scale-100">{d.icon}</div>
+
+                        <span className="text-sm md:text-xl font-bold text-base-content mt-1 md:mt-3 leading-none">
                           {d.temp}°
                         </span>
-                        <div className="flex items-center gap-1 text-[11px] font-bold text-info mt-2 bg-info/10 px-2 py-1 rounded-md">
-                          <Droplets size={12} /> {d.humidity}%
+
+                        <div className="flex items-center gap-1 text-[9px] md:text-[11px] font-bold text-info mt-1.5 md:mt-2 bg-info/10 px-1.5 py-0.5 md:px-2 md:py-1 rounded-full md:rounded-md">
+                          <Droplets size={10} className="hidden md:block" />{" "}
+                          {d.humidity}%
                         </div>
                       </div>
                     ))}
@@ -231,36 +256,43 @@ export default function Home() {
               animate="visible"
               variants={fadeIn}
               transition={{ delay: 0.3 }}
-              className="card bg-base-100/70 backdrop-blur-xl border border-base-content/10 shadow-xl rounded-2xl p-6"
+              // Container: Stripped bare on mobile, retains card UI on desktop
+              className="mt-6 md:mt-0 md:card md:bg-base-100/70 md:backdrop-blur-xl md:border md:border-base-content/10 md:shadow-xl md:rounded-2xl md:p-6"
             >
-              <h3 className="font-semibold text-sm tracking-wide text-base-content/80 uppercase mb-5">
+              <h3 className="font-semibold text-sm tracking-wide text-base-content/80 uppercase mb-3 md:mb-5 px-1 md:px-0">
                 Quick Actions
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-4">
+
+              {/* Grid: 2 columns in 1 row for phones, stacked for desktop sidebar */}
+              <div className="grid grid-cols-2 xl:grid-cols-1 gap-3 md:gap-4">
                 <button
                   onClick={() => navigate("/crop-recommendations")}
-                  className="btn btn-outline border-base-content/10 hover:bg-base-200 hover:border-base-content/20 text-base-content h-auto py-5 justify-start px-6 rounded-xl group"
+                  // Button: Vertical stack on mobile, horizontal on desktop. Flat UI on mobile.
+                  className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start gap-2 md:gap-0 bg-base-100 md:bg-transparent py-4 px-2 md:py-5 md:px-6 rounded-2xl md:rounded-xl border border-base-content/5 md:border-base-content/10 hover:bg-base-200 transition-colors group"
                 >
-                  <div className="p-2 bg-primary/10 text-primary rounded-lg mr-2 group-hover:scale-110 transition-transform">
-                    <Activity size={20} />
+                  <div className="p-2.5 md:p-2 bg-primary/10 text-primary rounded-xl md:rounded-lg md:mr-2 group-hover:scale-110 transition-transform">
+                    <Activity size={20} className="md:w-5 md:h-5" />
                   </div>
-                  <span className="text-base font-medium">Crop Engine</span>
+                  <span className="text-[11px] md:text-base font-bold md:font-medium text-center">
+                    Crop Engine
+                  </span>
                 </button>
+
                 <button
                   onClick={() =>
                     navigate(isAuthenticated ? "/my-farms" : "/login")
                   }
-                  className="btn btn-outline border-base-content/10 hover:bg-base-200 hover:border-base-content/20 text-base-content h-auto py-5 justify-start px-6 rounded-xl group"
+                  className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start gap-2 md:gap-0 bg-base-100 md:bg-transparent py-4 px-2 md:py-5 md:px-6 rounded-2xl md:rounded-xl border border-base-content/5 md:border-base-content/10 hover:bg-base-200 transition-colors group"
                 >
-                  <div className="p-2 bg-secondary/10 text-secondary rounded-lg mr-2 group-hover:scale-110 transition-transform">
+                  <div className="p-2.5 md:p-2 bg-secondary/10 text-secondary rounded-xl md:rounded-lg md:mr-2 group-hover:scale-110 transition-transform">
                     {isAuthenticated ? (
-                      <Layers size={20} />
+                      <Layers size={20} className="md:w-5 md:h-5" />
                     ) : (
-                      <Lock size={20} />
+                      <Lock size={20} className="md:w-5 md:h-5" />
                     )}
                   </div>
-                  <span className="text-base font-medium">
-                    {isAuthenticated ? "My Land Data" : "Login to Manage Land"}
+                  <span className="text-[11px] md:text-base font-bold md:font-medium text-center leading-tight">
+                    {isAuthenticated ? "My Land Data" : "Login to Manage"}
                   </span>
                 </button>
               </div>
@@ -357,7 +389,7 @@ export default function Home() {
                   >
                     Regional Community Feed For {firstName}
                   </motion.h2>
-                 {/*  <motion.p
+                  {/*  <motion.p
                     layoutId="feed-subtitle"
                     className="text-base text-sm text-base-content/60 mt-1 font-medium"
                   >

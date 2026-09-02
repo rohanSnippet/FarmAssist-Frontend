@@ -51,20 +51,13 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/*
+
  body {
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
- */
-
- body {
-  -webkit-tap-highlight-color: transparent; /* Removes the blue flash when tapping buttons */
-  -webkit-touch-callout: none; /* Disables the default long-press context menu */
-  user-select: none; /* Prevents accidental text highlighting while swiping */
-  overscroll-behavior-y: none; /* Disables the web-page bounce and pull-to-refresh effect */
-}
+ 
 
 /* Fonts */
 

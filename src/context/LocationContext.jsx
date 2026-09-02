@@ -1,7 +1,14 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
 import axios from "axios";
 import { useAuth } from "./AuthContext";
-import { useToast } from "../ui/Toast"; 
+import { useToast } from "../ui/Toast";
 import api from "../axios";
 import { useTranslation } from "react-i18next";
 
@@ -27,12 +34,12 @@ export const LocationProvider = ({ children }) => {
   const { user, loading: authLoading } = useAuth();
   const Toast = useToast();
   const { t } = useTranslation();
- 
+
   const [curLocation, setCurLocation] = useState({
     label: null, // Default text
     lat: null,
     lng: null,
-    isLoaded: false
+    isLoaded: false,
   });
 
   const [loadingLoc, setLoadingLoc] = useState(false);
@@ -42,11 +49,17 @@ export const LocationProvider = ({ children }) => {
     try {
       // Using OpenStreetMap (Free, no key required for demo)
       const response = await axios.get(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
       );
       const addr = response.data.address;
       // robust fallback for city name
-      return addr.city || addr.town || addr.village || addr.county || "Unknown Location";
+      return (
+        addr.city ||
+        addr.town ||
+        addr.village ||
+        addr.county ||
+        "Unknown Location"
+      );
     } catch (error) {
       console.error("Geocoding error:", error);
       return "Unknown Location";
@@ -58,13 +71,17 @@ export const LocationProvider = ({ children }) => {
     if (!window.isSecureContext) {
       Toast.fire({
         icon: "error",
-        title: "Location needs HTTPS on a phone. Open FarmAssist over HTTPS and try again.",
+        title:
+          "Location needs HTTPS on a phone. Open FarmAssist over HTTPS and try again.",
       });
       return;
     }
 
     if (!("geolocation" in navigator)) {
-      Toast.fire({ icon: "error", title: "Location is not supported by this browser." });
+      Toast.fire({
+        icon: "error",
+        title: "Location is not supported by this browser.",
+      });
       return;
     }
 
@@ -74,35 +91,42 @@ export const LocationProvider = ({ children }) => {
       async (position) => {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
-        
+
         // 1. Get readable name
         const label = await fetchLocationLabel(lat, lng);
         const newLocData = { label, lat, lng, isLoaded: true };
         // Keep the latest successful fix available immediately, including if
         // the account sync is temporarily unavailable.
         localStorage.setItem("guest_location", JSON.stringify(newLocData));
-     
+
         // 2. Storage Logic
         if (user) {
-        //  console.log(user, token)
+          //  console.log(user, token)
           // A. Logged In? Save to DB
           try {
             await api.patch(
               "/api/me/", // Ensure this endpoint exists
-              { location_label: label, latitude: lat, longitude: lng }
+              { location_label: label, latitude: lat, longitude: lng },
             );
 
-            Toast.fire({ icon: "success", title: t("Common.toasts.location_selected") });
+            Toast.fire({
+              icon: "success",
+              title: t("Common.toasts.location_selected"),
+            });
           } catch (err) {
             console.error("DB Sync failed", err);
             Toast.fire({
               icon: "warning",
-              title: "Location updated on this device, but account sync failed.",
+              title:
+                "Location updated on this device, but account sync failed.",
             });
           }
         } else {
           // B. Guest? Save to LocalStorage
-          Toast.fire({ icon: "success", title: t("Common.toasts.location_selected") });
+          Toast.fire({
+            icon: "success",
+            title: t("Common.toasts.location_selected"),
+          });
         }
 
         // 3. Update State
@@ -118,7 +142,9 @@ export const LocationProvider = ({ children }) => {
         };
         Toast.fire({
           icon: "error",
-          title: messageByCode[error.code] || "Unable to detect your location. Please try again.",
+          title:
+            messageByCode[error.code] ||
+            "Unable to detect your location. Please try again.",
         });
         setLoadingLoc(false);
       },
@@ -131,26 +157,33 @@ export const LocationProvider = ({ children }) => {
   }, [Toast, fetchLocationLabel, t, user]);
 
   const autoDetectionKeyRef = useRef(null);
+  const detectAndSaveLocationRef = useRef(detectAndSaveLocation);
+
+  useEffect(() => {
+    detectAndSaveLocationRef.current = detectAndSaveLocation;
+  }, [detectAndSaveLocation]);
 
   // --- Initialization Logic ---
   useEffect(() => {
     if (authLoading) return;
 
-    // Priority 1: Database (User Profile)
     let savedLocation = null;
 
+    // Priority 1: Database (User Profile)
     if (user?.location_label) {
       savedLocation = {
         label: user.location_label,
         lat: user.latitude,
         lng: user.longitude,
-        isLoaded: true
+        isLoaded: true,
       };
-    } 
+    }
+
     // Priority 2: LocalStorage (Guest)
     else {
       try {
         const saved = localStorage.getItem("guest_location");
+
         if (saved) {
           savedLocation = JSON.parse(saved);
         }
@@ -159,31 +192,50 @@ export const LocationProvider = ({ children }) => {
       }
     }
 
-    if (savedLocation) {
-      setCurLocation(savedLocation);
-    }
+    // Update state only if we actually have a usable saved location
+    if (savedLocation && isUsableLocation(savedLocation)) {
+      setCurLocation((previous) => {
+        if (
+          previous.label === savedLocation.label &&
+          previous.lat === savedLocation.lat &&
+          previous.lng === savedLocation.lng &&
+          previous.isLoaded === savedLocation.isLoaded
+        ) {
+          return previous;
+        }
 
-    // A missing or unresolved location should follow the exact same path as
-    // selecting "Detect My Location". Limit it to once for each account/guest
-    // session so a denied permission or unavailable geocoder never loops.
-    if (!isUsableLocation(savedLocation)) {
-      const detectionKey = user
-        ? `user:${user.id || user.email || "current"}`
-        : "guest";
+        return savedLocation;
+      });
 
-      if (autoDetectionKeyRef.current !== detectionKey) {
-        autoDetectionKeyRef.current = detectionKey;
-        detectAndSaveLocation();
-      }
-    } else {
       autoDetectionKeyRef.current = null;
+      return;
     }
-  }, [user, authLoading, detectAndSaveLocation]);
 
+    // Missing/unusable location → detect once
+    const detectionKey = user
+      ? `user:${user.id || user.email || "current"}`
+      : "guest";
 
+    if (autoDetectionKeyRef.current === detectionKey) {
+      return;
+    }
+
+    autoDetectionKeyRef.current = detectionKey;
+
+    detectAndSaveLocationRef.current();
+  }, [
+    authLoading,
+    user?.id,
+    user?.email,
+    user?.location_label,
+    user?.latitude,
+    user?.longitude,
+  ]);
 
   return (
-    <LocationContext.Provider value={{ curLocation, detectAndSaveLocation, loadingLoc }}>
+    <LocationContext.Provider
+      value={{ curLocation, detectAndSaveLocation, loadingLoc }}
+    >
       {children}
     </LocationContext.Provider>
   );
