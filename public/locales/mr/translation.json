@@ -30,6 +30,21 @@
     "crop_recommendations": "पिक शिफारशी",
     "about_us": "आमच्याबद्दल",
     "contact": "संपर्क",
+    "my_farms": "माझी शेते",
+    "pest_detection": "कीड ओळख",
+    "pest_alerts": "कीड आणि रोग सूचना",
+    "welcome": "FarmAssist मध्ये आपले स्वागत आहे",
+    "login_to_access": "पीक शिफारसी पाहण्यासाठी लॉग इन करा.",
+    "login_now": "आता लॉग इन करा",
+    "edit_profile": "प्रोफाइल संपादित करा",
+    "settings_tools": "सेटिंग्ज आणि साधने",
+    "scan_crop_health": "पीक आरोग्य स्कॅन करा",
+    "language": "भाषा",
+    "theme": "थीम",
+    "enter_fullscreen": "पूर्ण स्क्रीन मोडमध्ये जा",
+    "exit_fullscreen": "पूर्ण स्क्रीनमधून बाहेर पडा",
+    "account": "खाते",
+    "saved_recommendations": "जतन केलेल्या शिफारसी",
     "tooltips": {
       "exit_fullscreen": "फुल स्क्रीन बंद करा",
       "enter_fullscreen": "फुल स्क्रीन सुरू करा",
@@ -164,6 +179,15 @@
     "footer_title": "तुमच्याकडे प्रोजेक्ट आहे का?",
     "footer_desc": "चला मिळून काहीतरी उत्कृष्ट तयार करूया.",
     "footer_btn": "संपर्क करा"
+  }
+  ,"LocationModal": {
+    "close": "स्थान संवाद बंद करा",
+    "title": "तुमचे स्थान",
+    "description": "तुमच्या शेतासाठी अचूक हवामान अंदाज आणि पीक शिफारसी देण्यासाठी आम्ही याचा वापर करतो.",
+    "current_setting": "सध्याची सेटिंग",
+    "not_set": "सेट केलेले नाही",
+    "detecting": "उपग्रह सिग्नल शोधत आहे...",
+    "detect": "माझे स्थान शोधा"
   }
 }
 

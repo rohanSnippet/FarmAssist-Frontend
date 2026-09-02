@@ -29,6 +29,21 @@
     "crop_recommendations": "ফসলের পরামর্শ",
     "about_us": "আমাদের সম্পর্কে",
     "contact": "যোগাযোগ",
+    "my_farms": "আমার খামার",
+    "pest_detection": "কীট শনাক্তকরণ",
+    "pest_alerts": "কীট ও রোগের সতর্কতা",
+    "welcome": "FarmAssist-এ স্বাগতম",
+    "login_to_access": "ফসলের পরামর্শ দেখতে লগ ইন করুন।",
+    "login_now": "এখনই লগ ইন করুন",
+    "edit_profile": "প্রোফাইল সম্পাদনা করুন",
+    "settings_tools": "সেটিংস ও সরঞ্জাম",
+    "scan_crop_health": "ফসলের স্বাস্থ্য স্ক্যান করুন",
+    "language": "ভাষা",
+    "theme": "থিম",
+    "enter_fullscreen": "পূর্ণ পর্দা মোডে যান",
+    "exit_fullscreen": "পূর্ণ পর্দা থেকে বের হন",
+    "account": "অ্যাকাউন্ট",
+    "saved_recommendations": "সংরক্ষিত পরামর্শ",
     "tooltips": {
       "exit_fullscreen": "ফুলস্ক্রিন বন্ধ করুন",
       "enter_fullscreen": "ফুলস্ক্রিন করুন",
@@ -160,5 +175,14 @@
     "footer_title": "কোনো প্রোজেক্ট আছে?",
     "footer_desc": "চলুন একসাথে কিছু অসাধারণ তৈরি করি।",
     "footer_btn": "যোগাযোগ করুন"
+  }
+  ,"LocationModal": {
+    "close": "অবস্থান ডায়ালগ বন্ধ করুন",
+    "title": "আপনার অবস্থান",
+    "description": "আপনার খামারের জন্য সঠিক আবহাওয়ার পূর্বাভাস ও ফসলের পরামর্শ দিতে আমরা এটি ব্যবহার করি।",
+    "current_setting": "বর্তমান সেটিং",
+    "not_set": "সেট করা নেই",
+    "detecting": "স্যাটেলাইট সংকেত শনাক্ত করা হচ্ছে...",
+    "detect": "আমার অবস্থান শনাক্ত করুন"
   }
 }

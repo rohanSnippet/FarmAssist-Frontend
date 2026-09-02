@@ -27,6 +27,19 @@
     "crop_recommendations": "ਫਸਲ ਬਾਰੇ ਸਲਾਹ",
     "about_us": "ਸਾਡੇ ਬਾਰੇ",
     "contact": "ਸੰਪਰਕ",
+    "my_farms": "ਮੇਰੇ ਖੇਤ",
+    "pest_detection": "ਕੀਟ ਪਛਾਣ",
+    "pest_alerts": "ਕੀਟ ਅਤੇ ਬਿਮਾਰੀ ਚੇਤਾਵਨੀਆਂ",
+    "welcome": "FarmAssist ਵਿੱਚ ਤੁਹਾਡਾ ਸਵਾਗਤ ਹੈ",
+    "login_to_access": "ਫਸਲ ਸਿਫ਼ਾਰਸ਼ਾਂ ਦੇਖਣ ਲਈ ਲੌਗ ਇਨ ਕਰੋ।",
+    "login_now": "ਹੁਣੇ ਲੌਗ ਇਨ ਕਰੋ",
+    "edit_profile": "ਪ੍ਰੋਫਾਈਲ ਸੋਧੋ",
+    "settings_tools": "ਸੈਟਿੰਗਾਂ ਅਤੇ ਸਾਧਨ",
+    "scan_crop_health": "ਫਸਲ ਦੀ ਸਿਹਤ ਸਕੈਨ ਕਰੋ",
+    "language": "ਭਾਸ਼ਾ",
+    "theme": "ਥੀਮ",
+    "account": "ਖਾਤਾ",
+    "saved_recommendations": "ਸੁਰੱਖਿਅਤ ਸਿਫ਼ਾਰਸ਼ਾਂ",
     "exit_fullscreen": "ਫੁੱਲ ਸਕ੍ਰੀਨ ਤੋਂ ਬਾਹਰ ਆਓ",
     "enter_fullscreen": "ਫੁੱਲ ਸਕ੍ਰੀਨ ਵਿੱਚ ਜਾਓ"
   },
@@ -154,5 +167,14 @@
     "footer_title": "ਕੀ ਤੁਹਾਡੇ ਕੋਲ ਕੋਈ ਪ੍ਰੋਜੈਕਟ ਹੈ?",
     "footer_desc": "ਆਓ ਇਕੱਠੇ ਕੁਝ ਸ਼ਾਨਦਾਰ ਬਣਾਈਏ.",
     "footer_btn": "ਸੰਪਰਕ ਕਰੋ"
+  }
+  ,"LocationModal": {
+    "close": "ਟਿਕਾਣਾ ਡਾਇਲਾਗ ਬੰਦ ਕਰੋ",
+    "title": "ਤੁਹਾਡਾ ਟਿਕਾਣਾ",
+    "description": "ਤੁਹਾਡੇ ਖੇਤ ਲਈ ਸਹੀ ਮੌਸਮ ਪੂਰਵ-ਅਨੁਮਾਨ ਅਤੇ ਫਸਲ ਸਿਫ਼ਾਰਸ਼ਾਂ ਦੇਣ ਲਈ ਅਸੀਂ ਇਸ ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਾਂ।",
+    "current_setting": "ਮੌਜੂਦਾ ਸੈਟਿੰਗ",
+    "not_set": "ਸੈਟ ਨਹੀਂ ਹੈ",
+    "detecting": "ਸੈਟੇਲਾਈਟ ਸਿਗਨਲ ਖੋਜਿਆ ਜਾ ਰਿਹਾ ਹੈ...",
+    "detect": "ਮੇਰਾ ਟਿਕਾਣਾ ਖੋਜੋ"
   }
 }

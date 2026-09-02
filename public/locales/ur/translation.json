@@ -27,6 +27,21 @@
     "crop_recommendations": "فصلوں کے مشورے",
     "about_us": "ہمارے بارے میں",
     "contact": "رابطہ کریں",
+    "my_farms": "میرے کھیت",
+    "pest_detection": "کیڑوں کی شناخت",
+    "pest_alerts": "کیڑوں اور بیماری کے انتباہات",
+    "welcome": "FarmAssist میں خوش آمدید",
+    "login_to_access": "فصل کی سفارشات تک رسائی کے لیے لاگ اِن کریں۔",
+    "login_now": "ابھی لاگ اِن کریں",
+    "edit_profile": "پروفائل میں ترمیم کریں",
+    "settings_tools": "ترتیبات اور اوزار",
+    "scan_crop_health": "فصل کی صحت اسکین کریں",
+    "language": "زبان",
+    "theme": "تھیم",
+    "enter_fullscreen": "فل اسکرین موڈ میں جائیں",
+    "exit_fullscreen": "فل اسکرین سے باہر نکلیں",
+    "account": "اکاؤنٹ",
+    "saved_recommendations": "محفوظ شدہ سفارشات",
     "tooltips": {
       "exit_fullscreen": "فل اسکرین سے باہر نکلیں",
       "enter_fullscreen": "فل اسکرین میں داخل ہوں",
@@ -158,6 +173,15 @@
     "footer_title": "کیا آپ کے پاس کوئی پروجیکٹ ہے؟",
     "footer_desc": "آئیں مل کر کچھ شاندار بنائیں۔",
     "footer_btn": "رابطہ کریں"
+  }
+  ,"LocationModal": {
+    "close": "مقام کا ڈائیلاگ بند کریں",
+    "title": "آپ کا مقام",
+    "description": "ہم اسے آپ کے کھیت کے لیے درست موسمی پیش گوئی اور فصل کی سفارشات فراہم کرنے کے لیے استعمال کرتے ہیں۔",
+    "current_setting": "موجودہ ترتیب",
+    "not_set": "سیٹ نہیں ہے",
+    "detecting": "سیٹلائٹ سگنل تلاش کیا جا رہا ہے...",
+    "detect": "میرا مقام تلاش کریں"
   }
 }
 

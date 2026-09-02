@@ -29,6 +29,21 @@
     "crop_recommendations": "પાક માટે સલાહ",
     "about_us": "અમારા વિશે",
     "contact": "સંપર્ક",
+    "my_farms": "મારા ખેતરો",
+    "pest_detection": "જીવાત શોધ",
+    "pest_alerts": "જીવાત અને રોગ ચેતવણીઓ",
+    "welcome": "FarmAssist માં આપનું સ્વાગત છે",
+    "login_to_access": "પાકની ભલામણો જોવા માટે લૉગ ઇન કરો.",
+    "login_now": "હમણાં લૉગ ઇન કરો",
+    "edit_profile": "પ્રોફાઇલ સંપાદિત કરો",
+    "settings_tools": "સેટિંગ્સ અને સાધનો",
+    "scan_crop_health": "પાકનું સ્વાસ્થ્ય સ્કેન કરો",
+    "language": "ભાષા",
+    "theme": "થીમ",
+    "enter_fullscreen": "પૂર્ણ સ્ક્રીન મોડમાં જાઓ",
+    "exit_fullscreen": "પૂર્ણ સ્ક્રીનમાંથી બહાર નીકળો",
+    "account": "ખાતું",
+    "saved_recommendations": "સાચવેલી ભલામણો",
     "tooltips": {
       "exit_fullscreen": "ફુલ સ્ક્રીન બંધ કરો",
       "enter_fullscreen": "ફુલ સ્ક્રીન શરૂ કરો",
@@ -162,4 +177,13 @@
     "footer_btn": "સંપર્ક કરો"
   }
 
+  ,"LocationModal": {
+    "close": "સ્થાન સંવાદ બંધ કરો",
+    "title": "તમારું સ્થાન",
+    "description": "તમારા ખેતર માટે સચોટ હવામાન આગાહી અને પાકની ભલામણો આપવા અમે આનો ઉપયોગ કરીએ છીએ.",
+    "current_setting": "વર્તમાન સેટિંગ",
+    "not_set": "સેટ નથી",
+    "detecting": "ઉપગ્રહ સિગ્નલ શોધી રહ્યા છીએ...",
+    "detect": "મારું સ્થાન શોધો"
+  }
 }
