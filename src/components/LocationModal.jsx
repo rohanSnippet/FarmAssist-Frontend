@@ -1,7 +1,10 @@
 import React from "react";
 import { MapPin, Navigation, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const LocationModal = ({ isOpen, onClose, location, onDetect, loading }) => {
+  const { t } = useTranslation();
+
   if (!isOpen) return null;
 
   return (
@@ -14,6 +17,7 @@ const LocationModal = ({ isOpen, onClose, location, onDetect, loading }) => {
         <button 
           onClick={onClose}
           className="absolute top-4 right-4 p-2 rounded-full hover:bg-base-200 transition-colors"
+          aria-label={t("LocationModal.close")}
         >
           <X size={20} className="text-base-content/60" />
         </button>
@@ -23,9 +27,9 @@ const LocationModal = ({ isOpen, onClose, location, onDetect, loading }) => {
           <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <MapPin className="w-8 h-8 text-primary" />
           </div>
-          <h2 className="text-2xl font-bold mb-2">Your Location</h2>
+          <h2 className="text-2xl font-bold mb-2">{t("LocationModal.title")}</h2>
           <p className="text-base-content/60 text-sm">
-            We use this to provide accurate weather forecasts and crop recommendations for your farm.
+            {t("LocationModal.description")}
           </p>
         </div>
 
@@ -33,10 +37,10 @@ const LocationModal = ({ isOpen, onClose, location, onDetect, loading }) => {
         <div className="p-8 space-y-4">
           <div className="bg-base-200/50 p-4 rounded-lg border border-base-200 text-center">
             <p className="text-xs uppercase tracking-wider text-base-content/40 font-bold mb-1">
-              Current Setting
+              {t("LocationModal.current_setting")}
             </p>
             <p className="text-lg font-semibold text-primary">
-              {location?.label || "Not Set"}
+              {location?.label || t("LocationModal.not_set")}
             </p>
             {location?.lat && (
               <p className="text-xs font-mono text-base-content/40 mt-1">
@@ -56,7 +60,7 @@ const LocationModal = ({ isOpen, onClose, location, onDetect, loading }) => {
             ) : (
               <Navigation size={18} className={loading ? "" : "fill-current"} />
             )}
-            {loading ? "Detecting Satellite Signal..." : "Detect My Location"}
+            {loading ? t("LocationModal.detecting") : t("LocationModal.detect")}
           </button>
         </div>
       </div>
