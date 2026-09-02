@@ -22,7 +22,6 @@ import RecommendationHistory from "./components/User/RecommendationHistory";
 import ManageFarms from "./components/ManageFarms.jsx";
 import CropScannerPage from "./pages/CropScannerPage.jsx";
 import { registerSW } from "virtual:pwa-register";
-import PwaInstallPrompt from "./components/PwaInstallPrompt.jsx";
 
 registerSW({
     immediate: true,
@@ -132,7 +131,6 @@ createRoot(document.getElementById("root")).render(
           {" "}
             <ModalProvider>
               <GlobalModal />
-              <PwaInstallPrompt />
               <RouterProvider router={router} />
           </ModalProvider>
           </LocationProvider>
