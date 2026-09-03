@@ -51,14 +51,19 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-
- body {
+body {
   font-family: 'Inter', sans-serif;
+  /* Adds subtle text rendering improvements */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
- 
 
+.pt-safe {
+  padding-top: max(env(safe-area-inset-top), 0.5rem);
+}
+.pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom), 0.5rem);
+}
 /* Fonts */
 
 .poppins-thin {
