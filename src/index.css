@@ -49,6 +49,23 @@
   --noise: 0;
 } 
 
+@layer utilities {
+  .pt-safe {
+    padding-top: 0; /* Fallback for unsupported browsers */
+    padding-top: env(safe-area-inset-top, 0);
+  }
+  .pb-safe {
+    padding-bottom: 0; /* Fallback for unsupported browsers */
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  .px-safe {
+    padding-left: 0;
+    padding-right: 0;
+    padding-left: env(safe-area-inset-left, 0);
+    padding-right: env(safe-area-inset-right, 0);
+  }
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 body {

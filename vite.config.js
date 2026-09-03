@@ -29,10 +29,10 @@ export default defineConfig({
         start_url: "/",
         scope: "/",
 
-        display: "standalone",
-
+        display: "fullscreen",
+        display_override: ['fullscreen', 'standalone'],
         theme_color: "#ffffff",
-        background_color: "#ffffff",
+        background_color: "#000000",
 
         icons: [
           {
