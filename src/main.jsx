@@ -24,7 +24,7 @@ import CropScannerPage from "./pages/CropScannerPage.jsx";
 import { registerSW } from "virtual:pwa-register";
 
 registerSW({
-    immediate: true,
+  immediate: true,
 });
 
 const router = createBrowserRouter([
@@ -52,7 +52,7 @@ const router = createBrowserRouter([
           </ProtectedRoutes>
         ),
       },
-       {
+      {
         path: "/pest-prediction",
         element: (
           <ProtectedRoutes>
@@ -62,26 +62,33 @@ const router = createBrowserRouter([
       },
       {
         path: "/history",
-        element:(
+        element: (
           <ProtectedRoutes>
-            <RecommendationHistory/>
+            <RecommendationHistory />
           </ProtectedRoutes>
-        )
+        ),
       },
       {
         path: "/my-farms",
-        element:(
+        element: (
           <ProtectedRoutes>
-            <ManageFarms/>
+            <ManageFarms />
           </ProtectedRoutes>
-        )
-      }
+        ),
+      },
     ],
   },
   { path: "/login", element: <AuthPage /> },
   { path: "/reset-password", element: <ResetPassword /> },
-  { path: "/me", element: <UserProfile /> },
-  {path: "*", element: <NotFound />},
+  {
+    path: "/me",
+    element: (
+      <ProtectedRoutes>
+        <UserProfile />
+      </ProtectedRoutes>
+    ),
+  },
+  { path: "*", element: <NotFound /> },
 ]);
 
 /* const AppInitialization = () => {
@@ -128,15 +135,15 @@ createRoot(document.getElementById("root")).render(
       <ThemeProvider>
         <AuthProvider>
           <LocationProvider>
-          {" "}
+            {" "}
             <ModalProvider>
               <GlobalModal />
               <RouterProvider router={router} />
-          </ModalProvider>
+            </ModalProvider>
           </LocationProvider>
           {/* <AppInitialization /> */}
         </AuthProvider>
       </ThemeProvider>
     </React.Suspense>
-  </StrictMode>
+  </StrictMode>,
 );

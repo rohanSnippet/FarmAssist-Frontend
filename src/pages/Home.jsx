@@ -218,7 +218,7 @@ export default function Home() {
                     {weatherData.map((d, i) => (
                       <div
                         key={i}
-                        className={`min-w-[70px] md:min-w-[85px] flex flex-col items-center justify-between py-2 px-2 md:p-4 rounded-full md:rounded-2xl border transition-colors ${
+                        className={`min-w-[75px] md:min-w-[85px] flex flex-col items-center justify-between py-2 px-2 md:p-4 rounded-full md:rounded-2xl border transition-colors ${
                           d.isToday
                             ? "border-primary bg-primary/10 shadow-md"
                             : "border-base-content/10 bg-base-100/80 backdrop-blur-md shadow-sm hover:bg-base-200"

@@ -86,7 +86,7 @@ const MobileHeader = () => {
   return (
     <>
       {/* Updated Header Wrapper */}
-      <header className="md:hidden w-full min-h-[4rem] pt-safe pb-2 bg-base-100/90 backdrop-blur-md flex items-center justify-between px-4 relative z-50 border-b border-base-content/10">
+      <header className="md:hidden w-full min-h-[4rem] pt-safe pb-2 bg-transparent backdrop-blur-md flex items-center justify-between px-4 relative z-50">
         {/* Dynamic Logo */}
         <Link
           to="/"
