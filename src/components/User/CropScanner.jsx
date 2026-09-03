@@ -57,7 +57,7 @@ const fadeAnim = {
 const CropScanner = ({ farms = [], onDigitizeNew }) => {
   const { coordinates, loaded, error } = useGeoLocation();
   const fileInputRef = useRef(null);
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   // States
   const [imageFile, setImageFile] = useState(null);
@@ -267,9 +267,7 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
 
   const handleCameraClick = () => {
     if (outboxCount > 0) {
-      alert(
-        "You have pending reports waiting to synchronize. Please connect to the internet to sync them before initiating a new scan.",
-      );
+      alert(t("CropScanner.pending_sync_warning"));
       return;
     }
     fileInputRef.current.click();
@@ -321,12 +319,12 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
          */
 
         setScanResult({
-          primary_diagnosis: "Offline Capture Mode",
+          primary_diagnosis: t("CropScanner.offline_capture_mode"),
 
           advisory:
-            "1. Detection request saved locally.\n" +
-            "2. AI diagnosis will run when connection returns.\n" +
-            "3. Report will be broadcast automatically.",
+            t("CropScanner.offline_capture_advisory_1") + "\n" +
+            t("CropScanner.offline_capture_advisory_2") + "\n" +
+            t("CropScanner.offline_capture_advisory_3"),
 
           confidence: 1.0,
 
@@ -337,10 +335,7 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
       } catch (error) {
         console.error("Failed to queue offline detection:", error);
 
-        alert(
-          "Unable to save this detection locally. " +
-            "Please check browser storage.",
-        );
+        alert(t("CropScanner.browser_storage_issue"));
 
         resetScanner();
       } finally {
@@ -359,9 +354,7 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
       setScanResult(response.data);
     } catch (err) {
       console.error("Scanning failed", err);
-      alert(
-        "Failed to analyze image. Please check your connection and try again.",
-      );
+      alert(t("CropScanner.failed_to_analyze"));
       resetScanner();
     } finally {
       setIsScanning(false);
@@ -376,18 +369,13 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
       } else if (selectedFallbackFarm) {
         targetFarmId = selectedFallbackFarm;
       } else {
-        return alert(
-          "Please select a farm, or choose to report without linking a farm.",
-        );
+        return alert(t("CropScanner.select_farm_prompt"));
       }
     }
 
     if (!isDeviceOnline || scanResult?.isOfflineMock) {
       if (!isStorageSupported) {
-        alert(
-          "Your browser does not support offline storage. " +
-            "Please reconnect to the internet to broadcast this report.",
-        );
+        alert(t("CropScanner.browser_no_storage"));
         return;
       }
 
@@ -400,19 +388,13 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
 
         await updateOutboxCount();
 
-        alert(
-          "🚨 Saved to Outbox! " +
-            "The app will analyze and broadcast this report when you regain connection.",
-        );
+        alert(t("CropScanner.save_to_outbox_message"));
 
         resetScanner();
       } catch (err) {
         console.error("Storage Exception:", err);
 
-        alert(
-          "Failed to save the report locally. " +
-            "Your device storage may be full or restricted.",
-        );
+        alert(t("CropScanner.storage_full_error"));
       }
 
       return;
@@ -428,11 +410,11 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
       finalData.append("confidence", scanResult.confidence);
 
       await api.post("/api/detections/", finalData);
-      alert("Alert successfully broadcasted to regional network!");
+      alert(t("CropScanner.broadcast_success"));
       resetScanner();
     } catch (err) {
       console.error("Failed to broadcast", err);
-      alert("Failed to broadcast alert. Please try again.");
+      alert(t("CropScanner.broadcast_failed"));
     }
   };
 
@@ -444,6 +426,11 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
     setSelectedFallbackFarm("");
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
+
+  const pendingSyncLabel =
+    outboxCount === 1
+      ? t("CropScanner.pending_sync_one", { count: outboxCount })
+      : t("CropScanner.pending_sync_other", { count: outboxCount });
 
   // Dynamic width: Expands when scan result is available
   const containerWidthClass = scanResult ? "max-w-6xl" : "max-w-md";
@@ -474,7 +461,7 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
                   d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
                 />
               </svg>
-              {outboxCount} Pending Sync{outboxCount > 1 ? "s" : ""}
+              {pendingSyncLabel}
             </span>
             {isDeviceOnline && (
               <button
@@ -482,7 +469,7 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
                 disabled={isSyncing}
                 className="btn btn-sm btn-warning"
               >
-                {isSyncing ? "SYNCING..." : "SYNC NOW"}
+                {isSyncing ? t('CropScanner.syncing') : t('CropScanner.sync_now')}
               </button>
             )}
           </div>
@@ -490,17 +477,17 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
 
         {!isStorageSupported && !isDeviceOnline && (
           <div className="bg-error/10 border-b border-error/20 text-error px-6 py-4 text-center font-semibold">
-            Offline mode unavailable in this browser.
+            {t('CropScanner.offline_mode_unavailable')}
           </div>
         )}
 
         <div className="p-6 md:px-8 border-b border-base-content/10 bg-base-200/50 flex justify-between items-center">
           <div>
             <h2 className="text-xl md:text-2xl font-black text-base-content tracking-tight">
-              AI Crop Scanner
+              {t('CropScanner.title')}
             </h2>
             <p className="text-sm text-base-content/60 font-medium mt-1">
-              Capture & Broadcast Threats
+              {t('CropScanner.subtitle')}
             </p>
           </div>
           <div
@@ -509,7 +496,7 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
             <span
               className={`w-2 h-2 rounded-full ${isDeviceOnline ? "bg-success" : "bg-error animate-pulse"}`}
             />
-            {isDeviceOnline ? "ONLINE" : "OFFLINE"}
+            {isDeviceOnline ? t('CropScanner.status.online') : t('CropScanner.status.offline')}
           </div>
         </div>
 
@@ -524,7 +511,6 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
           />
 
           <AnimatePresence mode="wait">
-            {/* IDLE STATE */}
             {!previewUrl && (
               <motion.button
                 key="idle"
@@ -579,13 +565,12 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
                 </div>
                 <span className="font-bold text-lg tracking-wide">
                   {outboxCount > 0
-                    ? "Sync Required to Scan"
-                    : "Initialize Camera"}
+                    ? t('CropScanner.sync_required_to_scan')
+                    : t('CropScanner.initialize_camera')}
                 </span>
               </motion.button>
             )}
 
-            {/* SCANNING STATE */}
             {previewUrl && !scanResult && (
               <motion.div
                 key="scanning"
@@ -597,7 +582,7 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
               >
                 <img
                   src={previewUrl}
-                  alt="Crop scan"
+                  alt={t('CropScanner.crop_scan_alt')}
                   className="w-full h-full object-cover brightness-50 blur-sm transition-all"
                 />
                 <motion.div
@@ -613,14 +598,13 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
                   <span className="loading loading-spinner loading-lg text-primary"></span>
                   <span className="px-5 py-2.5 bg-base-100 text-primary font-bold text-sm rounded-xl shadow-2xl border border-base-content/10">
                     {isDeviceOnline
-                      ? "AI Analyzing Image..."
-                      : "Queueing to Offline Storage..."}
+                      ? t('CropScanner.ai_analyzing')
+                      : t('CropScanner.queueing_offline')}
                   </span>
                 </div>
               </motion.div>
             )}
 
-            {/* RESULT STATE: Side-by-Side Grid */}
             {scanResult && (
               <motion.div
                 key="result"
@@ -630,21 +614,18 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
                 className="w-full mt-2"
               >
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                  {/* Left Column: Image Display */}
                   <div className="w-full h-64 lg:h-full min-h-[300px] rounded-2xl overflow-hidden border border-base-content/10 shadow-lg relative bg-black">
                     <img
                       src={previewUrl}
-                      alt="Scanned Crop"
+                      alt={t('CropScanner.scanned_crop_alt')}
                       className="w-full h-full object-contain"
                     />
                     <div className="absolute top-4 left-4 bg-base-100/90 backdrop-blur-sm px-3 py-1.5 rounded-lg text-xs font-bold shadow-md border border-base-content/10">
-                      Input Preview
+                      {t('CropScanner.input_preview')}
                     </div>
                   </div>
 
-                  {/* Right Column: Diagnosis & Action */}
                   <div className="flex flex-col gap-5">
-                    {/* Clean Diagnosis formatting */}
                     <div
                       className={`p-6 rounded-2xl border backdrop-blur-md shadow-lg flex flex-col gap-4 ${scanResult.isOfflineMock ? "bg-info/10 border-info/30" : scanResult.confidence >= 0.8 ? "bg-error/10 border-error/30" : "bg-warning/10 border-warning/30"}`}
                     >
@@ -674,16 +655,14 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
                             {scanResult.primary_diagnosis}
                           </h3>
                           <span className="text-sm font-bold opacity-70 uppercase tracking-wider mt-1 block">
-                            AI Confidence:{" "}
-                            {(scanResult.confidence * 100).toFixed(0)}%
+                            {t('CropScanner.ai_confidence')}: {(scanResult.confidence * 100).toFixed(0)}%
                           </span>
                         </div>
                       </div>
 
-                      {/* Clean Bulleted Action Plan */}
                       <div>
                         <h4 className="text-sm font-black text-base-content/60 uppercase mb-3 tracking-wider">
-                          Treatment Protocol
+                          {t('CropScanner.treatment_protocol')}
                         </h4>
                         <ul className="space-y-3">
                           {scanResult.advisory
@@ -709,17 +688,16 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
                       </div>
                     </div>
 
-                    {/* Location Card */}
                     <div className="bg-base-200/50 backdrop-blur-md border border-base-content/10 p-6 rounded-2xl">
                       {locationMatch?.type === "MATCH" && (
                         <div className="flex flex-col gap-4">
                           <div>
                             <h4 className="font-bold text-base text-success flex items-center gap-2">
                               <span className="w-2 h-2 bg-success rounded-full"></span>{" "}
-                              Boundary Confirmed
+                              {t('CropScanner.boundary_confirmed')}
                             </h4>
                             <p className="text-sm text-base-content/70 mt-1">
-                              Standing inside{" "}
+                              {t('CropScanner.standing_inside')} {" "}
                               <span className="font-bold text-base-content">
                                 {locationMatch.farm.name}
                               </span>
@@ -730,18 +708,17 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
                             className="btn btn-primary btn-lg rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform w-full"
                           >
                             {isDeviceOnline
-                              ? "Broadcast Threat"
-                              : "Queue to Outbox"}
+                              ? t('CropScanner.broadcast_threat')
+                              : t('CropScanner.queue_to_outbox')}
                           </button>
                         </div>
                       )}
 
-                      {/* [Keep your existing NO_MATCH and NO_FARMS logic here exactly as before] */}
                       {locationMatch?.type === "NO_MATCH" && (
                         <div className="flex flex-col gap-4">
                           <h4 className="font-bold text-sm text-warning flex items-center gap-2">
                             <span className="w-2 h-2 bg-warning rounded-full"></span>{" "}
-                            Manual Assignment Required
+                            {t('CropScanner.manual_assignment_required')}
                           </h4>
                           <select
                             className="select select-bordered w-full bg-base-100 rounded-xl"
@@ -751,7 +728,7 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
                             }
                           >
                             <option value="" disabled>
-                              Assign to farm...
+                              {t('CropScanner.assign_to_farm')}
                             </option>
                             {farms.map((f) => (
                               <option key={f.id} value={f.id}>
@@ -764,7 +741,7 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
                             disabled={!selectedFallbackFarm}
                             className="btn btn-primary rounded-xl w-full"
                           >
-                            Broadcast Threat
+                            {t('CropScanner.broadcast_threat')}
                           </button>
                         </div>
                       )}
@@ -774,7 +751,7 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
                       onClick={resetScanner}
                       className="btn btn-outline btn-block rounded-xl font-bold tracking-wider"
                     >
-                      Discard & Rescan
+                      {t('CropScanner.discard_rescan')}
                     </button>
                   </div>
                 </div>

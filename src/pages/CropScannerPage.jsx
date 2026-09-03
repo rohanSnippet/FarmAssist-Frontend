@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import CropScanner from '../components/User/CropScanner';
 import api from '../axios';
 
 const CropScannerPage = () => {
+  const { t } = useTranslation();
   const [farms, setFarms] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -38,8 +40,9 @@ const CropScannerPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-[60vh]">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
+      <div className="flex justify-center items-center min-h-[60vh] gap-3">
+        <span className="loading loading-spinner loading-lg text-primary" aria-label={t('CropScanner.loading')}></span>
+        <span className="text-sm font-medium text-base-content/70">{t('CropScanner.loading')}</span>
       </div>
     );
   }

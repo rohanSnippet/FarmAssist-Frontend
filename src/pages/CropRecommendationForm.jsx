@@ -13,6 +13,7 @@ import {
 import api from "../axios"; // Your axios instance
 import { useToast } from "../ui/Toast";
 import useGeoLocation from "../hooks/useGeoLocation";
+import { useTranslation } from "react-i18next";
 
 // --- 1. Icons (Clean, Technical Style) ---
 const Icons = {
@@ -192,6 +193,7 @@ const CropRecommendationForm = () => {
   const [loadingWeather, setLoadingWeather] = useState(false);
   const { coordinates, loaded: locationLoaded } = useGeoLocation();
   const Toast = useToast();
+  const { t } = useTranslation();
 
   // Drag & Drop State
   const [dragActive, setDragActive] = useState(false);
@@ -223,15 +225,15 @@ const CropRecommendationForm = () => {
       const response = await api.post(`/predict/`, data);
       // Store the full object (recommended_crop & alternatives)
       setPrediction(response?.data);
-      Toast.fire({ icon: "success", title: "Analysis Complete" });
+      Toast.fire({ icon: "success", title: t("crop_recommendation.analysis_complete", "Analysis Complete") });
     } catch (err) {
-      Toast.fire({ icon: "error", title: "Prediction Failed" });
+      Toast.fire({ icon: "error", title: t("crop_recommendation.prediction_failed", "Prediction Failed") });
     }
   };
 
   const fetchWeather = async () => {
     if (!locationLoaded) {
-      Toast.fire({ icon: "warning", title: "Locating..." });
+      Toast.fire({ icon: "warning", title: t("crop_recommendation.locating", "Locating...") });
       return;
     }
     setLoadingWeather(true);
@@ -250,9 +252,9 @@ const CropRecommendationForm = () => {
       if (data.daily && data.daily.precipitation_sum) {
         setValue("rainfall", data.daily.precipitation_sum[0]);
       }
-      Toast.fire({ icon: "info", title: "Weather data synced" });
+      Toast.fire({ icon: "info", title: t("crop_recommendation.weather_synced", "Weather data synced") });
     } catch (error) {
-      Toast.fire({ icon: "error", title: "Weather Sync Failed" });
+      Toast.fire({ icon: "error", title: t("crop_recommendation.weather_sync_failed", "Weather Sync Failed") });
     } finally {
       setLoadingWeather(false);
     }
@@ -395,11 +397,11 @@ const CropRecommendationForm = () => {
           <h1 className="text-5xl font-black mb-4 flex justify-center items-center gap-3 tracking-tight">
             <span className="text-primary">{Icons.Sparkles}</span>
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-              CROP INTELLIGENCE
+              {t("crop_recommendation.title", "CROP INTELLIGENCE")}
             </span>
           </h1>
           <p className="text-base-content/60 font-medium tracking-wide">
-            ADVANCED SOIL ANALYSIS & YIELD PREDICTION SYSTEM
+            {t("crop_recommendation.subtitle", "ADVANCED SOIL ANALYSIS & YIELD PREDICTION SYSTEM")}
           </p>
         </motion.div>
 
@@ -421,7 +423,7 @@ const CropRecommendationForm = () => {
               </div>
               <div className="md:w-1/2 p-10 flex flex-col justify-center items-start bg-base-100">
                 <div className="badge badge-primary badge-outline rounded-sm mb-4 uppercase font-bold tracking-widest">
-                  Top Match
+                  {t("crop_recommendation.top_match", "Top Match")}
                 </div>
 
                 <h2 className="text-5xl font-black mb-2 uppercase text-base-content">
@@ -430,7 +432,7 @@ const CropRecommendationForm = () => {
 
                 <div className="text-primary font-black text-2xl mb-6">
                   {prediction.alternatives && prediction.alternatives.length > 0
-                    ? `${prediction.alternatives[0].probability}% Match`
+                    ? `${prediction.alternatives[0].probability}% ${t("crop_recommendation.match", "Match")}`
                     : ""}
                 </div>
 
@@ -439,7 +441,7 @@ const CropRecommendationForm = () => {
                   prediction.alternatives.length > 1 && (
                     <div className="w-full mb-8">
                       <h3 className="text-xs font-bold uppercase tracking-widest text-base-content/50 mb-4 border-b border-base-content/10 pb-2">
-                        Other Viable Crops
+                        {t("crop_recommendation.other_viable_crops", "Other Viable Crops")}
                       </h3>
                       <div className="space-y-3">
                         {prediction.alternatives.slice(1).map((alt, index) => (
@@ -473,7 +475,7 @@ const CropRecommendationForm = () => {
                   }}
                   className="btn btn-primary btn-block rounded-sm uppercase tracking-wider font-bold mt-auto"
                 >
-                  Analyze New Sample
+                  {t("crop_recommendation.analyze_new_sample", "Analyze New Sample")}
                 </button>
               </div>
             </div>
@@ -504,7 +506,7 @@ const CropRecommendationForm = () => {
                       />
                     )}
                     <span className="relative z-10">
-                      {tab === "manual" ? "Manual Entry" : "Upload Health Card"}
+                      {tab === "manual" ? t("crop_recommendation.manual_entry", "Manual Entry") : t("crop_recommendation.upload_health_card", "Upload Health Card")}
                     </span>
                   </button>
                 ))}
@@ -525,25 +527,25 @@ const CropRecommendationForm = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                       <div className="space-y-6">
                         <h3 className="text-sm font-bold uppercase text-base-content/40 tracking-widest border-b border-base-content/10 pb-2">
-                          Soil Nutrients
+                          {t("crop_recommendation.soil_nutrients", "Soil Nutrients")}
                         </h3>
-                        {[
+                        {([
                           {
-                            label: "Nitrogen (N)",
+                            label: t("crop_recommendation.nitrogen", "Nitrogen (N)"),
                             name: "nitrogen",
                             icon: Icons.Nitrogen,
                           },
                           {
-                            label: "Phosphorus (P)",
+                            label: t("crop_recommendation.phosphorus", "Phosphorus (P)"),
                             name: "phosphorus",
                             icon: Icons.Phosphorus,
                           },
                           {
-                            label: "Potassium (K)",
+                            label: t("crop_recommendation.potassium", "Potassium (K)"),
                             name: "potassium",
                             icon: Icons.Potassium,
                           },
-                        ].map((f) => (
+                        ]).map((f) => (
                           <div key={f.name} className="form-control">
                             <label className="label pt-0">
                               <span className="label-text font-bold text-xs uppercase opacity-70">
@@ -569,7 +571,7 @@ const CropRecommendationForm = () => {
                       <div className="space-y-6 lg:col-span-2">
                         <div className="flex justify-between items-end border-b border-base-content/10 pb-2">
                           <h3 className="text-sm font-bold uppercase text-base-content/40 tracking-widest">
-                            Environmental Context
+                            {t("crop_recommendation.environmental_context", "Environmental Context")}
                           </h3>
                           <button
                             type="button"
@@ -582,29 +584,29 @@ const CropRecommendationForm = () => {
                             ) : (
                               Icons.Sync
                             )}
-                            SYNC LOCATION DATA
+                            {t("crop_recommendation.sync_location_data", "SYNC LOCATION DATA")}
                           </button>
                         </div>
 
                         <div className="grid grid-cols-2 gap-6">
-                          {[
+                          {([
                             {
-                              label: "Temperature (°C)",
+                              label: t("crop_recommendation.temperature", "Temperature (°C)"),
                               name: "temperature",
                               icon: Icons.Temperature,
                             },
                             {
-                              label: "Humidity (%)",
+                              label: t("crop_recommendation.humidity", "Humidity (%)"),
                               name: "humidity",
                               icon: Icons.Humidity,
                             },
-                            { label: "pH Level", name: "ph", icon: Icons.pH },
+                            { label: t("crop_recommendation.ph_level", "pH Level"), name: "ph", icon: Icons.pH },
                             {
-                              label: "Rainfall (mm)",
+                              label: t("crop_recommendation.rainfall", "Rainfall (mm)"),
                               name: "rainfall",
                               icon: Icons.Rainfall,
                             },
-                          ].map((f) => (
+                          ]).map((f) => (
                             <div key={f.name} className="form-control">
                               <label className="label pt-0">
                                 <span className="label-text font-bold text-xs uppercase opacity-70">
@@ -631,7 +633,7 @@ const CropRecommendationForm = () => {
                         type="submit"
                         className="btn btn-primary btn-block btn-lg rounded-sm uppercase tracking-widest font-black shadow-lg hover:shadow-primary/20"
                       >
-                        Generate Prediction
+                        {t("crop_recommendation.generate_prediction", "Generate Prediction")}
                       </button>
                     </div>
                   </form>
@@ -649,23 +651,19 @@ const CropRecommendationForm = () => {
                     <div className="flex flex-col items-center">
                       <span className="loading loading-spinner loading-lg text-primary mb-6"></span>
                       <h3 className="text-xl font-black uppercase text-base-content mb-2">
-                        Analyzing Document
+                        {t("crop_recommendation.analyzing_document", "Analyzing Document")}
                       </h3>
                       <p className="text-base-content/60 font-bold">
-                        Extracting soil parameters & localized weather data...
+                        {t("crop_recommendation.extracting_data", "Extracting soil parameters & localized weather data...")}
                       </p>
                     </div>
                   ) : (
                     <div className="max-w-md w-full">
-                      {/*                       <div className="mb-8 p-6 bg-primary/5 rounded-full inline-block">
-                        <FiUploadCloud className="w-12 h-12 text-primary" />
-                      </div> */}
                       <h3 className="text-2xl font-black uppercase mb-2">
-                        Soil Health Card
+                        {t("crop_recommendation.soil_health_card", "Soil Health Card")}
                       </h3>
                       <p className="text-base-content/60 mb-8">
-                        Upload your official government soil report (PDF or
-                        Image).
+                        {t("crop_recommendation.upload_instruction", "Upload your official government soil report (PDF or Image).")}
                       </p>
 
                       <div
@@ -687,20 +685,13 @@ const CropRecommendationForm = () => {
                           <FiUploadCloud className="w-12 h-12 text-primary" />
                         </div>
                         <span className="outline-0 btn-sm rounded-sm uppercase tracking-wider pointer-events-none">
-                          Select File or drag and drop here
+                          {t("crop_recommendation.select_file", "Select File or drag and drop here")}
                         </span>
-                        {/* <FiFile className="w-8 h-8 opacity-20 mb-4 group-hover:scale-110 transition-transform" />
-                        <span className="btn btn-outline btn-sm rounded-sm uppercase tracking-wider pointer-events-none">
-                          Select File
-                        </span>
-                        <p className="text-xs opacity-40 pt-2 pointer-events-none">
-                          or drag and drop here
-                        </p> */}
                       </div>
 
                       <div className="mt-8 flex items-center justify-center gap-2 text-xs opacity-50 uppercase tracking-widest font-bold">
-                        <FiCheck className="text-success" /> Secure Analysis •
-                        AI Powered
+                        <FiCheck className="text-success" /> {t("crop_recommendation.secure_analysis", "Secure Analysis")} •
+                        {t("crop_recommendation.ai_powered", "AI Powered")}
                       </div>
                     </div>
                   )}
