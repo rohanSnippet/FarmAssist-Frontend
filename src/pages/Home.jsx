@@ -26,18 +26,26 @@ import CommunityFeed from "../components/User/CommunityFeed";
 
 export default function Home() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const { userData, user, isAuthenticated } = useAuth();
   const { curLocation } = useUserLocation();
 
-  const firstName = userData?.first_name || user?.first_name || "Farmer";
+  const firstName = userData?.first_name || user?.first_name || t("home.default_farmer_name", "Farmer");
   const locationLabel = curLocation?.label
     ? curLocation.label.split(",")[0]
-    : "Location Unknown";
+    : t("home.location_unknown", "Location Unknown");
 
   const [weatherData, setWeatherData] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const todayFormatter = new Intl.DateTimeFormat(i18n.language || "en", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
+
+  const today = todayFormatter.format(new Date());
 
   // State for Full-Screen Feed
   const [isFullscreen, setIsFullscreen] = useState(() => {
@@ -48,12 +56,6 @@ export default function Home() {
   useEffect(() => {
     localStorage.setItem("CommunityFeedExpanded", isFullscreen);
   }, [isFullscreen]);
-
-  const today = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  });
 
   const getWeatherIcon = (code) => {
     if (code === 0 || code === 1)
@@ -103,7 +105,7 @@ export default function Home() {
         const formattedData = time.map((dateStr, index) => {
           const date = new Date(dateStr);
           return {
-            day: date.toLocaleDateString("en-US", { weekday: "short" }),
+            day: new Intl.DateTimeFormat(i18n.language || "en", { weekday: "short" }).format(date),
             temp: Math.round(temperature_2m_max[index]),
             humidity: precipitation_probability_max[index],
             icon: getWeatherIcon(weathercode[index]),
@@ -119,7 +121,7 @@ export default function Home() {
     };
 
     fetchWeather();
-  }, [curLocation?.lat, curLocation?.lng]);
+  }, [curLocation?.lat, curLocation?.lng, i18n.language]);
 
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
@@ -159,12 +161,12 @@ export default function Home() {
             <h1 className="text-2xl sm:text-3xl md:text-5xl font-light tracking-tight text-base-content leading-tight">
               {isAuthenticated ? (
                 <>
-                  Overview,{" "}
+                  {t("home.overview_prefix", "Overview")}, {" "}
                   <span className="font-bold text-primary">{firstName}</span>
                 </>
               ) : (
                 <>
-                  Welcome to{" "}
+                  {t("home.welcome_prefix", "Welcome to")} {" "}
                   <span className="font-bold text-primary">FarmAssist</span>
                 </>
               )}
@@ -183,8 +185,7 @@ export default function Home() {
               onClick={() => navigate("/pest-prediction")}
               className="btn btn-primary w-full md:w-auto md:px-8 shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform rounded-xl"
             >
-              <Scan size={18} className="mr-2 md:w-5 md:h-5" /> Start Pest
-              Detection
+              <Scan size={18} className="mr-2 md:w-5 md:h-5" /> {t("home.start_pest_detection", "Start Pest Detection")}
             </button>
           </motion.div>
         </div>
@@ -200,12 +201,11 @@ export default function Home() {
               animate="visible"
               variants={fadeIn}
               transition={{ delay: 0.2 }}
-              // 1. Prefix container styles with 'md:' to remove the surrounding card on mobile
               className="md:card md:bg-base-100/70 md:backdrop-blur-xl md:border md:border-base-content/10 md:shadow-xl rounded-2xl md:overflow-hidden"
             >
               <div className="mb-3 md:mb-0 md:p-5 md:border-b border-base-content/10 flex justify-between items-center md:bg-base-200/50">
                 <h3 className="font-semibold text-sm tracking-wide text-base-content/80 uppercase px-1 md:px-0">
-                  Atmospheric Conditions
+                  {t("home.atmospheric_conditions", "Atmospheric Conditions")}
                 </h3>
               </div>
               <div className="md:p-5">
@@ -214,7 +214,6 @@ export default function Home() {
                     <span className="loading loading-ring text-primary w-10"></span>
                   </div>
                 ) : (
-                  // 2. Add negative margins (-mx-4 px-4) on mobile so the scroll bleeds beautifully to the edge of the phone screen
                   <div className="flex flex-row overflow-x-auto pb-4 gap-3 hide-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
                     {weatherData.map((d, i) => (
                       <div
@@ -230,10 +229,9 @@ export default function Home() {
                             d.isToday ? "text-primary" : "text-base-content/60"
                           }`}
                         >
-                          {d.isToday ? "Now" : d.day}
+                          {d.isToday ? t("home.now", "Now") : d.day}
                         </span>
 
-                        {/* Scale down the icon slightly on mobile */}
                         <div className="scale-60 md:scale-100">{d.icon}</div>
 
                         <span className="text-sm md:text-xl font-bold text-base-content mt-1 md:mt-3 leading-none">
@@ -241,8 +239,7 @@ export default function Home() {
                         </span>
 
                         <div className="flex items-center gap-1 text-[9px] md:text-[11px] font-bold text-info mt-1.5 md:mt-2 bg-info/10 px-1.5 py-0.5 md:px-2 md:py-1 rounded-full md:rounded-md">
-                          <Droplets size={10} className="hidden md:block" />{" "}
-                          {d.humidity}%
+                          <Droplets size={10} className="hidden md:block" /> {d.humidity}%
                         </div>
                       </div>
                     ))}
@@ -256,25 +253,22 @@ export default function Home() {
               animate="visible"
               variants={fadeIn}
               transition={{ delay: 0.3 }}
-              // Container: Stripped bare on mobile, retains card UI on desktop
               className="mt-6 md:mt-0 md:card md:bg-base-100/70 md:backdrop-blur-xl md:border md:border-base-content/10 md:shadow-xl md:rounded-2xl md:p-6"
             >
               <h3 className="font-semibold text-sm tracking-wide text-base-content/80 uppercase mb-3 md:mb-5 px-1 md:px-0">
-                Quick Actions
+                {t("home.quick_actions", "Quick Actions")}
               </h3>
 
-              {/* Grid: 2 columns in 1 row for phones, stacked for desktop sidebar */}
               <div className="grid grid-cols-2 xl:grid-cols-1 gap-3 md:gap-4">
                 <button
                   onClick={() => navigate("/crop-recommendations")}
-                  // Button: Vertical stack on mobile, horizontal on desktop. Flat UI on mobile.
                   className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start gap-2 md:gap-0 bg-base-100 md:bg-transparent py-4 px-2 md:py-5 md:px-6 rounded-2xl md:rounded-xl border border-base-content/5 md:border-base-content/10 hover:bg-base-200 transition-colors group"
                 >
                   <div className="p-2.5 md:p-2 bg-primary/10 text-primary rounded-xl md:rounded-lg md:mr-2 group-hover:scale-110 transition-transform">
                     <Activity size={20} className="md:w-5 md:h-5" />
                   </div>
                   <span className="text-[11px] md:text-base font-bold md:font-medium text-center">
-                    Crop Engine
+                    {t("home.crop_engine", "Crop Engine")}
                   </span>
                 </button>
 
@@ -292,7 +286,7 @@ export default function Home() {
                     )}
                   </div>
                   <span className="text-[11px] md:text-base font-bold md:font-medium text-center leading-tight">
-                    {isAuthenticated ? "My Land Data" : "Login to Manage"}
+                    {isAuthenticated ? t("home.my_land_data", "My Land Data") : t("home.login_to_manage", "Login to Manage")}
                   </span>
                 </button>
               </div>
@@ -301,7 +295,6 @@ export default function Home() {
 
           {/* RIGHT COLUMN: The Feed */}
           <div className="col-span-1 xl:col-span-8 flex flex-col relative z-20">
-            {/* Invisible Placeholder to maintain grid layout when expanded */}
             <div className="w-full h-[750px] pointer-events-none" />
 
             <AnimatePresence>
@@ -351,7 +344,6 @@ export default function Home() {
                   >
                     <div className="absolute inset-0 p-4 md:p-6 overflow-y-auto w-full custom-scrollbar flex justify-center">
                       <div className="w-full max-w-3xl pointer-events-auto">
-                        {/* Inside the Collapsed AnimatePresence */}
                         <CommunityFeed isExpanded={false} />
                       </div>
                     </div>
@@ -364,7 +356,6 @@ export default function Home() {
       </main>
 
       {/* ================= FULLSCREEN OVERLAY ================= */}
-      {/* Renders completely outside the grid to ensure 100% viewport coverage */}
       <AnimatePresence>
         {isFullscreen && (
           <motion.div
@@ -389,12 +380,6 @@ export default function Home() {
                   >
                     Regional Community Feed For {firstName}
                   </motion.h2>
-                  {/*  <motion.p
-                    layoutId="feed-subtitle"
-                    className="text-base text-sm text-base-content/60 mt-1 font-medium"
-                  >
-                    Real-time agricultural updates, alerts, and discussions
-                  </motion.p> */}
                 </div>
               </div>
               <motion.button
@@ -412,7 +397,6 @@ export default function Home() {
             >
               <div className="absolute inset-0 p-6 overflow-y-auto w-full custom-scrollbar flex justify-center">
                 <div className="w-full max-w-7xl">
-                  {/* Inside the Fullscreen AnimatePresence */}
                   <CommunityFeed isExpanded={true} />
                 </div>
               </div>

@@ -19,10 +19,12 @@ import {
 import { updateProfile } from "firebase/auth";
 import PhotoUpdateModal from "./PhotoUploadModal";
 import { useTheme } from "../../context/ThemeContext";
+import { useTranslation } from "react-i18next";
 
 const UserProfile = () => {
   const { userData, loadUser, auth } = useAuth();
-  const {isDark} = useTheme();
+  const { isDark } = useTheme();
+  const { t } = useTranslation();
   const Toast = useToast();
 
   const [loading, setLoading] = useState(false);
@@ -54,7 +56,7 @@ const UserProfile = () => {
   };
 
   const handleSave = async (e) => {
-    if(e) e.preventDefault();
+    if (e) e.preventDefault();
     setLoading(true);
 
     try {
@@ -72,13 +74,13 @@ const UserProfile = () => {
         });
       }
 
-      Toast.fire({ icon: "success", title: "Profile updated successfully!" });
+      Toast.fire({ icon: "success", title: t("profile.updated_success", "Profile updated successfully!") });
       loadUser(); 
     } catch (error) {
       console.error(error);
       Toast.fire({
         icon: "error",
-        title: error.response?.data?.detail || "Failed to update profile.",
+        title: error.response?.data?.detail || t("profile.update_failed", "Failed to update profile."),
       });
     } finally {
       setLoading(false);
@@ -94,10 +96,10 @@ const UserProfile = () => {
        if (auth.currentUser) {
         await updateProfile(auth.currentUser, { photoURL: newUrl });
       }
-      Toast.fire({ icon: "success", title: "Photo updated!" });
+      Toast.fire({ icon: "success", title: t("profile.photo_updated", "Photo updated!") });
       loadUser();
     } catch (error) {
-       Toast.fire({ icon: "error", title: "Failed to save photo URL." });
+       Toast.fire({ icon: "error", title: t("profile.photo_update_failed", "Failed to save photo URL.") });
     }
   };
 
@@ -151,7 +153,7 @@ const UserProfile = () => {
           </div>
 
           <div className={`${isDark ? 'text-primary':'text-secondary'} absolute bottom-4 right-6 text-xs font-bold uppercase tracking-widest hidden md:block`}>
-            FarmAssist Profile
+            {t("profile.heading", "FarmAssist Profile")}
           </div>
         </div>
 
@@ -177,7 +179,7 @@ const UserProfile = () => {
                     className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer backdrop-blur-sm rounded-full"
                   >
                     <FiCamera className="text-white text-3xl mb-1 drop-shadow-md" />
-                    <span className="text-white text-xs font-bold uppercase tracking-wider drop-shadow-md">Update</span>
+                    <span className="text-white text-xs font-bold uppercase tracking-wider drop-shadow-md">{t("profile.update", "Update")}</span>
                   </div>
                 </div>
               </div>
@@ -200,11 +202,11 @@ const UserProfile = () => {
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-2 text-sm text-base-content/60 font-medium">
                 <span className="flex items-center gap-1 bg-base-200 px-3 py-1 rounded-full">
                   <FiShield className="text-primary" /> 
-                  {userData?.auth_providers?.[0] || "Email"} User
+                  {userData?.auth_providers?.[0] || t("profile.email_user", "Email")} {t("profile.user", "User")}
                 </span>
                 <span className="flex items-center gap-1 bg-base-200 px-3 py-1 rounded-full">
                   <FiCalendar /> 
-                  Joined {new Date(userData?.date_joined || Date.now()).getFullYear()}
+                  {t("profile.joined", "Joined")} {new Date(userData?.date_joined || Date.now()).getFullYear()}
                 </span>
               </div>
             </div>
@@ -215,7 +217,7 @@ const UserProfile = () => {
                 transition={{ duration: 0.5 }}
                 onClick={loadUser}
                 className="btn btn-ghost btn-circle text-base-content/50 hover:text-primary hidden md:flex"
-                title="Refresh Data"
+                title={t("profile.refresh_data", "Refresh Data")}
               >
                 <FiRefreshCw className="text-xl" />
               </motion.button>
@@ -233,7 +235,7 @@ const UserProfile = () => {
             <motion.div variants={itemVariants} className="form-control">
               <label className="label pb-1">
                 <span className="label-text font-bold text-base-content/70 flex items-center gap-2">
-                  <FiUser className="text-primary" /> First Name
+                  <FiUser className="text-primary" /> {t("profile.first_name", "First Name")}
                 </span>
               </label>
               <input
@@ -242,7 +244,7 @@ const UserProfile = () => {
                 value={formData.first_name}
                 onChange={handleChange}
                 className="input input-lg input-bordered bg-base-200/40 focus:bg-base-100 focus:input-primary transition-all font-medium"
-                placeholder="Enter first name"
+                placeholder={t("profile.first_name_placeholder", "Enter first name")}
               />
             </motion.div>
 
@@ -250,7 +252,7 @@ const UserProfile = () => {
             <motion.div variants={itemVariants} className="form-control">
               <label className="label pb-1">
                 <span className="label-text font-bold text-base-content/70 flex items-center gap-2">
-                  <FiUser className="text-primary" /> Last Name
+                  <FiUser className="text-primary" /> {t("profile.last_name", "Last Name")}
                 </span>
               </label>
               <input
@@ -259,7 +261,7 @@ const UserProfile = () => {
                 value={formData.last_name}
                 onChange={handleChange}
                 className="input input-lg input-bordered bg-base-200/40 focus:bg-base-100 focus:input-primary transition-all font-medium"
-                placeholder="Enter last name"
+                placeholder={t("profile.last_name_placeholder", "Enter last name")}
               />
             </motion.div>
 
@@ -267,9 +269,9 @@ const UserProfile = () => {
             <motion.div variants={itemVariants} className="form-control md:col-span-2">
               <label className="label pb-1">
                 <span className="label-text font-bold text-base-content/70 flex items-center gap-2">
-                  <FiMail className="text-primary" /> Email Address
+                  <FiMail className="text-primary" /> {t("profile.email_address", "Email Address")}
                 </span>
-                <span className="badge badge-warning badge-outline badge-sm">Read Only</span>
+                <span className="badge badge-warning badge-outline badge-sm">{t("profile.read_only", "Read Only")}</span>
               </label>
               <div className="relative">
                 <input
@@ -286,7 +288,7 @@ const UserProfile = () => {
             <motion.div variants={itemVariants} className="form-control md:col-span-2">
               <label className="label pb-1">
                 <span className="label-text font-bold text-base-content/70 flex items-center gap-2">
-                  <FiPhone className="text-primary" /> Phone Number
+                  <FiPhone className="text-primary" /> {t("profile.phone_number", "Phone Number")}
                 </span>
               </label>
               <input
@@ -295,7 +297,7 @@ const UserProfile = () => {
                 value={formData.phone_number}
                 onChange={handleChange}
                 className="input input-lg input-bordered bg-base-200/40 focus:bg-base-100 focus:input-primary transition-all font-medium"
-                placeholder="+91 98765 43210"
+                placeholder={t("profile.phone_placeholder", "+91 98765 43210")}
               />
             </motion.div>
 
@@ -306,7 +308,7 @@ const UserProfile = () => {
                 onClick={() => loadUser()} 
                 className="btn btn-ghost hover:bg-base-200"
               >
-                Cancel
+                {t("profile.cancel", "Cancel")}
               </button>
               <button 
                 type="submit" 
@@ -314,7 +316,7 @@ const UserProfile = () => {
                 className="btn btn-primary px-8 btn-md md:btn-lg shadow-xl shadow-primary/20 hover:scale-105 transition-transform"
               >
                 {loading ? <span className="loading loading-spinner" /> : <FiSave className="text-lg" />}
-                Save Changes
+                {t("profile.save_changes", "Save Changes")}
               </button>
             </motion.div>
 

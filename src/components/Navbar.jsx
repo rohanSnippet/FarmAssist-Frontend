@@ -137,9 +137,8 @@ const Navbar = () => {
             <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-1 p-2 shadow bg-base-100 rounded-box w-64">
               <li><NavLink to="/">{t("navbar.home")}</NavLink></li>
               <li><NavLink to="/about-us">{t("navbar.about_us")}</NavLink></li>
-              {/* <li><NavLink to="/contact">{t("navbar.contact")}</NavLink></li> */}
-              <li><NavLink to="/my-farms">My Farms</NavLink></li>
-              <li><NavLink to="/pest-prediction">Pest Prediction</NavLink></li>
+              <li><NavLink to="/my-farms">{t("navbar.my_farms")}</NavLink></li>
+              <li><NavLink to="/pest-prediction">{t("navbar.pest_detection")}</NavLink></li>
             </ul>
           </div>
 
@@ -161,19 +160,14 @@ const Navbar = () => {
                 {t("navbar.about_us")}
               </NavLink>
             </li>
-            {/* <li>
-              <NavLink to="/contact" className={({ isActive }) => isActive ? "active font-bold text-primary bg-primary/10" : "hover:text-primary" }>
-                {t("navbar.contact")}
-              </NavLink>
-            </li> */}
             <li>
               <NavLink to="/my-farms" className={({ isActive }) => isActive ? "active font-bold text-primary bg-primary/10" : "hover:text-primary" }>
-                My Farms
+                {t("navbar.my_farms")}
               </NavLink>
             </li>
             <li>
               <NavLink to="/pest-prediction" className={({ isActive }) => isActive ? "active font-bold text-primary bg-primary/10" : "hover:text-primary" }>
-                Pest Detection
+                {t("navbar.pest_detection")}
               </NavLink>
             </li>
           </ul>
@@ -181,17 +175,17 @@ const Navbar = () => {
 
         <div className="navbar-end gap-2">
           {/* Location Settings Button */}
-         {/*  <button
+          {/* <button
             onClick={() => setIsLocModalOpen(true)}
             className="btn btn-ghost btn-circle md:w-auto md:px-3 md:rounded-full border border-transparent hover:border-primary/20 hover:bg-primary/5"
-            title="Location Settings"
+            title={t("navbar.location_settings", "Location Settings")}
           >
             <MapPin className={`w-5 h-5 ${curLocation?.label ? "text-primary" : "opacity-50"}`} />
             <span className="hidden md:block text-sm font-medium max-w-[120px] truncate">
-              {loadingLoc ? "..." : curLocation?.label || "Set Location"}
+              {loadingLoc ? "..." : curLocation?.label || t("navbar.set_location", "Set Location")}
             </span>
-          </button> */}
-
+          </button>
+ */}
           {/* NOTIFICATION BELL (Only visible to logged-in users) */}
           {userData && (
             <button
@@ -200,7 +194,7 @@ const Navbar = () => {
                 setSidebarOpen(false); // Close other drawer to prevent overlap
               }}
               className="btn btn-ghost btn-circle relative"
-              title="Pest & Disease Alerts"
+              title={t("navbar.pest_alerts", "Pest & Disease Alerts")}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-base-content/80 hover:text-primary transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -286,7 +280,7 @@ const Navbar = () => {
                 <h3 className="font-bold text-xl text-center break-words w-full px-2">
                   {userData?.first_name && userData?.last_name
                     ? `${userData?.first_name} ${userData?.last_name}`
-                    : auth?.currentUser?.displayName || "Farmer"}
+                    : auth?.currentUser?.displayName || t("navbar.farmer", "Farmer")}
                 </h3>
                 <p className="text-sm text-base-content/60 truncate w-full text-center px-4">
                   {userData?.email}
@@ -298,15 +292,15 @@ const Navbar = () => {
                   }}
                   className="btn btn-primary btn-sm mt-4 px-6 gap-2"
                 >
-                  Edit Profile
+                  {t("navbar.edit_profile", "Edit Profile")}
                 </button>
               </div>
             ) : (
               <div className="text-center mt-8">
-                <h3 className="font-bold text-lg mb-2">Welcome to FarmAssist</h3>
-                <p className="text-sm opacity-60 mb-4">Login to access crop recommendations.</p>
+                <h3 className="font-bold text-lg mb-2">{t("navbar.welcome", "Welcome to FarmAssist")}</h3>
+                <p className="text-sm opacity-60 mb-4">{t("navbar.login_to_access", "Login to access crop recommendations.")}</p>
                 <Link to="/login" className="btn btn-primary w-full" onClick={() => setSidebarOpen(false)}>
-                  Login Now
+                  {t("navbar.login_now", "Login Now")}
                 </Link>
               </div>
             )}
@@ -314,7 +308,7 @@ const Navbar = () => {
 
           {/* Profile Body Tools */}
           <div className="p-4 flex-1 overflow-y-auto">
-            <p className="text-xs font-bold text-base-content/40 uppercase mb-3 tracking-wider px-1">Settings & Tools</p>
+            <p className="text-xs font-bold text-base-content/40 uppercase mb-3 tracking-wider px-1">{t("navbar.settings_tools", "Settings & Tools")}</p>
             {userData && (
               <button 
                 onClick={() => {
@@ -324,31 +318,31 @@ const Navbar = () => {
                 className="btn btn-primary w-full h-auto py-4 mb-4 shadow-lg shadow-primary/20 flex flex-col gap-1 hover:scale-[1.02] transition-transform"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                <span className="font-bold text-lg">Scan Crop Health</span>
+                <span className="font-bold text-lg">{t("navbar.scan_crop_health", "Scan Crop Health")}</span>
               </button>
             )}
             <div className="grid grid-cols-2 gap-3">
               <button onClick={handleOpenLanguage} className="btn h-auto py-4 flex flex-col gap-2 border-base-200 hover:border-primary hover:bg-base-200/50 normal-case">
                 <IconLanguage />
-                <span className="text-xs font-bold">Language</span>
+                <span className="text-xs font-bold">{t("navbar.language", "Language")}</span>
                 <span className="badge badge-sm badge-ghost">{i18n?.language?.toUpperCase()}</span>
               </button>
               <button onClick={cycleTheme} className="btn h-auto py-4 flex flex-col gap-2 border-base-200 hover:border-primary hover:bg-base-200/50 normal-case">
                 <IconTheme />
-                <span className="text-xs font-bold">Theme</span>
+                <span className="text-xs font-bold">{t("navbar.theme", "Theme")}</span>
                 <span className="badge badge-sm badge-ghost">{theme}</span>
               </button>
               <button onClick={toggleFullScreen} className="btn h-auto py-4 flex flex-col gap-2 border-base-200 hover:border-primary hover:bg-base-200/50 normal-case col-span-2">
                 <IconFullscreen />
-                <span className="text-xs font-bold">{isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen Mode"}</span>
+                <span className="text-xs font-bold">{isFullscreen ? t("navbar.exit_fullscreen", "Exit Fullscreen") : t("navbar.enter_fullscreen", "Enter Fullscreen Mode")}</span>
               </button>
             </div>
             {userData && (
               <div className="mt-6 ">
-                <p className="text-xs font-bold text-base-content/40 uppercase mb-3 tracking-wider px-1">Account</p>
+                <p className="text-xs font-bold text-base-content/40 uppercase mb-3 tracking-wider px-1">{t("navbar.account", "Account")}</p>
                 <ul className="menu bg-base-200/30 rounded-box p-2 w-full">
-                  <li><Link to="/my-farms" onClick={() => setSidebarOpen(false)}>My Farms</Link></li>
-                  <li><Link to="/history" onClick={() => setSidebarOpen(false)}>Saved Recommendations</Link></li>
+                  <li><Link to="/my-farms" onClick={() => setSidebarOpen(false)}>{t("navbar.my_farms", "My Farms")}</Link></li>
+                  <li><Link to="/history" onClick={() => setSidebarOpen(false)}>{t("navbar.saved_recommendations", "Saved Recommendations")}</Link></li>
                 </ul>
               </div>
             )}
@@ -357,7 +351,7 @@ const Navbar = () => {
           {/* Profile Footer */}
           {userData && (
             <div className="p-4 border-t border-base-200 bg-base-100">
-              <button onClick={handleLogout} className="btn btn-error btn-outline w-full gap-2">Logout</button>
+              <button onClick={handleLogout} className="btn btn-error btn-outline w-full gap-2">{t("Common.logout", "Logout")}</button>
             </div>
           )}
         </div>
