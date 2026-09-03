@@ -135,8 +135,8 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-base-300 text-base-content font-sans pb-24">
       {/* THEME-AWARE AMBIENT LIGHTING */}
-      <div className="absolute top-[-10%] left-[-5%] w-[50vw] h-[50vh] bg-primary/20 blur-[150px] rounded-full pointer-events-none z-0" />
-      <div className="absolute bottom-[10%] right-[-5%] w-[40vw] h-[60vh] bg-secondary/15 blur-[150px] rounded-full pointer-events-none z-0" />
+      <div className="absolute top-[-10%] w-[50vw] h-[50vh] bg-primary/20 blur-[150px] rounded-full pointer-events-none z-0" />
+      <div className="absolute bottom-[10%] w-[40vw] h-[60vh] bg-secondary/15 blur-[150px] rounded-full pointer-events-none z-0" />
 
       {/* COMMAND HEADER */}
       <header className="relative w-full pt-10 pb-5 px-4 md:pt-24 md:pb-8 md:px-8 xl:px-12 2xl:px-16 border-b border-base-content/10 bg-base-100/40 backdrop-blur-md z-10">

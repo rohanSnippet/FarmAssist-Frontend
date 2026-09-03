@@ -440,7 +440,7 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
       className={`relative w-full mx-auto z-10 transition-all duration-500 ease-in-out ${containerWidthClass}`}
     >
       <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-primary/20 blur-[100px] rounded-full pointer-events-none z-0" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-secondary/15 blur-[100px] rounded-full pointer-events-none z-0" />
+      <div className="absolute bottom-[-10%] right-[-2%] w-[60%] h-[60%] bg-secondary/15 blur-[100px] rounded-full pointer-events-none z-0" />
 
       <div className="bg-base-100/70 backdrop-blur-xl border border-base-content/10 shadow-xl rounded-2xl overflow-hidden relative z-10">
         {/* Alerts & Headers */}
