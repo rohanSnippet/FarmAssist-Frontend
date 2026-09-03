@@ -15,7 +15,7 @@ export default defineConfig({
       // remains required to test PWA installability over HTTPS.
       devOptions: {
         enabled: true,
-        type: "module",
+        // type: "module",
       },
 
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
