@@ -1,17 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import api from '../../axios';
 
-const AlertInbox = () => {
+const AlertInbox = ({ onClose }) => {
   const [alerts, setAlerts] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  const fetchAlerts = async () => {
+  const fetchData = async () => {
     try {
-      const response = await api.get('/api/alerts/');
-      setAlerts(response.data);
+      const [alertsRes, notifsRes] = await Promise.all([
+        api.get('/api/alerts/'),
+        api.get('/api/notifications/')
+      ]);
+      setAlerts(alertsRes.data);
+      // Filter out read notifications if we want, or just show unread
+      setNotifications(notifsRes.data.filter(n => !n.is_read));
     } catch (err) {
-      console.error("Failed to fetch alerts", err);
+      console.error("Failed to fetch inbox data", err);
     } finally {
       setLoading(false);
     }
@@ -19,30 +27,49 @@ const AlertInbox = () => {
 
   useEffect(() => {
     // 1. Fetch immediately when the component mounts
-    fetchAlerts();
+    fetchData();
 
     // 2. The "Smart Focus" Engine: Only fetch when the user switches back to the tab
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        fetchAlerts();
+        fetchData();
       }
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
+    // Listen for SSE updates
+    const handleJobUpdate = () => {
+      fetchData();
+    };
+    window.addEventListener('scanJobUpdate', handleJobUpdate);
+
     // 3. Cleanup to prevent memory leaks
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('scanJobUpdate', handleJobUpdate);
+    };
   }, []);
 
   const markAsRead = async (alertId) => {
     try {
-      // Optimistic UI: Instantly remove it from the screen for a snappy feel
       setAlerts(alerts.filter(a => a.id !== alertId));
-      
-      // Tell Django to mark it as read
       await api.patch(`/api/alerts/${alertId}/`, { is_read: true });
     } catch (err) {
       console.error("Failed to mark alert as read", err);
+    }
+  };
+
+  const markNotificationAsRead = async (notif) => {
+    try {
+      setNotifications(notifications.filter(n => n.id !== notif.id));
+      await api.patch(`/api/notifications/${notif.id}/`, { is_read: true });
+      if (notif.link) {
+        if (onClose) onClose();
+        navigate(notif.link);
+      }
+    } catch (err) {
+      console.error("Failed to mark notification as read", err);
     }
   };
 
@@ -55,19 +82,19 @@ const AlertInbox = () => {
   }
 
   return (
-    <div className="w-full max-w-md bg-base-100/80 backdrop-blur-xl border border-base-300 shadow-2xl rounded-2xl overflow-hidden flex flex-col h-[500px]">
+    <div className="w-full max-w-md bg-base-100/80 backdrop-blur-xl border-l border-base-300 shadow-2xl overflow-hidden flex flex-col h-full">
       
       {/* Header */}
       <div className="bg-error/10 border-b border-error/20 p-4 flex justify-between items-center z-10">
-        <h3 className="font-bold text-lg text-error flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 animate-pulse" viewBox="0 0 20 20" fill="currentColor">
+        <h3 className="font-bold text-lg text-primary flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 animate-pulse text-error" viewBox="0 0 20 20" fill="currentColor">
             <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
           </svg>
-          Pest & Disease Alerts
+          Inbox
         </h3>
-        {alerts.length > 0 && (
-          <div className="badge badge-error gap-1 text-white font-bold shadow-md">
-            {alerts.length} New
+        {(alerts.length > 0 || notifications.length > 0) && (
+          <div className="badge badge-primary gap-1 text-white font-bold shadow-md mr-10">
+            {alerts.length + notifications.length} New
           </div>
         )}
       </div>
@@ -75,7 +102,7 @@ const AlertInbox = () => {
       {/* Alert Feed */}
       <div className="flex-1 overflow-y-auto p-4 bg-base-200/50 space-y-3 relative">
         <AnimatePresence>
-          {alerts.length === 0 ? (
+          {alerts.length === 0 && notifications.length === 0 ? (
             <motion.div 
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               className="absolute inset-0 flex flex-col items-center justify-center text-base-content/40"
@@ -86,9 +113,42 @@ const AlertInbox = () => {
               <p className="font-medium">All clear! No nearby threats.</p>
             </motion.div>
           ) : (
-            alerts.map((alert) => (
+            <>
+            {notifications.map((notif) => (
               <motion.div
-                key={alert.id}
+                key={`notif-${notif.id}`}
+                initial={{ opacity: 0, x: 50, scale: 0.9 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
+                layout
+                className="card bg-base-100 shadow-lg border-l-4 border-primary relative group overflow-hidden cursor-pointer hover:bg-base-200"
+                onClick={() => markNotificationAsRead(notif)}
+              >
+                <div className="card-body p-4">
+                  <h4 className="font-bold text-base-content text-lg">
+                    {notif.title}
+                  </h4>
+                  <p className="text-sm text-base-content/70 mt-1">
+                    {notif.message}
+                  </p>
+                  <div className="flex justify-between items-end mt-4 pt-3 border-t border-base-200">
+                    <span className="text-[10px] text-base-content/40 uppercase tracking-wider font-semibold">
+                      {new Date(notif.created_at).toLocaleString()}
+                    </span>
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); markNotificationAsRead(notif); }}
+                      className="btn btn-xs btn-primary btn-outline"
+                    >
+                      View
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+
+            {alerts.map((alert) => (
+              <motion.div
+                key={`alert-${alert.id}`}
                 initial={{ opacity: 0, x: 50, scale: 0.9 }}
                 animate={{ opacity: 1, x: 0, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
@@ -125,7 +185,8 @@ const AlertInbox = () => {
                   </div>
                 </div>
               </motion.div>
-            ))
+            ))}
+            </>
           )}
         </AnimatePresence>
       </div>

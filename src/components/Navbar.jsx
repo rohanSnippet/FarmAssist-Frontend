@@ -12,11 +12,13 @@ import { useUserLocation } from "../context/LocationContext";
 import { MapPin } from "lucide-react";
 import LocationModal from "./LocationModal";
 import AlertInbox from "../components/User/AlertInbox";
+import api from "../axios";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isAlertOpen, setAlertOpen] = useState(false); // <-- NEW STATE FOR ALERTS
+  const [unreadCount, setUnreadCount] = useState(0);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -43,6 +45,19 @@ const Navbar = () => {
     setAlertOpen(false); // <-- CLOSE ALERT DRAWER ON NAVIGATION
     setMobileMenuOpen(false);
   }, [location]);
+
+  useEffect(() => {
+    if (userData || auth?.currentUser) {
+      api.get('/api/notifications/').then(res => {
+        const count = res.data.filter(n => !n.is_read).length;
+        setUnreadCount(count);
+      }).catch(err => console.error(err));
+    }
+
+    const handleUpdate = () => setUnreadCount(prev => prev + 1);
+    window.addEventListener('scanJobUpdate', handleUpdate);
+    return () => window.removeEventListener('scanJobUpdate', handleUpdate);
+  }, [userData, auth?.currentUser, isAlertOpen]);
 
   // Fullscreen Logic
   const toggleFullScreen = () => {
@@ -199,8 +214,16 @@ const Navbar = () => {
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-base-content/80 hover:text-primary transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
               </svg>
-              <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-error rounded-full animate-ping"></span>
-              <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-error rounded-full shadow-sm"></span>
+              {unreadCount > 0 && (
+                <div className="absolute top-0 right-0 transform translate-x-1 -translate-y-1">
+                  <span className="relative flex h-4 w-4">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-4 w-4 bg-error text-[10px] text-white font-bold items-center justify-center">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  </span>
+                </div>
+              )}
             </button>
           )}
 
@@ -309,7 +332,7 @@ const Navbar = () => {
           {/* Profile Body Tools */}
           <div className="p-4 flex-1 overflow-y-auto">
             <p className="text-xs font-bold text-base-content/40 uppercase mb-3 tracking-wider px-1">{t("navbar.settings_tools", "Settings & Tools")}</p>
-            {userData && (
+            {/* {userData && (
               <button 
                 onClick={() => {
                   navigate('/pest-prediction');
@@ -320,7 +343,7 @@ const Navbar = () => {
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 <span className="font-bold text-lg">{t("navbar.scan_crop_health", "Scan Crop Health")}</span>
               </button>
-            )}
+            )} */}
             <div className="grid grid-cols-2 gap-3">
               <button onClick={handleOpenLanguage} className="btn h-auto py-4 flex flex-col gap-2 border-base-200 hover:border-primary hover:bg-base-200/50 normal-case">
                 <IconLanguage />
