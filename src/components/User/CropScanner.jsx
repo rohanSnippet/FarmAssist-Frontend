@@ -54,7 +54,7 @@ const fadeAnim = {
 };
 
 // --- MAIN COMPONENT ---
-const CropScanner = ({ farms = [], onDigitizeNew }) => {
+const CropScanner = ({ farms = [], onDigitizeNew, onScanQueued }) => {
   const { coordinates, loaded, error } = useGeoLocation();
   const fileInputRef = useRef(null);
   const { t, i18n } = useTranslation();
@@ -350,8 +350,16 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
       formData.append("image", file);
       formData.append("language", i18n.language || "en");
 
-      const response = await api.post("/api/scan/", formData);
-      setScanResult(response.data);
+      const response = await api.post("/api/scan/submit/", formData);
+      
+      if (onScanQueued && response.data.job_id) {
+        onScanQueued(response.data.job_id, selectedFallbackFarm || "");
+        // Reset the UI immediately so the user can scan another crop if needed
+        resetScanner();
+      } else {
+        // Fallback for legacy behavior if needed
+        setScanResult(response.data);
+      }
     } catch (err) {
       console.error("Scanning failed", err);
       alert(t("CropScanner.failed_to_analyze"));
@@ -605,158 +613,6 @@ const CropScanner = ({ farms = [], onDigitizeNew }) => {
               </motion.div>
             )}
 
-            {scanResult && (
-              <motion.div
-                key="result"
-                variants={fadeAnim}
-                initial="hidden"
-                animate="visible"
-                className="w-full mt-2"
-              >
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                  <div className="w-full h-64 lg:h-full min-h-[300px] rounded-2xl overflow-hidden border border-base-content/10 shadow-lg relative bg-black">
-                    <img
-                      src={previewUrl}
-                      alt={t('CropScanner.scanned_crop_alt')}
-                      className="w-full h-full object-contain"
-                    />
-                    <div className="absolute top-4 left-4 bg-base-100/90 backdrop-blur-sm px-3 py-1.5 rounded-lg text-xs font-bold shadow-md border border-base-content/10">
-                      {t('CropScanner.input_preview')}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-5">
-                    <div
-                      className={`p-6 rounded-2xl border backdrop-blur-md shadow-lg flex flex-col gap-4 ${scanResult.isOfflineMock ? "bg-info/10 border-info/30" : scanResult.confidence >= 0.8 ? "bg-error/10 border-error/30" : "bg-warning/10 border-warning/30"}`}
-                    >
-                      <div className="flex items-start gap-4 border-b border-base-content/10 pb-4">
-                        <div
-                          className={`p-3 rounded-xl ${scanResult.confidence >= 0.8 ? "bg-error/20 text-error" : "bg-warning/20 text-warning"}`}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-8 w-8"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                            />
-                          </svg>
-                        </div>
-                        <div>
-                          <h3
-                            className={`font-black text-2xl leading-tight ${scanResult.confidence >= 0.8 ? "text-error" : "text-warning-content"}`}
-                          >
-                            {scanResult.primary_diagnosis}
-                          </h3>
-                          <span className="text-sm font-bold opacity-70 uppercase tracking-wider mt-1 block">
-                            {t('CropScanner.ai_confidence')}: {(scanResult.confidence * 100).toFixed(0)}%
-                          </span>
-                        </div>
-                      </div>
-
-                      <div>
-                        <h4 className="text-sm font-black text-base-content/60 uppercase mb-3 tracking-wider">
-                          {t('CropScanner.treatment_protocol')}
-                        </h4>
-                        <ul className="space-y-3">
-                          {scanResult.advisory
-                            .split("\n")
-                            .filter((line) => line.trim() !== "")
-                            .map((step, index) => {
-                              const cleanStep = step.replace(/^\d+\.\s*/, "");
-                              return (
-                                <li
-                                  key={index}
-                                  className="flex gap-3 text-base text-base-content/90 leading-snug"
-                                >
-                                  <span className="text-primary font-black mt-0.5">
-                                    •
-                                  </span>
-                                  <span className="font-medium">
-                                    {cleanStep}
-                                  </span>
-                                </li>
-                              );
-                            })}
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div className="bg-base-200/50 backdrop-blur-md border border-base-content/10 p-6 rounded-2xl">
-                      {locationMatch?.type === "MATCH" && (
-                        <div className="flex flex-col gap-4">
-                          <div>
-                            <h4 className="font-bold text-base text-success flex items-center gap-2">
-                              <span className="w-2 h-2 bg-success rounded-full"></span>{" "}
-                              {t('CropScanner.boundary_confirmed')}
-                            </h4>
-                            <p className="text-sm text-base-content/70 mt-1">
-                              {t('CropScanner.standing_inside')} {" "}
-                              <span className="font-bold text-base-content">
-                                {locationMatch.farm.name}
-                              </span>
-                            </p>
-                          </div>
-                          <button
-                            onClick={() => confirmAndBroadcast(false)}
-                            className="btn btn-primary btn-lg rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform w-full"
-                          >
-                            {isDeviceOnline
-                              ? t('CropScanner.broadcast_threat')
-                              : t('CropScanner.queue_to_outbox')}
-                          </button>
-                        </div>
-                      )}
-
-                      {locationMatch?.type === "NO_MATCH" && (
-                        <div className="flex flex-col gap-4">
-                          <h4 className="font-bold text-sm text-warning flex items-center gap-2">
-                            <span className="w-2 h-2 bg-warning rounded-full"></span>{" "}
-                            {t('CropScanner.manual_assignment_required')}
-                          </h4>
-                          <select
-                            className="select select-bordered w-full bg-base-100 rounded-xl"
-                            value={selectedFallbackFarm}
-                            onChange={(e) =>
-                              setSelectedFallbackFarm(e.target.value)
-                            }
-                          >
-                            <option value="" disabled>
-                              {t('CropScanner.assign_to_farm')}
-                            </option>
-                            {farms.map((f) => (
-                              <option key={f.id} value={f.id}>
-                                {f.name}
-                              </option>
-                            ))}
-                          </select>
-                          <button
-                            onClick={() => confirmAndBroadcast(false)}
-                            disabled={!selectedFallbackFarm}
-                            className="btn btn-primary rounded-xl w-full"
-                          >
-                            {t('CropScanner.broadcast_threat')}
-                          </button>
-                        </div>
-                      )}
-                    </div>
-
-                    <button
-                      onClick={resetScanner}
-                      className="btn btn-outline btn-block rounded-xl font-bold tracking-wider"
-                    >
-                      {t('CropScanner.discard_rescan')}
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            )}
           </AnimatePresence>
         </div>
       </div>
