@@ -88,7 +88,8 @@ export function useScanQueue() {
     const handleJobUpdate = (e) => {
       const { job_id, type } = e.detail;
       if (type === 'job_completed' || type === 'job_failed') {
-        setJobs(prev => prev.filter(j => j.id !== job_id));
+        // Coerce both sides: SSE may deliver job_id as string or number
+        setJobs(prev => prev.filter(j => Number(j.id) !== Number(job_id)));
       }
     };
 

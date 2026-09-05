@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import CropScanner from '../components/User/CropScanner';
 import api from '../axios';
-import ScanJobQueue from '../components/User/ScanJobQueue';
-import { useScanQueue } from '../hooks/useScanQueue';
 
 const CropScannerPage = () => {
   const { t } = useTranslation();
@@ -12,13 +10,9 @@ const CropScannerPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Initialize the scan queue hook
-  const {
-    jobs,
-    addJob,
-    removeJob,
-    pendingCount
-  } = useScanQueue();
+  const handleScanQueued = (jobId, cropHint) => {
+    window.dispatchEvent(new CustomEvent('addScanJob', { detail: { jobId, cropHint } }));
+  };
 
   useEffect(() => {
     // Fetch registered farms to enable spatial boundary matching in the scanner
@@ -74,13 +68,7 @@ const CropScannerPage = () => {
       <CropScanner 
         farms={farms} 
         onDigitizeNew={handleDigitizeNew}
-        onScanQueued={addJob}
-      />
-      
-      <ScanJobQueue
-        jobs={jobs}
-        onRemove={removeJob}
-        pendingCount={pendingCount}
+        onScanQueued={handleScanQueued}
       />
     </div>
   );

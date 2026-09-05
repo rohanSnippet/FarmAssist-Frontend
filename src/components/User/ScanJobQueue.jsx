@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CheckCircle, AlertCircle, Loader2, ChevronDown, ChevronUp } from 'lucide-react';
+import { X, CheckCircle, AlertCircle, Loader2, ChevronDown, ChevronUp, ListOrdered } from 'lucide-react';
 
 const STATUS_CONFIG = {
   PENDING:    { label: 'Queued',     icon: <Loader2 className="w-4 h-4 animate-spin text-info" />,       colorClass: 'text-info', bgClass: 'bg-info/10 border-info/30' },
@@ -128,7 +128,7 @@ export default function ScanJobQueue({ jobs, onRemove, pendingCount }) {
             <div className="p-5 border-b border-base-content/10 flex items-center justify-between bg-base-200/30">
               <div>
                 <h3 className="font-black text-lg flex items-center gap-2">
-                  <span className="text-xl">🔬</span> Scan Queue
+                  <ListOrdered className="w-5 h-5" /> Scan Queue
                 </h3>
                 <p className="text-xs text-base-content/60 font-medium mt-1">
                   {pendingCount > 0 ? (
@@ -169,7 +169,7 @@ export default function ScanJobQueue({ jobs, onRemove, pendingCount }) {
         onClick={() => setOpen(!open)}
         className="pointer-events-auto relative btn btn-circle w-14 h-14 bg-base-100 border border-base-content/10 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:scale-105 transition-transform"
       >
-        <span className="text-2xl">🔬</span>
+        <ListOrdered className="w-6 h-6" />
         {pendingCount > 0 && (
           <span className="absolute -top-1 -right-1 w-6 h-6 flex items-center justify-center bg-primary text-primary-content text-xs font-black rounded-full border-2 border-base-100 shadow-md">
             {pendingCount}
