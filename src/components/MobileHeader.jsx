@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import LanguageGridContent from "../ui/LanguageGridContent";
 import AlertInbox from "./User/AlertInbox";
 import api from "../axios";
+import { useNotifications } from "../context/NotificationContext";
 import LogoLight from "../assets/seedingL.png";
 import Logo from "../assets/seeding.png";
 import {
@@ -31,25 +32,19 @@ const MobileHeader = () => {
 
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isAlertOpen, setAlertOpen] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
+  const { unreadCount, markAllRead } = useNotifications();
 
   // Close alert drawer automatically on route change
   useEffect(() => {
     setAlertOpen(false);
   }, [location]);
 
+  // Mark all as read when opening the alert box
   useEffect(() => {
-    if (isAuthenticated) {
-      api.get('/api/notifications/').then(res => {
-        const count = res.data.filter(n => !n.is_read).length;
-        setUnreadCount(count);
-      }).catch(err => console.error(err));
+    if (isAlertOpen) {
+      markAllRead();
     }
-
-    const handleUpdate = () => setUnreadCount(prev => prev + 1);
-    window.addEventListener('scanJobUpdate', handleUpdate);
-    return () => window.removeEventListener('scanJobUpdate', handleUpdate);
-  }, [isAuthenticated, isAlertOpen]); // Refresh when alert drawer closes/opens
+  }, [isAlertOpen, markAllRead]);
 
   // Fullscreen Logic
   const toggleFullScreen = () => {

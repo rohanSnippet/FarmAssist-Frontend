@@ -75,12 +75,16 @@ const ManageFarms = () => {
             </div> 
           </div>
 
-          {/* 
-             IMPORTANT:
-             No Add button here.
-             Add button exists only as the desktop header action
-             and mobile FAB below.
-          */}
+          {!isAddingFarm && (
+            <button
+              type="button"
+              onClick={() => setIsAddingFarm(true)}
+              className="btn btn-primary btn-sm rounded-xl px-3 shadow-md gap-1"
+            >
+              <Plus size={16} />
+              <span className="text-xs">{t("manageFarms.add", "Add")}</span>
+            </button>
+          )}
         </div>
       </header>
 
@@ -283,46 +287,7 @@ const ManageFarms = () => {
         </main>
       )}
 
-      {/* =====================================================
-          MOBILE ADD FARM FAB
-          
-          Only shown on farm-list screen.
-          This is the ONLY mobile Add Farm button.
-      ===================================================== */}
-      {!isAddingFarm && (
-        <button
-          type="button"
-          onClick={() => setIsAddingFarm(true)}
-          aria-label="Add new farm"
-          className="
-            md:hidden
-            fixed
-            right-5
-            bottom-6
-            z-40
-
-            w-14
-            h-14
-            min-h-14
-
-            rounded-full
-            bg-primary
-            text-primary-content
-
-            shadow-xl
-            shadow-primary/30
-
-            flex
-            items-center
-            justify-center
-
-            active:scale-95
-            transition-transform
-          "
-        >
-          <Plus size={25} strokeWidth={2.5} />
-        </button>
-      )}
+      {/* Mobile Add Farm FAB removed - moved to header */}
     </div>
   );
 };

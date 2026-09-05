@@ -528,12 +528,12 @@ const MyFarmsDashboard = ({onAddFarm}) => {
       </div>
 
       {/* MOBILE FLOATING ACTION BUTTON (FAB) */}
-      <button
+     {/*  <button
          onClick={onAddFarm}
         className="md:hidden fixed bottom-20 right-4 w-14 h-14 bg-primary text-primary-content rounded-[1.25rem] shadow-[0_8px_30px_rgb(0,0,0,0.15)] flex items-center justify-center active:scale-90 transition-transform z-40"
       >
         <Plus size={28} />
-      </button>
+      </button> */}
 
       {/* ========================================= */}
       {/* MODAL: DETAILED FARM VIEW                 */}

@@ -13,14 +13,15 @@ import { MapPin } from "lucide-react";
 import LocationModal from "./LocationModal";
 import AlertInbox from "../components/User/AlertInbox";
 import api from "../axios";
+import { useNotifications } from "../context/NotificationContext";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [isAlertOpen, setAlertOpen] = useState(false); // <-- NEW STATE FOR ALERTS
-  const [unreadCount, setUnreadCount] = useState(0);
+  const [isAlertOpen, setAlertOpen] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const { unreadCount, markAllRead } = useNotifications();
 
   const { t, i18n } = useTranslation();
   const { isDark, setTheme, theme } = useTheme();
@@ -46,18 +47,12 @@ const Navbar = () => {
     setMobileMenuOpen(false);
   }, [location]);
 
+  // Mark all as read when opening the alert box
   useEffect(() => {
-    if (userData || auth?.currentUser) {
-      api.get('/api/notifications/').then(res => {
-        const count = res.data.filter(n => !n.is_read).length;
-        setUnreadCount(count);
-      }).catch(err => console.error(err));
+    if (isAlertOpen) {
+      markAllRead();
     }
-
-    const handleUpdate = () => setUnreadCount(prev => prev + 1);
-    window.addEventListener('scanJobUpdate', handleUpdate);
-    return () => window.removeEventListener('scanJobUpdate', handleUpdate);
-  }, [userData, auth?.currentUser, isAlertOpen]);
+  }, [isAlertOpen, markAllRead]);
 
   // Fullscreen Logic
   const toggleFullScreen = () => {
