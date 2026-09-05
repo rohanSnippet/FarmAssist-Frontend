@@ -29,7 +29,7 @@ export default function Home() {
   const { t, i18n } = useTranslation();
 
   const { userData, user, isAuthenticated } = useAuth();
-  const { curLocation } = useUserLocation();
+  const { curLocation, detectAndSaveLocation, loadingLoc } = useUserLocation();
 
   const firstName = userData?.first_name || user?.first_name || t("home.default_farmer_name", "Farmer");
   const locationLabel = curLocation?.label
@@ -149,10 +149,21 @@ export default function Home() {
           >
             {/* Location & Date - Scaled down for mobile, truncated to prevent awkward wrapping */}
             <div className="flex items-center gap-1.5 md:gap-2 text-primary font-semibold text-[10px] sm:text-xs md:text-sm mb-1.5 md:mb-2 uppercase tracking-widest w-full">
-              <MapPin size={15} className="shrink-0" />
-              <span className="truncate max-w-[40%] md:max-w-none">
-                {locationLabel}
-              </span>
+              <button 
+                onClick={() => detectAndSaveLocation()}
+                disabled={loadingLoc}
+                className="flex items-center gap-1.5 md:gap-2 hover:opacity-70 transition-opacity cursor-pointer"
+                title="Click to update location"
+              >
+                {loadingLoc ? (
+                  <span className="loading loading-spinner loading-xs shrink-0"></span>
+                ) : (
+                  <MapPin size={15} className="shrink-0" />
+                )}
+                <span className="truncate max-w-[40%] md:max-w-none text-left">
+                  {locationLabel}
+                </span>
+              </button>
               <span className="text-base-content/30 px-0.5">•</span>
               <span className="text-base-content/70 truncate">{today}</span>
             </div>

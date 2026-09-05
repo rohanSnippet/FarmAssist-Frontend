@@ -1,14 +1,61 @@
-import React from "react";
-import { Outlet, Link, useLocation } from "react-router-dom";
+import React, { useEffect, useRef } from "react";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import MobileHeader from "../components/MobileHeader"; // Import the new header
+import Swal from 'sweetalert2';
 
 const RootLayout = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const eventSourceRef = useRef(null);
 
   // Helper to colorize the active tab icon
   const isActive = (path) =>
     location.pathname === path ? "text-primary" : "text-base-content/40";
+
+  useEffect(() => {
+    const token = localStorage.getItem("access");
+    if (!token) return;
+
+    // Connect to SSE
+    eventSourceRef.current = new EventSource(`http://localhost:8000/api/stream/?token=${token}`);
+
+    eventSourceRef.current.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === "job_completed" || data.type === "job_failed") {
+          // Fire SweetAlert2 Toast
+          Swal.fire({
+            toast: true,
+            position: 'bottom-end',
+            icon: data.type === 'job_completed' ? 'success' : 'error',
+            title: data.type === 'job_completed' ? 'Scan Completed!' : 'Scan Failed',
+            text: `Result for ${data.crop}`,
+            showConfirmButton: data.type === 'job_completed',
+            confirmButtonText: 'View Details',
+            timer: 4000,
+            timerProgressBar: true,
+          }).then((result) => {
+            if (result.isConfirmed && data.type === 'job_completed') {
+              navigate(`/pest-history/${data.job_id}`);
+            }
+          });
+
+          // Dispatch custom event for ScanJobQueue to clear jobs and Navbar to update bell
+          const customEvent = new CustomEvent('scanJobUpdate', { detail: data });
+          window.dispatchEvent(customEvent);
+        }
+      } catch (err) {
+        // Ignore parse errors from "ping" or "connected"
+      }
+    };
+
+    return () => {
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+      }
+    };
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-base-300">
@@ -26,7 +73,7 @@ const RootLayout = () => {
       {/* MAIN CONTENT AREA                         */}
       {/* ========================================= */}
       {/* pb-20 ensures content isn't hidden behind the mobile bottom nav */}
-      <main className="flex-1 pb-20 md:pb-0 relative z-10 pointer-events-auto">
+      <main className="flex-1 pb-20 md:pb-0 pointer-events-auto">
         <Outlet />
       </main>
 
