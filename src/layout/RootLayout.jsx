@@ -3,6 +3,9 @@ import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import MobileHeader from "../components/MobileHeader"; // Import the new header
 import Swal from 'sweetalert2';
+import { useToast } from '../ui/Toast';
+import { useScanQueue } from "../hooks/useScanQueue";
+import ScanJobQueue from "../components/User/ScanJobQueue";
 
 const RootLayout = () => {
   const location = useLocation();
@@ -12,6 +15,15 @@ const RootLayout = () => {
   // Helper to colorize the active tab icon
   const isActive = (path) =>
     location.pathname === path ? "text-primary" : "text-base-content/40";
+
+  const { jobs, addJob, removeJob, pendingCount } = useScanQueue();
+  const Toast = useToast();
+
+  useEffect(() => {
+    const handleAddJob = (e) => addJob(e.detail.jobId, e.detail.cropHint);
+    window.addEventListener('addScanJob', handleAddJob);
+    return () => window.removeEventListener('addScanJob', handleAddJob);
+  }, [addJob]);
 
   useEffect(() => {
     const token = localStorage.getItem("access");
@@ -24,8 +36,8 @@ const RootLayout = () => {
       try {
         const data = JSON.parse(event.data);
         if (data.type === "job_completed" || data.type === "job_failed") {
-          // Fire SweetAlert2 Toast
-          Swal.fire({
+          // Fire theme-aware Toast with high z-index
+          Toast.fire({
             toast: true,
             position: 'bottom-end',
             icon: data.type === 'job_completed' ? 'success' : 'error',
@@ -35,15 +47,20 @@ const RootLayout = () => {
             confirmButtonText: 'View Details',
             timer: 4000,
             timerProgressBar: true,
+            customClass: {
+              container: 'z-[99999]' // Ensure toast is above the queue
+            }
           }).then((result) => {
             if (result.isConfirmed && data.type === 'job_completed') {
               navigate(`/pest-history/${data.job_id}`);
             }
           });
-
-          // Dispatch custom event for ScanJobQueue to clear jobs and Navbar to update bell
-          const customEvent = new CustomEvent('scanJobUpdate', { detail: data });
-          window.dispatchEvent(customEvent);
+        }
+        
+        // Dispatch custom event for ScanJobQueue to clear jobs and Navbar/AlertInbox to update
+        if (data.type) {
+            const customEvent = new CustomEvent('scanJobUpdate', { detail: data });
+            window.dispatchEvent(customEvent);
         }
       } catch (err) {
         // Ignore parse errors from "ping" or "connected"
@@ -174,6 +191,13 @@ const RootLayout = () => {
           </Link>
         </div>
       </nav>
+
+      {/* Global Scan Job Queue */}
+      <ScanJobQueue
+        jobs={jobs}
+        onRemove={removeJob}
+        pendingCount={pendingCount}
+      />
     </div>
   );
 };

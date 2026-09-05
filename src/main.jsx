@@ -8,6 +8,7 @@ import RootLayout from "./layout/RootLayout.jsx";
 import Home from "./pages/Home.jsx";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { NotificationProvider } from "./context/NotificationContext";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import { ModalProvider } from "./context/ModalContext";
 import GlobalModal from "./components/GlobalModal";
@@ -152,13 +153,15 @@ createRoot(document.getElementById("root")).render(
     <React.Suspense fallback={<ApplicationLoader />}>
       <ThemeProvider>
         <AuthProvider>
-          <LocationProvider>
-            {" "}
-            <ModalProvider>
-              <GlobalModal />
-              <RouterProvider router={router} />
-            </ModalProvider>
-          </LocationProvider>
+          <NotificationProvider>
+            <LocationProvider>
+              {" "}
+              <ModalProvider>
+                <GlobalModal />
+                <RouterProvider router={router} />
+              </ModalProvider>
+            </LocationProvider>
+          </NotificationProvider>
           {/* <AppInitialization /> */}
         </AuthProvider>
       </ThemeProvider>
