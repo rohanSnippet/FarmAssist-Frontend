@@ -19,6 +19,8 @@ import UserProfile from "./components/User/UserProfile";
 import { LocationProvider } from "./context/LocationContext";
 import NotFound from "./pages/NotFound";
 import RecommendationHistory from "./components/User/RecommendationHistory";
+import PestDetectionHistory from "./components/User/PestDetectionHistory";
+import PestDetectionDetail from "./pages/PestDetectionDetail";
 import ManageFarms from "./components/ManageFarms.jsx";
 import CropScannerPage from "./pages/CropScannerPage.jsx";
 import { registerSW } from "virtual:pwa-register";
@@ -73,6 +75,22 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoutes>
             <ManageFarms />
+          </ProtectedRoutes>
+        ),
+      },
+      {
+        path: "/pest-history",
+        element: (
+          <ProtectedRoutes>
+            <PestDetectionHistory />
+          </ProtectedRoutes>
+        ),
+      },
+      {
+        path: "/pest-history/:id",
+        element: (
+          <ProtectedRoutes>
+            <PestDetectionDetail />
           </ProtectedRoutes>
         ),
       },

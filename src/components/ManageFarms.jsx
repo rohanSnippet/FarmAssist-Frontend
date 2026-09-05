@@ -72,7 +72,7 @@ const ManageFarms = () => {
                   ? t("manageFarms.add_farm_subtitle", "Define your farm boundary")
                   : t("manageFarms.manage_farms_subtitle", "Manage your agricultural land")}
               </p>
-            </div>
+            </div> 
           </div>
 
           {/* 
@@ -98,7 +98,7 @@ const ManageFarms = () => {
             <h1 className="text-3xl font-black text-base-content mt-1">
               {t("manageFarms.my_farms_title", "My Farms")}
             </h1>
-          </div>
+          </div> 
 
           {!isAddingFarm && (
             <button
@@ -185,7 +185,7 @@ const ManageFarms = () => {
             >
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-base-content/40">
-                  New Property
+                  {t("manageFarms.new_property", "New Property")}
                 </p>
 
                 <h2 className="text-2xl font-black mt-1">
@@ -276,7 +276,7 @@ const ManageFarms = () => {
                   text-base-content/60
                 "
               >
-                Cancel
+                {t("manageFarms.cancel", "Cancel")}
               </button>
             </div>
           </div>

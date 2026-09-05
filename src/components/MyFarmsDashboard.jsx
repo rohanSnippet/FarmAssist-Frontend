@@ -479,33 +479,25 @@ const MyFarmsDashboard = ({onAddFarm}) => {
 
   return (
     <div className="w-full min-h-screen pb-28 md:p-8">
-      <div className="md:max-w-6xl md:mx-auto md:bg-base-100/70 md:backdrop-blur-xl md:border md:border-base-content/10 md:shadow-xl md:rounded-3xl md:overflow-hidden relative z-10">
-        {/* Background Blobs (Desktop Only) */}
-        <div className="hidden md:block absolute top-[-10%] left-[-5%] w-72 h-72 bg-primary/10 rounded-full blur-3xl opacity-60 pointer-events-none"></div>
-        <div className="hidden md:block absolute bottom-[-10%] right-[-5%] w-72 h-72 bg-secondary/10 rounded-full blur-3xl opacity-60 pointer-events-none"></div>
-
+      <div className="w-full max-w-7xl mx-auto relative z-10">
         {/* NATIVE-FEEL HEADER */}
-        <div className="px-4 py-4 md:p-8 border-b border-base-content/10 bg-base-100 md:bg-base-200/50 sticky top-0 z-20 flex items-center justify-between">
-          <div>
-            <p className="text-[9px] md:text-xs font-black text-base-content/40 uppercase tracking-[0.15em]  mb-1">
-              {t("MyFarms.property_overview")}
-            </p>
-
-            <h1 className="text-xl md:text-3xl font-black text-base-content tracking-tight">
-              {t("MyFarms.title")}
+        <div className="px-4 py-4 md:px-8 bg-transparent sticky top-0 z-20 flex items-center justify-between">
+          {/* <div>
+            <h1 className="text-2xl md:text-4xl font-black text-base-content tracking-tight">
+              {t("MyFarms.title", "My Farms")}
             </h1>
 
-            <p className="md:hidden text-[11px] text-base-content/50 mt-1">
-              {t("MyFarms.farms_registered", { count: farms.length })}
+            <p className="text-[11px] md:text-sm text-base-content/50 mt-1">
+              {t("MyFarms.farms_registered", { count: farms.length, defaultValue: `${farms.length} Farms Registered` })}
             </p>
-          </div>
-          <div className=" w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center md:hidden">
+          </div> */}
+          {/* <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center md:hidden">
             <Map size={19} />
-          </div>
+          </div> */}
         </div>
 
         {/* GRID VIEW */}
-        <div className="p-4 md:p-8 relative z-10">
+        <div className="px-4 md:px-8 relative z-10">
           {farms.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 px-4 text-center bg-base-200/50 rounded-3xl border-2 border-dashed border-base-content/10">
               <div className="w-16 h-16 bg-base-100 rounded-2xl shadow-sm flex items-center justify-center mb-4 text-base-content/40">

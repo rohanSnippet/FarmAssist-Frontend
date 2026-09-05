@@ -6,6 +6,7 @@ import { useModal } from "../context/ModalContext";
 import { useTranslation } from "react-i18next";
 import LanguageGridContent from "../ui/LanguageGridContent";
 import AlertInbox from "./User/AlertInbox";
+import api from "../axios";
 import LogoLight from "../assets/seedingL.png";
 import Logo from "../assets/seeding.png";
 import {
@@ -30,11 +31,25 @@ const MobileHeader = () => {
 
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isAlertOpen, setAlertOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   // Close alert drawer automatically on route change
   useEffect(() => {
     setAlertOpen(false);
   }, [location]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      api.get('/api/notifications/').then(res => {
+        const count = res.data.filter(n => !n.is_read).length;
+        setUnreadCount(count);
+      }).catch(err => console.error(err));
+    }
+
+    const handleUpdate = () => setUnreadCount(prev => prev + 1);
+    window.addEventListener('scanJobUpdate', handleUpdate);
+    return () => window.removeEventListener('scanJobUpdate', handleUpdate);
+  }, [isAuthenticated, isAlertOpen]); // Refresh when alert drawer closes/opens
 
   // Fullscreen Logic
   const toggleFullScreen = () => {
@@ -112,7 +127,7 @@ const MobileHeader = () => {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 text-base-content/80"
+                className="h-6 w-6 text-base-content/80 hover:text-primary transition-colors"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -124,8 +139,16 @@ const MobileHeader = () => {
                   d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                 />
               </svg>
-              <span className="absolute top-1 right-1 w-2 h-2 bg-error rounded-full animate-ping"></span>
-              <span className="absolute top-1 right-1 w-2 h-2 bg-error rounded-full shadow-sm"></span>
+              {unreadCount > 0 && (
+                <div className="absolute top-0 right-0 transform translate-x-1 -translate-y-1">
+                  <span className="relative flex h-4 w-4">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-4 w-4 bg-error text-[10px] text-white font-bold items-center justify-center">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  </span>
+                </div>
+              )}
             </button>
           )}
 
