@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { useToast } from '../ui/Toast';
 import { useScanQueue } from "../hooks/useScanQueue";
 import ScanJobQueue from "../components/User/ScanJobQueue";
+import MitraAssistant from "../components/voice/MitraAssistant";
 
 const RootLayout = () => {
   const location = useLocation();
@@ -203,6 +204,9 @@ const RootLayout = () => {
         onRemove={removeJob}
         pendingCount={pendingCount}
       />
+
+      {/* Global Voice Assistant */}
+      <MitraAssistant />
     </div>
   );
 };

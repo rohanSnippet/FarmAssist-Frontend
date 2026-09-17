@@ -352,6 +352,10 @@ const CropScanner = ({ farms = [], onDigitizeNew, onScanQueued }) => {
 
       const response = await api.post("/api/scan/submit/", formData);
       
+      if (response.data.job_id) {
+        window.dispatchEvent(new CustomEvent('scanSubmitted', { detail: { jobId: response.data.job_id } }));
+      }
+      
       if (onScanQueued && response.data.job_id) {
         onScanQueued(response.data.job_id, "");
         // Reset the UI immediately so the user can scan another crop if needed
