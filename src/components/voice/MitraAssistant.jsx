@@ -315,7 +315,7 @@ const MitraAssistant = () => {
     const processWorkflowEvent = (eventType, payloadData = {}) => {
         setPresentationState('PROCESSING');
         
-        const uiContext = { screen: location.pathname };
+        const uiContext = { screen: location.pathname, language: i18n.language };
         const eventId = crypto.randomUUID();
 
         const sendRequest = async (payload) => {
@@ -519,7 +519,7 @@ const MitraAssistant = () => {
         : { width: `${windowSize.width}px`, height: `${windowSize.height}px`, fontFamily: "'Product Sans', 'Inter', 'Roboto', sans-serif" };
 
     return (
-        <div className="fixed bottom-24 right-4 z-[9999] flex flex-col items-end gap-4 pointer-events-none sm:bottom-6 sm:right-6">
+        <div className="fixed bottom-40 right-4 z-[9999] flex flex-col items-end gap-4 pointer-events-none md:bottom-24 md:right-6">
             
             {/* Chat Window */}
             <AnimatePresence>

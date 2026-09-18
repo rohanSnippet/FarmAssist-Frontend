@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import FarmBoundaryMapper from "./FarmBoundaryMapper";
 import MyFarmsDashboard from "./MyFarmsDashboard";
@@ -9,6 +9,16 @@ const ManageFarms = () => {
   const { t } = useTranslation();
   const [isAddingFarm, setIsAddingFarm] = useState(false);
   const [farmName, setFarmName] = useState("");
+
+  useEffect(() => {
+    const handleMitraOpenNewFarmModal = (event) => {
+      setIsAddingFarm(true);
+    };
+    window.addEventListener('mitraOpenNewFarmModal', handleMitraOpenNewFarmModal);
+    return () => {
+      window.removeEventListener('mitraOpenNewFarmModal', handleMitraOpenNewFarmModal);
+    };
+  }, []);
 
   const closeAddFarm = () => {
     setIsAddingFarm(false);

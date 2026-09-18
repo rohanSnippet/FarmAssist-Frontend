@@ -103,6 +103,24 @@ export default function FarmBoundaryMapper({ onSaveFarm, onCancel }) {
     }
   }, [mapInstance, loaded, coordinates.lat, coordinates.lng]);
 
+  // --- MITRA VOICE ASSISTANT MAP FOCUS ---
+  useEffect(() => {
+    const handleMitraMapFocus = (e) => {
+      const { location_hint } = e.detail;
+      if (location_hint && isLoaded && mapInstance) {
+        const geocoder = new window.google.maps.Geocoder();
+        geocoder.geocode({ address: location_hint }, (results, status) => {
+          if (status === 'OK' && results[0]) {
+            mapInstance.panTo(results[0].geometry.location);
+            mapInstance.setZoom(15);
+          }
+        });
+      }
+    };
+    window.addEventListener('mitraMapFocus', handleMitraMapFocus);
+    return () => window.removeEventListener('mitraMapFocus', handleMitraMapFocus);
+  }, [isLoaded, mapInstance]);
+
   // --- DISTANCE CHECKER ---
   const handleMapIdle = () => {
     const isValidLat = typeof coordinates.lat === 'number' && isFinite(coordinates.lat);
